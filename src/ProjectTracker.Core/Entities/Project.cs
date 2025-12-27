@@ -1,0 +1,88 @@
+﻿namespace ProjectTracker.Core.Entities
+{
+    /// <summary>
+    /// Represents a project in the system
+    /// </summary>
+    public class Project
+    {
+        /// <summary>
+        /// Primary key - Unique identifier for the project
+        /// </summary>
+        public int ProjectId { get; set; }
+
+        /// <summary>
+        /// Foreign key - Project creator/owner
+        /// </summary>
+        public int CreatedByUserId { get; set; }
+
+        /// <summary>
+        /// Name of the project
+        /// </summary>
+        public string ProjectName { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Detailed description of the project
+        /// </summary>
+        public string? Description { get; set; }
+
+        /// <summary>
+        /// Project start date
+        /// </summary>
+        public DateTime StartDate { get; set; }
+
+        /// <summary>
+        /// Expected end date
+        /// </summary>
+        public DateTime? EndDate { get; set; }
+
+        /// <summary>
+        /// Project budget (optional)
+        /// </summary>
+        public decimal? Budget { get; set; }
+
+        /// <summary>
+        /// Current status (Planned, Active, OnHold, Completed, Cancelled)
+        /// </summary>
+        public string Status { get; set; } = "Planned";
+
+        /// <summary>
+        /// Completion percentage (0-100)
+        /// </summary>
+        public decimal CompletionPercentage { get; set; } = 0;
+
+        /// <summary>
+        /// Risk score calculated by smart algorithm (0-100)
+        /// </summary>
+        public decimal? RiskScore { get; set; }
+
+        /// <summary>
+        /// When was this project created?
+        /// </summary>
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+
+        /// <summary>
+        /// Last update timestamp
+        /// </summary>
+        public DateTime? UpdatedAt { get; set; }
+
+        /// <summary>
+        /// Navigation property - User who created this project
+        /// </summary>
+        public virtual User CreatedByUser { get; set; } = null!;
+
+        /// <summary>
+        /// Navigation property - Tasks in this project
+        /// </summary>
+        public virtual ICollection<Task> Tasks { get; set; } = new List<Task>();
+
+        /// <summary>
+        /// Navigation property - Team members working on this project
+        /// </summary>
+        public virtual ICollection<ProjectTeamMember> TeamMembers { get; set; } = new List<ProjectTeamMember>();
+
+        /// <summary>
+        /// Navigation property - Risk analysis records
+        /// </summary>
+        public virtual ICollection<ProjectRisk> Risks { get; set; } = new List<ProjectRisk>();
+    }
+}

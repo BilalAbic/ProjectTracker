@@ -1,0 +1,142 @@
+﻿using Microsoft.EntityFrameworkCore.Storage;
+using ProjectTracker.Core.Entities;
+using ProjectTracker.Core.Interfaces;
+using ProjectTracker.Core.Interfaces.Repositories;
+using ProjectTracker.Data.Context;
+using ProjectTracker.Data.Repositories;
+
+namespace ProjectTracker.Data
+{
+    /// <summary>
+    /// Unit of Work implementation - manages transactions and repositories
+    /// </summary>
+    public class UnitOfWork : IUnitOfWork
+    {
+        private readonly AppDbContext _context;
+        private IDbContextTransaction? _transaction;
+
+        // Repository fields (private, lazy initialized)
+        private IRepository<User>? _users;
+        private IRepository<Project>? _projects;
+        private IRepository<Core.Entities.Task>? _tasks;
+        private IRepository<Role>? _roles;
+        private IRepository<TaskComment>? _taskComments;
+        private IRepository<Notification>? _notifications;
+        private IRepository<ProjectTeamMember>? _projectTeamMembers;
+        private IRepository<ProjectRisk>? _projectRisks;
+        private IRepository<AuditLog>? _auditLogs;
+
+        public UnitOfWork(AppDbContext context)
+        {
+            _context = context;
+        }
+
+        // ============================================
+        // REPOSITORY PROPERTIES (Lazy initialization)
+        // ============================================
+
+        /// <summary>
+        /// Users repository - lazy initialized
+        /// </summary>
+        public IRepository<User> Users => _users ??= new Repository<User>(_context);
+
+        /// <summary>
+        /// Projects repository - lazy initialized
+        /// </summary>
+        public IRepository<Project> Projects => _projects ??= new Repository<Project>(_context);
+
+        /// <summary>
+        /// Tasks repository - lazy initialized
+        /// </summary>
+        public IRepository<Core.Entities.Task> Tasks => _tasks ??= new Repository<Core.Entities.Task>(_context);
+
+        /// <summary>
+        /// Roles repository - lazy initialized
+        /// </summary>
+        public IRepository<Role> Roles => _roles ??= new Repository<Role>(_context);
+
+        /// <summary>
+        /// Task Comments repository - lazy initialized
+        /// </summary>
+        public IRepository<TaskComment> TaskComments => _taskComments ??= new Repository<TaskComment>(_context);
+
+        /// <summary>
+        /// Notifications repository - lazy initialized
+        /// </summary>
+        public IRepository<Notification> Notifications => _notifications ??= new Repository<Notification>(_context);
+
+        /// <summary>
+        /// Project Team Members repository - lazy initialized
+        /// </summary>
+        public IRepository<ProjectTeamMember> ProjectTeamMembers => _projectTeamMembers ??= new Repository<ProjectTeamMember>(_context);
+
+        /// <summary>
+        /// Project Risks repository - lazy initialized
+        /// </summary>
+        public IRepository<ProjectRisk> ProjectRisks => _projectRisks ??= new Repository<ProjectRisk>(_context);
+
+        /// <summary>
+        /// Audit Logs repository - lazy initialized
+        /// </summary>
+        public IRepository<AuditLog> AuditLogs => _auditLogs ??= new Repository<AuditLog>(_context);
+
+        // ============================================
+        // TRANSACTION OPERATIONS
+        // ============================================
+
+        public async Task<int> SaveChangesAsync()
+        {
+            return await _context.SaveChangesAsync();
+        }
+
+        public async System.Threading.Tasks.Task BeginTransactionAsync()
+        {
+            _transaction = await _context.Database.BeginTransactionAsync();
+        }
+
+        public async System.Threading.Tasks.Task CommitTransactionAsync()
+        {
+            try
+            {
+                await SaveChangesAsync();
+                if (_transaction != null)
+                {
+                    await _transaction.CommitAsync();
+                }
+            }
+            catch
+            {
+                await RollbackTransactionAsync();
+                throw;
+            }
+            finally
+            {
+                if (_transaction != null)
+                {
+                    await _transaction.DisposeAsync();
+                    _transaction = null;
+                }
+            }
+        }
+
+        public async System.Threading.Tasks.Task RollbackTransactionAsync()
+        {
+            if (_transaction != null)
+            {
+                await _transaction.RollbackAsync();
+                await _transaction.DisposeAsync();
+                _transaction = null;
+            }
+        }
+
+        // ============================================
+        // DISPOSE
+        // ============================================
+
+        public void Dispose()
+        {
+            _transaction?.Dispose();
+            _context.Dispose();
+        }
+    }
+}
