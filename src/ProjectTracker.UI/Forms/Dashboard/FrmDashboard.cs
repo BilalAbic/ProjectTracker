@@ -242,9 +242,8 @@ namespace ProjectTracker.UI.Forms.Dashboard
         /// </summary>
         private void btnDashboard_Click(object sender, EventArgs e)
         {
-            // LoadContent(new DashboardContent()); // Sonra ekleyeceğiz
-            XtraMessageBox.Show("📊 Dashboard - Coming soon!", "Info",
-                MessageBoxButtons.OK, MessageBoxIcon.Information);
+            var dashboardContent = _serviceProvider.GetRequiredService<Content.DashboardContent>();
+            LoadContent(dashboardContent);
             UpdateSidebarSelection(btnDashboard);
         }
 
@@ -253,9 +252,8 @@ namespace ProjectTracker.UI.Forms.Dashboard
         /// </summary>
         private void btnProjects_Click(object sender, EventArgs e)
         {
-            // LoadContent(new ProjectsContent()); // Sonra ekleyeceğiz
-            XtraMessageBox.Show("📁 Projects - Coming soon!", "Info",
-                MessageBoxButtons.OK, MessageBoxIcon.Information);
+            var projectsContent = _serviceProvider.GetRequiredService<Content.ProjectsContent>();
+            LoadContent(projectsContent);
             UpdateSidebarSelection(btnProjects);
         }
 
@@ -376,6 +374,9 @@ namespace ProjectTracker.UI.Forms.Dashboard
             _dragging = false;
         }
 
+        private void btnDashboard_Click_1(object sender, EventArgs e)
+        {
 
+        }
     }
 }

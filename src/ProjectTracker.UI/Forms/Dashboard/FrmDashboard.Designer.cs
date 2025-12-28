@@ -349,6 +349,7 @@
             btnDashboard.Size = new Size(40, 40);
             btnDashboard.TabIndex = 2;
             btnDashboard.Text = "📊";
+            btnDashboard.Click += btnDashboard_Click_1;
             // 
             // pnlActiveIndicator
             // 

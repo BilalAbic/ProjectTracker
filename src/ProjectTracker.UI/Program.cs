@@ -87,6 +87,7 @@ namespace ProjectTracker.UI
             services.AddTransient<Forms.Login.FrmLogin>();
             services.AddTransient<Forms.Dashboard.FrmDashboard>();
             services.AddTransient<Forms.Dashboard.Content.DashboardContent>();
+            services.AddTransient<Forms.Dashboard.Content.ProjectsContent>();
         }
     }
 }

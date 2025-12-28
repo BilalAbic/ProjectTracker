@@ -15,6 +15,7 @@ namespace ProjectTracker.Business.DTOs
         public DateTime? EndDate { get; set; }
         public decimal? Budget { get; set; }
         public ProjectStatus Status { get; set; } = ProjectStatus.Planned;
+        public Priority Priority { get; set; } = Priority.Medium;
         public decimal CompletionPercentage { get; set; }
         public decimal? RiskScore { get; set; }
         public DateTime CreatedAt { get; set; }

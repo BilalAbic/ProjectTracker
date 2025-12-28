@@ -1,4 +1,5 @@
 ﻿using ProjectTracker.Business.DTOs;
+using ProjectTracker.Core.Enums;
 
 namespace ProjectTracker.Business.Interfaces
 {
@@ -28,14 +29,24 @@ namespace ProjectTracker.Business.Interfaces
         Task<IEnumerable<ProjectDto>> GetProjectsByUserAsync(int userId);
 
         /// <summary>
-        /// Create a new project
+        /// Create a new project (using ProjectDto)
         /// </summary>
         Task<ProjectDto> CreateProjectAsync(ProjectDto projectDto);
 
         /// <summary>
-        /// Update existing project
+        /// Create a new project (using CreateProjectDto)
+        /// </summary>
+        Task<ProjectDto> CreateProjectAsync(CreateProjectDto dto);
+
+        /// <summary>
+        /// Update existing project (using ProjectDto)
         /// </summary>
         Task<ProjectDto> UpdateProjectAsync(ProjectDto projectDto);
+
+        /// <summary>
+        /// Update existing project (using UpdateProjectDto)
+        /// </summary>
+        Task<ProjectDto> UpdateProjectAsync(int projectId, UpdateProjectDto dto);
 
         /// <summary>
         /// Delete project
@@ -51,5 +62,10 @@ namespace ProjectTracker.Business.Interfaces
         /// Update project completion percentage
         /// </summary>
         Task UpdateProjectCompletionAsync(int projectId);
+
+        /// <summary>
+        /// Get projects count by status
+        /// </summary>
+        Task<Dictionary<ProjectStatus, int>> GetProjectCountByStatusAsync();
     }
 }
