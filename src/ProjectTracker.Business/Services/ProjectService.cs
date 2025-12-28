@@ -217,5 +217,74 @@ namespace ProjectTracker.Business.Services
             _unitOfWork.Projects.Update(project);
             await _unitOfWork.SaveChangesAsync();
         }
+
+        /// <summary>
+        /// Create new project using CreateProjectDto
+        /// </summary>
+        public async Task<ProjectDto> CreateProjectAsync(CreateProjectDto dto)
+        {
+            var project = new Project
+            {
+                ProjectName = dto.ProjectName,
+                Description = dto.Description,
+                StartDate = dto.StartDate,
+                EndDate = dto.EndDate,
+                Status = dto.Status.ToString(),
+                Priority = dto.Priority,
+                Budget = dto.Budget,
+                CreatedByUserId = dto.CreatedByUserId,
+                CreatedAt = DateTime.Now,
+                CompletionPercentage = 0
+            };
+
+            await _unitOfWork.Projects.AddAsync(project);
+            await _unitOfWork.SaveChangesAsync();
+
+            return _mapper.Map<ProjectDto>(project);
+        }
+
+        /// <summary>
+        /// Update project using UpdateProjectDto
+        /// </summary>
+        public async Task<ProjectDto> UpdateProjectAsync(int projectId, UpdateProjectDto dto)
+        {
+            var project = await _unitOfWork.Projects.GetByIdAsync(projectId);
+            if (project == null)
+            {
+                throw new InvalidOperationException($"Project with ID {projectId} not found.");
+            }
+
+            // Update properties
+            project.ProjectName = dto.ProjectName;
+            project.Description = dto.Description;
+            project.StartDate = dto.StartDate;
+            project.EndDate = dto.EndDate;
+            project.Status = dto.Status.ToString();
+            project.Priority = dto.Priority;
+            project.Budget = dto.Budget;
+            project.UpdatedAt = DateTime.Now;
+
+            _unitOfWork.Projects.Update(project);
+            await _unitOfWork.SaveChangesAsync();
+
+            return _mapper.Map<ProjectDto>(project);
+        }
+
+        /// <summary>
+        /// Get projects count by status
+        /// </summary>
+        public async Task<Dictionary<ProjectStatus, int>> GetProjectCountByStatusAsync()
+        {
+            var projects = await _unitOfWork.Projects.GetAllAsync();
+
+            var result = new Dictionary<ProjectStatus, int>();
+            
+            foreach (ProjectStatus status in Enum.GetValues(typeof(ProjectStatus)))
+            {
+                result[status] = projects.Count(p => p.Status == status.ToString());
+            }
+
+            return result;
+        }
     }
 }

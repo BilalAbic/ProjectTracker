@@ -38,6 +38,9 @@
             cmbStatusFilter = new DevExpress.XtraEditors.ComboBoxEdit();
             txtSearch = new DevExpress.XtraEditors.TextEdit();
             pnlGridContainer = new DevExpress.XtraEditors.PanelControl();
+            pnlFooter = new DevExpress.XtraEditors.PanelControl();
+            btnRefresh = new DevExpress.XtraEditors.SimpleButton();
+            lblRecordCount = new DevExpress.XtraEditors.LabelControl();
             grdProjects = new DevExpress.XtraGrid.GridControl();
             gridView1 = new DevExpress.XtraGrid.Views.Grid.GridView();
             ProjectName = new DevExpress.XtraGrid.Columns.GridColumn();
@@ -56,6 +59,8 @@
             ((System.ComponentModel.ISupportInitialize)txtSearch.Properties).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pnlGridContainer).BeginInit();
             pnlGridContainer.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pnlFooter).BeginInit();
+            pnlFooter.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)grdProjects).BeginInit();
             ((System.ComponentModel.ISupportInitialize)gridView1).BeginInit();
             SuspendLayout();
@@ -89,6 +94,7 @@
             btnNewProject.Size = new Size(130, 36);
             btnNewProject.TabIndex = 2;
             btnNewProject.Text = "+ New Project";
+            btnNewProject.Click += btnNewProject_Click;
             // 
             // lblSubtitle
             // 
@@ -147,6 +153,7 @@
             btnClearFilters.Size = new Size(80, 30);
             btnClearFilters.TabIndex = 3;
             btnClearFilters.Text = "Clear";
+            btnClearFilters.Click += btnClearFilters_Click;
             // 
             // cmbPriorityFilter
             // 
@@ -198,12 +205,14 @@
             txtSearch.Properties.NullText = "🔍 Search projects...";
             txtSearch.Size = new Size(300, 30);
             txtSearch.TabIndex = 0;
+            txtSearch.EditValueChanged += txtSearch_EditValueChanged;
             // 
             // pnlGridContainer
             // 
             pnlGridContainer.Appearance.BackColor = Color.FromArgb(11, 11, 11);
             pnlGridContainer.Appearance.Options.UseBackColor = true;
             pnlGridContainer.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
+            pnlGridContainer.Controls.Add(pnlFooter);
             pnlGridContainer.Controls.Add(grdProjects);
             pnlGridContainer.Dock = DockStyle.Fill;
             pnlGridContainer.Location = new Point(0, 140);
@@ -211,6 +220,48 @@
             pnlGridContainer.Padding = new Padding(0, 15, 0, 0);
             pnlGridContainer.Size = new Size(1100, 590);
             pnlGridContainer.TabIndex = 2;
+            // 
+            // pnlFooter
+            // 
+            pnlFooter.Appearance.BackColor = Color.FromArgb(11, 11, 11);
+            pnlFooter.Appearance.Options.UseBackColor = true;
+            pnlFooter.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
+            pnlFooter.Controls.Add(btnRefresh);
+            pnlFooter.Controls.Add(lblRecordCount);
+            pnlFooter.Dock = DockStyle.Bottom;
+            pnlFooter.Location = new Point(0, 540);
+            pnlFooter.Name = "pnlFooter";
+            pnlFooter.Size = new Size(1100, 50);
+            pnlFooter.TabIndex = 1;
+            // 
+            // btnRefresh
+            // 
+            btnRefresh.Appearance.BackColor = Color.FromArgb(42, 42, 42);
+            btnRefresh.Appearance.BorderColor = Color.FromArgb(42, 42, 42);
+            btnRefresh.Appearance.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            btnRefresh.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            btnRefresh.Appearance.Options.UseBackColor = true;
+            btnRefresh.Appearance.Options.UseBorderColor = true;
+            btnRefresh.Appearance.Options.UseFont = true;
+            btnRefresh.Appearance.Options.UseForeColor = true;
+            btnRefresh.Location = new Point(1000, 10);
+            btnRefresh.Name = "btnRefresh";
+            btnRefresh.Size = new Size(90, 30);
+            btnRefresh.TabIndex = 1;
+            btnRefresh.Text = "🔄 Refresh";
+            // 
+            // lblRecordCount
+            // 
+            lblRecordCount.Appearance.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblRecordCount.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            lblRecordCount.Appearance.Options.UseFont = true;
+            lblRecordCount.Appearance.Options.UseForeColor = true;
+            lblRecordCount.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
+            lblRecordCount.Location = new Point(0, 15);
+            lblRecordCount.Name = "lblRecordCount";
+            lblRecordCount.Size = new Size(200, 20);
+            lblRecordCount.TabIndex = 0;
+            lblRecordCount.Text = "Showing 0 of 0 projects";
             // 
             // grdProjects
             // 
@@ -235,7 +286,7 @@
             gridView1.Appearance.FocusedRow.Options.UseBackColor = true;
             gridView1.Appearance.FocusedRow.Options.UseForeColor = true;
             gridView1.Appearance.HeaderPanel.BackColor = Color.FromArgb(26, 26, 26);
-            gridView1.Appearance.HeaderPanel.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            gridView1.Appearance.HeaderPanel.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             gridView1.Appearance.HeaderPanel.ForeColor = Color.FromArgb(161, 161, 161);
             gridView1.Appearance.HeaderPanel.Options.UseBackColor = true;
             gridView1.Appearance.HeaderPanel.Options.UseFont = true;
@@ -254,74 +305,83 @@
             gridView1.OptionsView.ShowGroupPanel = false;
             gridView1.OptionsView.ShowIndicator = false;
             gridView1.OptionsView.ShowVerticalLines = DevExpress.Utils.DefaultBoolean.False;
+            gridView1.RowClick += gridView1_RowClick;
+            gridView1.CustomDrawCell += gridView1_CustomDrawCell;
             // 
             // ProjectName
             // 
-            ProjectName.AppearanceCell.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            ProjectName.AppearanceCell.Font = new Font("Segoe UI", 9.75F);
             ProjectName.AppearanceCell.Options.UseFont = true;
             ProjectName.Caption = "Project Name";
+            ProjectName.FieldName = "ProjectName";
             ProjectName.Name = "ProjectName";
             ProjectName.OptionsColumn.AllowEdit = false;
             ProjectName.Visible = true;
             ProjectName.VisibleIndex = 0;
-            ProjectName.Width = 599;
+            ProjectName.Width = 527;
             // 
             // Status
             // 
             Status.Caption = "Status";
+            Status.FieldName = "Status";
             Status.Name = "Status";
             Status.OptionsColumn.AllowEdit = false;
             Status.Visible = true;
             Status.VisibleIndex = 1;
-            Status.Width = 69;
+            Status.Width = 79;
             // 
             // CompletionPercentage
             // 
             CompletionPercentage.Caption = "Progress";
+            CompletionPercentage.FieldName = "CompletionPercentage";
             CompletionPercentage.Name = "CompletionPercentage";
             CompletionPercentage.Visible = true;
             CompletionPercentage.VisibleIndex = 2;
-            CompletionPercentage.Width = 97;
+            CompletionPercentage.Width = 93;
             // 
             // Priority
             // 
             Priority.Caption = "Priority";
+            Priority.FieldName = "Priority";
             Priority.Name = "Priority";
             Priority.OptionsColumn.AllowEdit = false;
             Priority.Visible = true;
             Priority.VisibleIndex = 3;
-            Priority.Width = 73;
+            Priority.Width = 78;
             // 
             // ManagerName
             // 
             ManagerName.Caption = "Manager";
+            ManagerName.FieldName = "CreatedByUserName";
             ManagerName.Name = "ManagerName";
             ManagerName.OptionsColumn.AllowEdit = false;
             ManagerName.Visible = true;
             ManagerName.VisibleIndex = 4;
-            ManagerName.Width = 97;
+            ManagerName.Width = 98;
             // 
             // EndDate
             // 
             EndDate.Caption = "Due Date";
             EndDate.DisplayFormat.FormatString = "dd MMM yyyy";
             EndDate.DisplayFormat.FormatType = DevExpress.Utils.FormatType.DateTime;
+            EndDate.FieldName = "EndDate";
             EndDate.Name = "EndDate";
             EndDate.OptionsColumn.AllowEdit = false;
             EndDate.Visible = true;
             EndDate.VisibleIndex = 5;
-            EndDate.Width = 91;
+            EndDate.Width = 106;
             // 
             // Actions
             // 
+            Actions.Caption = "Actions";
             Actions.FieldName = "Actions";
             Actions.Name = "Actions";
             Actions.OptionsColumn.AllowSort = DevExpress.Utils.DefaultBoolean.False;
             Actions.OptionsFilter.AllowFilter = false;
-            Actions.UnboundType = DevExpress.Data.UnboundColumnType.Object;
+            Actions.UnboundType = DevExpress.Data.UnboundColumnType.String;
             Actions.Visible = true;
             Actions.VisibleIndex = 6;
-            Actions.Width = 80;
+            Actions.Width = 117;
             // 
             // ProjectsContent
             // 
@@ -342,6 +402,8 @@
             ((System.ComponentModel.ISupportInitialize)txtSearch.Properties).EndInit();
             ((System.ComponentModel.ISupportInitialize)pnlGridContainer).EndInit();
             pnlGridContainer.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)pnlFooter).EndInit();
+            pnlFooter.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)grdProjects).EndInit();
             ((System.ComponentModel.ISupportInitialize)gridView1).EndInit();
             ResumeLayout(false);
@@ -368,5 +430,8 @@
         private DevExpress.XtraGrid.Columns.GridColumn ManagerName;
         private DevExpress.XtraGrid.Columns.GridColumn EndDate;
         private DevExpress.XtraGrid.Columns.GridColumn Actions;
+        private DevExpress.XtraEditors.PanelControl pnlFooter;
+        private DevExpress.XtraEditors.SimpleButton btnRefresh;
+        private DevExpress.XtraEditors.LabelControl lblRecordCount;
     }
 }

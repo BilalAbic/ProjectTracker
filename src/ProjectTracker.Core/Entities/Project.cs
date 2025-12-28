@@ -46,6 +46,11 @@
         public string Status { get; set; } = "Planned";
 
         /// <summary>
+        /// Project priority level
+        /// </summary>
+        public Enums.Priority Priority { get; set; } = Enums.Priority.Medium;
+
+        /// <summary>
         /// Completion percentage (0-100)
         /// </summary>
         public decimal CompletionPercentage { get; set; } = 0;
