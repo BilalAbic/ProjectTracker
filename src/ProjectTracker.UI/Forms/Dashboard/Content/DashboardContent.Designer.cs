@@ -106,7 +106,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             btnNewProject.Size = new Size(140, 36);
             btnNewProject.TabIndex = 2;
             btnNewProject.Text = "+ New Project";
-            btnNewProject.Click += btnNewProject_Click_1;
+            btnNewProject.Click += btnNewProject_Click;
             // 
             // lblWelcomeSubtitle
             // 
@@ -500,11 +500,6 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             ((System.ComponentModel.ISupportInitialize)gridRecentProjects).EndInit();
             ((System.ComponentModel.ISupportInitialize)gridViewRecentProjects).EndInit();
             ResumeLayout(false);
-        }
-
-        private void btnNewProject_Click(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
         }
 
         #endregion

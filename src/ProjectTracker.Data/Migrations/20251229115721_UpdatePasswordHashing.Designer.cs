@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProjectTracker.Data.Context;
 
@@ -11,9 +12,11 @@ using ProjectTracker.Data.Context;
 namespace ProjectTracker.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251229115721_UpdatePasswordHashing")]
+    partial class UpdatePasswordHashing
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -409,7 +412,6 @@ namespace ProjectTracker.Data.Migrations
                         new
                         {
                             TaskId = 1,
-                            AssignedToUserId = 1,
                             CompletedDate = new DateTime(2025, 12, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedAt = new DateTime(2025, 10, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Create wireframes and mockups for product listing pages",
@@ -424,7 +426,6 @@ namespace ProjectTracker.Data.Migrations
                         new
                         {
                             TaskId = 2,
-                            AssignedToUserId = 1,
                             CreatedAt = new DateTime(2025, 12, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Build shopping cart functionality with session management",
                             DueDate = new DateTime(2026, 1, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -589,7 +590,7 @@ namespace ProjectTracker.Data.Migrations
                             Email = "admin@projecttracker.com",
                             FullName = "Admin User",
                             IsActive = true,
-                            PasswordHash = "$2a$11$rBV2/.QxbrR5mCRudV3oD.6KhT/dKLZXQbEJU3BUW8qNZnVlCJWJC",
+                            PasswordHash = "$2a$11$XhKGdZGq7SjZ6xMxZ7B8/.TZyqH8Z8nFJZq7B8/.TZyqH8Z8nFJZq7",
                             RoleId = 1,
                             Username = "admin"
                         });

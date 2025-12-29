@@ -262,9 +262,8 @@ namespace ProjectTracker.UI.Forms.Dashboard
         /// </summary>
         private void btnTasks_Click(object sender, EventArgs e)
         {
-            // LoadContent(new TasksContent()); // Sonra ekleyeceğiz
-            XtraMessageBox.Show("✓ Tasks - Coming soon!", "Info",
-                MessageBoxButtons.OK, MessageBoxIcon.Information);
+            var tasksContent = _serviceProvider.GetRequiredService<Content.TasksContent>();
+            LoadContent(tasksContent);
             UpdateSidebarSelection(btnTasks);
         }
 

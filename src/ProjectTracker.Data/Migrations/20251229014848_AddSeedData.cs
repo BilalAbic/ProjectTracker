@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace ProjectTracker.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class AddSeedData : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -106,6 +108,7 @@ namespace ProjectTracker.Data.Migrations
                     EndDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Budget = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: true),
                     Status = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false, defaultValue: "Planned"),
+                    Priority = table.Column<int>(type: "int", nullable: false),
                     CompletionPercentage = table.Column<decimal>(type: "decimal(5,2)", precision: 5, scale: 2, nullable: false, defaultValue: 0m),
                     RiskScore = table.Column<decimal>(type: "decimal(5,2)", precision: 5, scale: 2, nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
@@ -181,11 +184,12 @@ namespace ProjectTracker.Data.Migrations
                     TaskId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ProjectId = table.Column<int>(type: "int", nullable: false),
-                    AssignedToUserId = table.Column<int>(type: "int", nullable: true),
+                    AssignedUserId = table.Column<int>(type: "int", nullable: true),
+                    ParentTaskId = table.Column<int>(type: "int", nullable: true),
                     TaskName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
-                    Priority = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false, defaultValue: "Medium"),
-                    Status = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false, defaultValue: "Pending"),
+                    Priority = table.Column<string>(type: "nvarchar(max)", nullable: false, defaultValue: "Medium"),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false, defaultValue: "Pending"),
                     EstimatedHours = table.Column<int>(type: "int", nullable: true),
                     ActualHours = table.Column<int>(type: "int", nullable: true),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -204,8 +208,8 @@ namespace ProjectTracker.Data.Migrations
                         principalColumn: "ProjectId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Tasks_Users_AssignedToUserId",
-                        column: x => x.AssignedToUserId,
+                        name: "FK_Tasks_Users_AssignedUserId",
+                        column: x => x.AssignedUserId,
                         principalTable: "Users",
                         principalColumn: "UserId",
                         onDelete: ReferentialAction.SetNull);
@@ -237,6 +241,68 @@ namespace ProjectTracker.Data.Migrations
                         principalTable: "Users",
                         principalColumn: "UserId",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.InsertData(
+                table: "Roles",
+                columns: new[] { "RoleId", "Description", "RoleName" },
+                values: new object[,]
+                {
+                    { 1, "System Administrator", "Admin" },
+                    { 2, "Project Manager", "ProjectManager" },
+                    { 3, "Developer", "Developer" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "UserId", "CreatedAt", "Email", "FullName", "IsActive", "PasswordHash", "RoleId", "Username" },
+                values: new object[] { 1, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin@projecttracker.com", "Admin User", true, "AQAAAAEAACcQAAAAEJ5K8X8qF5K8X8qF5K8X8qF5K8X8qF5K8X8qF5K8X8qF5K8X8qF5K8X8qF5K8X8qF5==", 1, "admin" });
+
+            migrationBuilder.InsertData(
+                table: "Projects",
+                columns: new[] { "ProjectId", "Budget", "CompletionPercentage", "CreatedAt", "CreatedByUserId", "Description", "EndDate", "Priority", "ProjectName", "RiskScore", "StartDate", "Status", "UpdatedAt" },
+                values: new object[,]
+                {
+                    { 1, 150000m, 35m, new DateTime(2025, 10, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, "Building a modern e-commerce platform with microservices architecture", new DateTime(2026, 4, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, "E-Commerce Platform", null, new DateTime(2025, 10, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), "Active", null },
+                    { 2, 200000m, 20m, new DateTime(2025, 11, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, "iOS and Android banking application with biometric authentication", new DateTime(2026, 3, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), 4, "Mobile Banking App", null, new DateTime(2025, 11, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), "Active", null }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Projects",
+                columns: new[] { "ProjectId", "Budget", "CreatedAt", "CreatedByUserId", "Description", "EndDate", "Priority", "ProjectName", "RiskScore", "StartDate", "Status", "UpdatedAt" },
+                values: new object[] { 3, 80000m, new DateTime(2025, 12, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, "Customer relationship management system for internal use", new DateTime(2026, 6, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, "Internal CRM System", null, new DateTime(2026, 1, 13, 0, 0, 0, 0, DateTimeKind.Unspecified), "Planned", null });
+
+            migrationBuilder.InsertData(
+                table: "Tasks",
+                columns: new[] { "TaskId", "ActualHours", "AssignedUserId", "CompletedDate", "CreatedAt", "Description", "DueDate", "EstimatedHours", "ParentTaskId", "Priority", "ProjectId", "StartDate", "Status", "TaskName" },
+                values: new object[] { 1, null, null, new DateTime(2025, 12, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 10, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), "Create wireframes and mockups for product listing pages", new DateTime(2025, 11, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, "High", 1, new DateTime(2025, 10, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), "Completed", "Design Product Catalog UI" });
+
+            migrationBuilder.InsertData(
+                table: "Tasks",
+                columns: new[] { "TaskId", "ActualHours", "AssignedUserId", "CompletedDate", "CreatedAt", "Description", "DueDate", "EstimatedHours", "IsCriticalPath", "ParentTaskId", "Priority", "ProjectId", "StartDate", "Status", "TaskName" },
+                values: new object[] { 2, null, null, null, new DateTime(2025, 12, 19, 0, 0, 0, 0, DateTimeKind.Unspecified), "Build shopping cart functionality with session management", new DateTime(2026, 1, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), null, true, null, "Critical", 1, new DateTime(2025, 12, 19, 0, 0, 0, 0, DateTimeKind.Unspecified), "InProgress", "Implement Shopping Cart" });
+
+            migrationBuilder.InsertData(
+                table: "Tasks",
+                columns: new[] { "TaskId", "ActualHours", "AssignedUserId", "CompletedDate", "CreatedAt", "Description", "DueDate", "EstimatedHours", "ParentTaskId", "Priority", "ProjectId", "StartDate", "Status", "TaskName" },
+                values: new object[,]
+                {
+                    { 3, null, null, null, new DateTime(2025, 12, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), "Integrate Stripe payment gateway for checkout", new DateTime(2026, 1, 13, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, "High", 1, new DateTime(2026, 1, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), "Pending", "Setup Payment Gateway" },
+                    { 4, null, null, null, new DateTime(2025, 12, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), "Load testing for 10000 concurrent users", new DateTime(2026, 1, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, "Medium", 1, new DateTime(2025, 12, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), "Blocked", "Performance Testing" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Tasks",
+                columns: new[] { "TaskId", "ActualHours", "AssignedUserId", "CompletedDate", "CreatedAt", "Description", "DueDate", "EstimatedHours", "IsCriticalPath", "ParentTaskId", "Priority", "ProjectId", "StartDate", "Status", "TaskName" },
+                values: new object[] { 5, null, null, null, new DateTime(2025, 12, 24, 0, 0, 0, 0, DateTimeKind.Unspecified), "Implement fingerprint and face recognition", new DateTime(2026, 1, 8, 0, 0, 0, 0, DateTimeKind.Unspecified), null, true, null, "Critical", 2, new DateTime(2025, 12, 24, 0, 0, 0, 0, DateTimeKind.Unspecified), "InProgress", "Biometric Authentication" });
+
+            migrationBuilder.InsertData(
+                table: "Tasks",
+                columns: new[] { "TaskId", "ActualHours", "AssignedUserId", "CompletedDate", "CreatedAt", "Description", "DueDate", "EstimatedHours", "ParentTaskId", "Priority", "ProjectId", "StartDate", "Status", "TaskName" },
+                values: new object[,]
+                {
+                    { 6, null, null, null, new DateTime(2025, 12, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), "Design and implement transaction history screen", new DateTime(2026, 1, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, "High", 2, new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Pending", "Transaction History UI" },
+                    { 7, null, null, null, new DateTime(2025, 12, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), "Meet with stakeholders to gather CRM requirements", new DateTime(2026, 1, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, "High", 3, new DateTime(2026, 1, 13, 0, 0, 0, 0, DateTimeKind.Unspecified), "Pending", "Requirements Gathering" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -276,9 +342,9 @@ namespace ProjectTracker.Data.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Tasks_AssignedToUserId",
+                name: "IX_Tasks_AssignedUserId",
                 table: "Tasks",
-                column: "AssignedToUserId");
+                column: "AssignedUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tasks_ProjectId",

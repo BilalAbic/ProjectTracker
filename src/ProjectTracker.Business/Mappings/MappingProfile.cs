@@ -31,7 +31,7 @@ namespace ProjectTracker.Business.Mappings
             CreateMap<Project, ProjectDto>()
                 .ForMember(dest => dest.CreatedByUserName, opt => opt.MapFrom(src => src.CreatedByUser.FullName))
                 .ForMember(dest => dest.TotalTasks, opt => opt.MapFrom(src => src.Tasks.Count))
-                .ForMember(dest => dest.CompletedTasks, opt => opt.MapFrom(src => src.Tasks.Count(t => t.Status == Core.Enums.ProjectStatus.Completed)))
+                .ForMember(dest => dest.CompletedTasks, opt => opt.MapFrom(src => src.Tasks.Count(t => t.Status == Core.Enums.TaskStatus.Completed)))
                 .ForMember(dest => dest.TeamMemberCount, opt => opt.MapFrom(src => src.TeamMembers.Count));
 
             CreateMap<ProjectDto, Project>()
@@ -44,13 +44,19 @@ namespace ProjectTracker.Business.Mappings
             // TASK MAPPINGS
             // ============================================
             CreateMap<Core.Entities.Task, TaskDto>()
-                .ForMember(dest => dest.ProjectName, opt => opt.MapFrom(src => src.Project.ProjectName))
-                .ForMember(dest => dest.AssignedToUserName, opt => opt.MapFrom(src => src.AssignedToUser != null ? src.AssignedToUser.FullName : null));
+                .ForMember(dest => dest.ProjectName, opt => opt.MapFrom(src => src.Project != null ? src.Project.ProjectName : null))
+                .ForMember(dest => dest.AssignedToUserName, opt => opt.MapFrom(src => src.AssignedToUser != null ? src.AssignedToUser.FullName : null))
+                .ForMember(dest => dest.Priority, opt => opt.MapFrom(src => src.Priority.ToString()))
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()));
 
             CreateMap<TaskDto, Core.Entities.Task>()
                 .ForMember(dest => dest.Project, opt => opt.Ignore())
                 .ForMember(dest => dest.AssignedToUser, opt => opt.Ignore())
-                .ForMember(dest => dest.Comments, opt => opt.Ignore());
+                .ForMember(dest => dest.Comments, opt => opt.Ignore())
+                .ForMember(dest => dest.Priority, opt => opt.MapFrom(src => 
+                    string.IsNullOrEmpty(src.Priority) ? Core.Enums.Priority.Medium : Enum.Parse<Core.Enums.Priority>(src.Priority)))
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => 
+                    string.IsNullOrEmpty(src.Status) ? Core.Enums.TaskStatus.Pending : Enum.Parse<Core.Enums.TaskStatus>(src.Status)));
         }
     }
 }

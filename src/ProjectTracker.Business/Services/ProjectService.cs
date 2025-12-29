@@ -171,7 +171,7 @@ namespace ProjectTracker.Business.Services
             var taskCount = tasks.Count();
             if (taskCount > 0)
             {
-                var completedCount = tasks.Count(t => t.Status == ProjectStatus.Completed);
+                var completedCount = tasks.Count(t => t.Status == Core.Enums.TaskStatus.Completed);
                 var taskCompletionRate = (decimal)completedCount / taskCount * 100;
 
                 if (taskCompletionRate < 50)
@@ -209,7 +209,7 @@ namespace ProjectTracker.Business.Services
             }
             else
             {
-                var completedCount = tasks.Count(t => t.Status == ProjectStatus.Completed);
+                var completedCount = tasks.Count(t => t.Status == Core.Enums.TaskStatus.Completed);
                 project.CompletionPercentage = (decimal)completedCount / taskCount * 100;
             }
 

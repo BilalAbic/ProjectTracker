@@ -12,8 +12,8 @@ using ProjectTracker.Data.Context;
 namespace ProjectTracker.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251227234846_AddPriorityToProject")]
-    partial class AddPriorityToProject
+    [Migration("20251229014848_AddSeedData")]
+    partial class AddSeedData
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -173,6 +173,50 @@ namespace ProjectTracker.Data.Migrations
                     b.HasIndex("CreatedByUserId");
 
                     b.ToTable("Projects", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            ProjectId = 1,
+                            Budget = 150000m,
+                            CompletionPercentage = 35m,
+                            CreatedAt = new DateTime(2025, 10, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedByUserId = 1,
+                            Description = "Building a modern e-commerce platform with microservices architecture",
+                            EndDate = new DateTime(2026, 4, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Priority = 3,
+                            ProjectName = "E-Commerce Platform",
+                            StartDate = new DateTime(2025, 10, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = "Active"
+                        },
+                        new
+                        {
+                            ProjectId = 2,
+                            Budget = 200000m,
+                            CompletionPercentage = 20m,
+                            CreatedAt = new DateTime(2025, 11, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedByUserId = 1,
+                            Description = "iOS and Android banking application with biometric authentication",
+                            EndDate = new DateTime(2026, 3, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Priority = 4,
+                            ProjectName = "Mobile Banking App",
+                            StartDate = new DateTime(2025, 11, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = "Active"
+                        },
+                        new
+                        {
+                            ProjectId = 3,
+                            Budget = 80000m,
+                            CompletionPercentage = 0m,
+                            CreatedAt = new DateTime(2025, 12, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedByUserId = 1,
+                            Description = "Customer relationship management system for internal use",
+                            EndDate = new DateTime(2026, 6, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Priority = 2,
+                            ProjectName = "Internal CRM System",
+                            StartDate = new DateTime(2026, 1, 13, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = "Planned"
+                        });
                 });
 
             modelBuilder.Entity("ProjectTracker.Core.Entities.ProjectRisk", b =>
@@ -270,6 +314,26 @@ namespace ProjectTracker.Data.Migrations
                     b.HasKey("RoleId");
 
                     b.ToTable("Roles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            RoleId = 1,
+                            Description = "System Administrator",
+                            RoleName = "Admin"
+                        },
+                        new
+                        {
+                            RoleId = 2,
+                            Description = "Project Manager",
+                            RoleName = "ProjectManager"
+                        },
+                        new
+                        {
+                            RoleId = 3,
+                            Description = "Developer",
+                            RoleName = "Developer"
+                        });
                 });
 
             modelBuilder.Entity("ProjectTracker.Core.Entities.Task", b =>
@@ -284,7 +348,8 @@ namespace ProjectTracker.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<int?>("AssignedToUserId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("AssignedUserId");
 
                     b.Property<DateTime?>("CompletedDate")
                         .HasColumnType("datetime2");
@@ -309,11 +374,13 @@ namespace ProjectTracker.Data.Migrations
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
 
+                    b.Property<int?>("ParentTaskId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Priority")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
+                        .HasColumnType("nvarchar(max)")
                         .HasDefaultValue("Medium");
 
                     b.Property<int>("ProjectId")
@@ -325,9 +392,8 @@ namespace ProjectTracker.Data.Migrations
                     b.Property<string>("Status")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
-                        .HasDefaultValue("Planned");
+                        .HasColumnType("nvarchar(max)")
+                        .HasDefaultValue("Pending");
 
                     b.Property<string>("TaskName")
                         .IsRequired()
@@ -341,6 +407,100 @@ namespace ProjectTracker.Data.Migrations
                     b.HasIndex("ProjectId");
 
                     b.ToTable("Tasks", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            TaskId = 1,
+                            CompletedDate = new DateTime(2025, 12, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedAt = new DateTime(2025, 10, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Create wireframes and mockups for product listing pages",
+                            DueDate = new DateTime(2025, 11, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsCriticalPath = false,
+                            Priority = "High",
+                            ProjectId = 1,
+                            StartDate = new DateTime(2025, 10, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = "Completed",
+                            TaskName = "Design Product Catalog UI"
+                        },
+                        new
+                        {
+                            TaskId = 2,
+                            CreatedAt = new DateTime(2025, 12, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Build shopping cart functionality with session management",
+                            DueDate = new DateTime(2026, 1, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsCriticalPath = true,
+                            Priority = "Critical",
+                            ProjectId = 1,
+                            StartDate = new DateTime(2025, 12, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = "InProgress",
+                            TaskName = "Implement Shopping Cart"
+                        },
+                        new
+                        {
+                            TaskId = 3,
+                            CreatedAt = new DateTime(2025, 12, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Integrate Stripe payment gateway for checkout",
+                            DueDate = new DateTime(2026, 1, 13, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsCriticalPath = false,
+                            Priority = "High",
+                            ProjectId = 1,
+                            StartDate = new DateTime(2026, 1, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = "Pending",
+                            TaskName = "Setup Payment Gateway"
+                        },
+                        new
+                        {
+                            TaskId = 4,
+                            CreatedAt = new DateTime(2025, 12, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Load testing for 10000 concurrent users",
+                            DueDate = new DateTime(2026, 1, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsCriticalPath = false,
+                            Priority = "Medium",
+                            ProjectId = 1,
+                            StartDate = new DateTime(2025, 12, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = "Blocked",
+                            TaskName = "Performance Testing"
+                        },
+                        new
+                        {
+                            TaskId = 5,
+                            CreatedAt = new DateTime(2025, 12, 24, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Implement fingerprint and face recognition",
+                            DueDate = new DateTime(2026, 1, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsCriticalPath = true,
+                            Priority = "Critical",
+                            ProjectId = 2,
+                            StartDate = new DateTime(2025, 12, 24, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = "InProgress",
+                            TaskName = "Biometric Authentication"
+                        },
+                        new
+                        {
+                            TaskId = 6,
+                            CreatedAt = new DateTime(2025, 12, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Design and implement transaction history screen",
+                            DueDate = new DateTime(2026, 1, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsCriticalPath = false,
+                            Priority = "High",
+                            ProjectId = 2,
+                            StartDate = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = "Pending",
+                            TaskName = "Transaction History UI"
+                        },
+                        new
+                        {
+                            TaskId = 7,
+                            CreatedAt = new DateTime(2025, 12, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Meet with stakeholders to gather CRM requirements",
+                            DueDate = new DateTime(2026, 1, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsCriticalPath = false,
+                            Priority = "High",
+                            ProjectId = 3,
+                            StartDate = new DateTime(2026, 1, 13, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = "Pending",
+                            TaskName = "Requirements Gathering"
+                        });
                 });
 
             modelBuilder.Entity("ProjectTracker.Core.Entities.TaskComment", b =>
@@ -421,6 +581,19 @@ namespace ProjectTracker.Data.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("Users", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = 1,
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "admin@projecttracker.com",
+                            FullName = "Admin User",
+                            IsActive = true,
+                            PasswordHash = "AQAAAAEAACcQAAAAEJ5K8X8qF5K8X8qF5K8X8qF5K8X8qF5K8X8qF5K8X8qF5K8X8qF5K8X8qF5K8X8qF5==",
+                            RoleId = 1,
+                            Username = "admin"
+                        });
                 });
 
             modelBuilder.Entity("ProjectTracker.Core.Entities.Notification", b =>

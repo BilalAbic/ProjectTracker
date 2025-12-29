@@ -12,8 +12,8 @@ using ProjectTracker.Data.Context;
 namespace ProjectTracker.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251218075714_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20251229134625_FixBCryptHashAndAssignees")]
+    partial class FixBCryptHashAndAssignees
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,7 @@ namespace ProjectTracker.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("ProjectTracker.Business.Entities.AuditLog", b =>
+            modelBuilder.Entity("ProjectTracker.Core.Entities.AuditLog", b =>
                 {
                     b.Property<int>("LogId")
                         .ValueGeneratedOnAdd()
@@ -65,7 +65,7 @@ namespace ProjectTracker.Data.Migrations
                     b.ToTable("AuditLogs", (string)null);
                 });
 
-            modelBuilder.Entity("ProjectTracker.Business.Entities.Notification", b =>
+            modelBuilder.Entity("ProjectTracker.Core.Entities.Notification", b =>
                 {
                     b.Property<int>("NotificationId")
                         .ValueGeneratedOnAdd()
@@ -110,7 +110,7 @@ namespace ProjectTracker.Data.Migrations
                     b.ToTable("Notifications", (string)null);
                 });
 
-            modelBuilder.Entity("ProjectTracker.Business.Entities.Project", b =>
+            modelBuilder.Entity("ProjectTracker.Core.Entities.Project", b =>
                 {
                     b.Property<int>("ProjectId")
                         .ValueGeneratedOnAdd()
@@ -143,6 +143,9 @@ namespace ProjectTracker.Data.Migrations
                     b.Property<DateTime?>("EndDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("Priority")
+                        .HasColumnType("int");
+
                     b.Property<string>("ProjectName")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -170,9 +173,53 @@ namespace ProjectTracker.Data.Migrations
                     b.HasIndex("CreatedByUserId");
 
                     b.ToTable("Projects", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            ProjectId = 1,
+                            Budget = 150000m,
+                            CompletionPercentage = 35m,
+                            CreatedAt = new DateTime(2025, 10, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedByUserId = 1,
+                            Description = "Building a modern e-commerce platform with microservices architecture",
+                            EndDate = new DateTime(2026, 4, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Priority = 3,
+                            ProjectName = "E-Commerce Platform",
+                            StartDate = new DateTime(2025, 10, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = "Active"
+                        },
+                        new
+                        {
+                            ProjectId = 2,
+                            Budget = 200000m,
+                            CompletionPercentage = 20m,
+                            CreatedAt = new DateTime(2025, 11, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedByUserId = 1,
+                            Description = "iOS and Android banking application with biometric authentication",
+                            EndDate = new DateTime(2026, 3, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Priority = 4,
+                            ProjectName = "Mobile Banking App",
+                            StartDate = new DateTime(2025, 11, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = "Active"
+                        },
+                        new
+                        {
+                            ProjectId = 3,
+                            Budget = 80000m,
+                            CompletionPercentage = 0m,
+                            CreatedAt = new DateTime(2025, 12, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedByUserId = 1,
+                            Description = "Customer relationship management system for internal use",
+                            EndDate = new DateTime(2026, 6, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Priority = 2,
+                            ProjectName = "Internal CRM System",
+                            StartDate = new DateTime(2026, 1, 13, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = "Planned"
+                        });
                 });
 
-            modelBuilder.Entity("ProjectTracker.Business.Entities.ProjectRisk", b =>
+            modelBuilder.Entity("ProjectTracker.Core.Entities.ProjectRisk", b =>
                 {
                     b.Property<int>("RiskId")
                         .ValueGeneratedOnAdd()
@@ -214,7 +261,7 @@ namespace ProjectTracker.Data.Migrations
                     b.ToTable("ProjectRisks", (string)null);
                 });
 
-            modelBuilder.Entity("ProjectTracker.Business.Entities.ProjectTeamMember", b =>
+            modelBuilder.Entity("ProjectTracker.Core.Entities.ProjectTeamMember", b =>
                 {
                     b.Property<int>("TeamMemberId")
                         .ValueGeneratedOnAdd()
@@ -247,7 +294,7 @@ namespace ProjectTracker.Data.Migrations
                     b.ToTable("ProjectTeamMembers", (string)null);
                 });
 
-            modelBuilder.Entity("ProjectTracker.Business.Entities.Role", b =>
+            modelBuilder.Entity("ProjectTracker.Core.Entities.Role", b =>
                 {
                     b.Property<int>("RoleId")
                         .ValueGeneratedOnAdd()
@@ -267,9 +314,29 @@ namespace ProjectTracker.Data.Migrations
                     b.HasKey("RoleId");
 
                     b.ToTable("Roles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            RoleId = 1,
+                            Description = "System Administrator",
+                            RoleName = "Admin"
+                        },
+                        new
+                        {
+                            RoleId = 2,
+                            Description = "Project Manager",
+                            RoleName = "ProjectManager"
+                        },
+                        new
+                        {
+                            RoleId = 3,
+                            Description = "Developer",
+                            RoleName = "Developer"
+                        });
                 });
 
-            modelBuilder.Entity("ProjectTracker.Business.Entities.Task", b =>
+            modelBuilder.Entity("ProjectTracker.Core.Entities.Task", b =>
                 {
                     b.Property<int>("TaskId")
                         .ValueGeneratedOnAdd()
@@ -281,7 +348,8 @@ namespace ProjectTracker.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<int?>("AssignedToUserId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("AssignedUserId");
 
                     b.Property<DateTime?>("CompletedDate")
                         .HasColumnType("datetime2");
@@ -306,11 +374,13 @@ namespace ProjectTracker.Data.Migrations
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
 
+                    b.Property<int?>("ParentTaskId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Priority")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
+                        .HasColumnType("nvarchar(max)")
                         .HasDefaultValue("Medium");
 
                     b.Property<int>("ProjectId")
@@ -322,8 +392,7 @@ namespace ProjectTracker.Data.Migrations
                     b.Property<string>("Status")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
+                        .HasColumnType("nvarchar(max)")
                         .HasDefaultValue("Pending");
 
                     b.Property<string>("TaskName")
@@ -338,9 +407,105 @@ namespace ProjectTracker.Data.Migrations
                     b.HasIndex("ProjectId");
 
                     b.ToTable("Tasks", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            TaskId = 1,
+                            AssignedToUserId = 1,
+                            CompletedDate = new DateTime(2025, 12, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedAt = new DateTime(2025, 10, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Create wireframes and mockups for product listing pages",
+                            DueDate = new DateTime(2025, 11, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsCriticalPath = false,
+                            Priority = "High",
+                            ProjectId = 1,
+                            StartDate = new DateTime(2025, 10, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = "Completed",
+                            TaskName = "Design Product Catalog UI"
+                        },
+                        new
+                        {
+                            TaskId = 2,
+                            AssignedToUserId = 1,
+                            CreatedAt = new DateTime(2025, 12, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Build shopping cart functionality with session management",
+                            DueDate = new DateTime(2026, 1, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsCriticalPath = true,
+                            Priority = "Critical",
+                            ProjectId = 1,
+                            StartDate = new DateTime(2025, 12, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = "InProgress",
+                            TaskName = "Implement Shopping Cart"
+                        },
+                        new
+                        {
+                            TaskId = 3,
+                            CreatedAt = new DateTime(2025, 12, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Integrate Stripe payment gateway for checkout",
+                            DueDate = new DateTime(2026, 1, 13, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsCriticalPath = false,
+                            Priority = "High",
+                            ProjectId = 1,
+                            StartDate = new DateTime(2026, 1, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = "Pending",
+                            TaskName = "Setup Payment Gateway"
+                        },
+                        new
+                        {
+                            TaskId = 4,
+                            CreatedAt = new DateTime(2025, 12, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Load testing for 10000 concurrent users",
+                            DueDate = new DateTime(2026, 1, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsCriticalPath = false,
+                            Priority = "Medium",
+                            ProjectId = 1,
+                            StartDate = new DateTime(2025, 12, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = "Blocked",
+                            TaskName = "Performance Testing"
+                        },
+                        new
+                        {
+                            TaskId = 5,
+                            CreatedAt = new DateTime(2025, 12, 24, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Implement fingerprint and face recognition",
+                            DueDate = new DateTime(2026, 1, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsCriticalPath = true,
+                            Priority = "Critical",
+                            ProjectId = 2,
+                            StartDate = new DateTime(2025, 12, 24, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = "InProgress",
+                            TaskName = "Biometric Authentication"
+                        },
+                        new
+                        {
+                            TaskId = 6,
+                            CreatedAt = new DateTime(2025, 12, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Design and implement transaction history screen",
+                            DueDate = new DateTime(2026, 1, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsCriticalPath = false,
+                            Priority = "High",
+                            ProjectId = 2,
+                            StartDate = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = "Pending",
+                            TaskName = "Transaction History UI"
+                        },
+                        new
+                        {
+                            TaskId = 7,
+                            CreatedAt = new DateTime(2025, 12, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Meet with stakeholders to gather CRM requirements",
+                            DueDate = new DateTime(2026, 1, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsCriticalPath = false,
+                            Priority = "High",
+                            ProjectId = 3,
+                            StartDate = new DateTime(2026, 1, 13, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = "Pending",
+                            TaskName = "Requirements Gathering"
+                        });
                 });
 
-            modelBuilder.Entity("ProjectTracker.Business.Entities.TaskComment", b =>
+            modelBuilder.Entity("ProjectTracker.Core.Entities.TaskComment", b =>
                 {
                     b.Property<int>("CommentId")
                         .ValueGeneratedOnAdd()
@@ -372,7 +537,7 @@ namespace ProjectTracker.Data.Migrations
                     b.ToTable("TaskComments", (string)null);
                 });
 
-            modelBuilder.Entity("ProjectTracker.Business.Entities.User", b =>
+            modelBuilder.Entity("ProjectTracker.Core.Entities.User", b =>
                 {
                     b.Property<int>("UserId")
                         .ValueGeneratedOnAdd()
@@ -418,11 +583,24 @@ namespace ProjectTracker.Data.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("Users", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = 1,
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "admin@projecttracker.com",
+                            FullName = "Admin User",
+                            IsActive = true,
+                            PasswordHash = "$2a$11$rBV2/.QxbrR5mCRudV3oD.6KhT/dKLZXQbEJU3BUW8qNZnVlCJWJC",
+                            RoleId = 1,
+                            Username = "admin"
+                        });
                 });
 
-            modelBuilder.Entity("ProjectTracker.Business.Entities.Notification", b =>
+            modelBuilder.Entity("ProjectTracker.Core.Entities.Notification", b =>
                 {
-                    b.HasOne("ProjectTracker.Business.Entities.User", "User")
+                    b.HasOne("ProjectTracker.Core.Entities.User", "User")
                         .WithMany("Notifications")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -431,9 +609,9 @@ namespace ProjectTracker.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("ProjectTracker.Business.Entities.Project", b =>
+            modelBuilder.Entity("ProjectTracker.Core.Entities.Project", b =>
                 {
-                    b.HasOne("ProjectTracker.Business.Entities.User", "CreatedByUser")
+                    b.HasOne("ProjectTracker.Core.Entities.User", "CreatedByUser")
                         .WithMany("CreatedProjects")
                         .HasForeignKey("CreatedByUserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -442,9 +620,9 @@ namespace ProjectTracker.Data.Migrations
                     b.Navigation("CreatedByUser");
                 });
 
-            modelBuilder.Entity("ProjectTracker.Business.Entities.ProjectRisk", b =>
+            modelBuilder.Entity("ProjectTracker.Core.Entities.ProjectRisk", b =>
                 {
-                    b.HasOne("ProjectTracker.Business.Entities.Project", "Project")
+                    b.HasOne("ProjectTracker.Core.Entities.Project", "Project")
                         .WithMany("Risks")
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -453,15 +631,15 @@ namespace ProjectTracker.Data.Migrations
                     b.Navigation("Project");
                 });
 
-            modelBuilder.Entity("ProjectTracker.Business.Entities.ProjectTeamMember", b =>
+            modelBuilder.Entity("ProjectTracker.Core.Entities.ProjectTeamMember", b =>
                 {
-                    b.HasOne("ProjectTracker.Business.Entities.Project", "Project")
+                    b.HasOne("ProjectTracker.Core.Entities.Project", "Project")
                         .WithMany("TeamMembers")
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ProjectTracker.Business.Entities.User", "User")
+                    b.HasOne("ProjectTracker.Core.Entities.User", "User")
                         .WithMany("TeamMemberships")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -472,14 +650,14 @@ namespace ProjectTracker.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("ProjectTracker.Business.Entities.Task", b =>
+            modelBuilder.Entity("ProjectTracker.Core.Entities.Task", b =>
                 {
-                    b.HasOne("ProjectTracker.Business.Entities.User", "AssignedToUser")
+                    b.HasOne("ProjectTracker.Core.Entities.User", "AssignedToUser")
                         .WithMany("AssignedTasks")
                         .HasForeignKey("AssignedToUserId")
                         .OnDelete(DeleteBehavior.SetNull);
 
-                    b.HasOne("ProjectTracker.Business.Entities.Project", "Project")
+                    b.HasOne("ProjectTracker.Core.Entities.Project", "Project")
                         .WithMany("Tasks")
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -490,15 +668,15 @@ namespace ProjectTracker.Data.Migrations
                     b.Navigation("Project");
                 });
 
-            modelBuilder.Entity("ProjectTracker.Business.Entities.TaskComment", b =>
+            modelBuilder.Entity("ProjectTracker.Core.Entities.TaskComment", b =>
                 {
-                    b.HasOne("ProjectTracker.Business.Entities.Task", "Task")
+                    b.HasOne("ProjectTracker.Core.Entities.Task", "Task")
                         .WithMany("Comments")
                         .HasForeignKey("TaskId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ProjectTracker.Business.Entities.User", "User")
+                    b.HasOne("ProjectTracker.Core.Entities.User", "User")
                         .WithMany("TaskComments")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -509,9 +687,9 @@ namespace ProjectTracker.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("ProjectTracker.Business.Entities.User", b =>
+            modelBuilder.Entity("ProjectTracker.Core.Entities.User", b =>
                 {
-                    b.HasOne("ProjectTracker.Business.Entities.Role", "Role")
+                    b.HasOne("ProjectTracker.Core.Entities.Role", "Role")
                         .WithMany("Users")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -520,7 +698,7 @@ namespace ProjectTracker.Data.Migrations
                     b.Navigation("Role");
                 });
 
-            modelBuilder.Entity("ProjectTracker.Business.Entities.Project", b =>
+            modelBuilder.Entity("ProjectTracker.Core.Entities.Project", b =>
                 {
                     b.Navigation("Risks");
 
@@ -529,17 +707,17 @@ namespace ProjectTracker.Data.Migrations
                     b.Navigation("TeamMembers");
                 });
 
-            modelBuilder.Entity("ProjectTracker.Business.Entities.Role", b =>
+            modelBuilder.Entity("ProjectTracker.Core.Entities.Role", b =>
                 {
                     b.Navigation("Users");
                 });
 
-            modelBuilder.Entity("ProjectTracker.Business.Entities.Task", b =>
+            modelBuilder.Entity("ProjectTracker.Core.Entities.Task", b =>
                 {
                     b.Navigation("Comments");
                 });
 
-            modelBuilder.Entity("ProjectTracker.Business.Entities.User", b =>
+            modelBuilder.Entity("ProjectTracker.Core.Entities.User", b =>
                 {
                     b.Navigation("AssignedTasks");
 

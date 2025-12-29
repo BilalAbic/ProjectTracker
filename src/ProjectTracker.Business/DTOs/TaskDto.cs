@@ -23,5 +23,13 @@
         // Navigation
         public string? ProjectName { get; set; }
         public string? AssignedToUserName { get; set; }
+        
+        // Calculated
+        public int CompletionPercentage => Status switch
+        {
+            "Completed" => 100,
+            "InProgress" => 50,
+            _ => 0
+        };
     }
 }
