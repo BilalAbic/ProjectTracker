@@ -185,10 +185,11 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
         /// <summary>
         /// New Project button click
         /// </summary>
-        private void btnNewProject_Click_1(object sender, EventArgs e)
+        private void btnNewProject_Click(object sender, EventArgs e)
         {
-            XtraMessageBox.Show("New Project - Coming soon!", "Info",
-                MessageBoxButtons.OK, MessageBoxIcon.Information);
+            // Navigate to Projects page
+            var dashboard = this.FindForm() as FrmDashboard;
+            dashboard?.LoadContent(Program.ServiceProvider.GetRequiredService<ProjectsContent>());
         }
 
         /// <summary>
@@ -196,8 +197,9 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
         /// </summary>
         private void btnViewAllProjects_Click(object sender, EventArgs e)
         {
-            XtraMessageBox.Show("View All Projects - Coming soon!", "Info",
-                MessageBoxButtons.OK, MessageBoxIcon.Information);
+            // Navigate to Projects page
+            var dashboard = this.FindForm() as FrmDashboard;
+            dashboard?.LoadContent(Program.ServiceProvider.GetRequiredService<ProjectsContent>());
         }
 
         /// <summary>

@@ -110,9 +110,9 @@ ProjectTracker/
 │       │       └── Content/
 │       │           ├── DashboardContent.cs
 │       │           ├── ProjectsContent.cs
+│       │           ├── ProjectDetailControl.cs
 │       │           ├── TasksContent.cs
-│       │           ├── TeamContent.cs
-│       │           └── ...
+│       │           └── TaskDetailControl.cs
 │       └── Program.cs                    [DI Container]
 │
 └── docs/
@@ -162,21 +162,16 @@ Sonuç: 0-100 arası risk puanı
 
 ## 🚀 Geliştirme Roadmap
 
-### ✅ Tamamlanan Phase'ler (30%)
+### ✅ Tamamlanan Phase'ler (40%)
 
 | Phase | Durum | Süre | Detay |
 |-------|-------|------|-------|
 | **Phase 1:** Login & Auth | ✅ Tamamlandı | 2h | [FrmLogin, Session yönetimi] |
 | **Phase 2:** Dashboard Layout | ✅ Tamamlandı | 4h | [FrmDashboard, Sidebar, Top bar] |
 | **Phase 3:** Projects Content | ✅ Tamamlandı | 5h | [ProjectsContent, CRUD, Filters] |
+| **Phase 4:** Tasks Content | ✅ Tamamlandı | 6h | [TasksContent, Grid & Kanban, Drag-drop] |
 
-### 🟡 Aktif Phase
-
-| Phase | Durum | Süre | Detay |
-|-------|-------|------|-------|
-| **Phase 4:** Tasks Content | 🟡 Başlıyor | 6h | [Grid & Kanban view, Drag-drop] |
-
-### ⚪ Planlanan Phase'ler (70%)
+### ⚪ Planlanan Phase'ler (60%)
 
 | Phase | Durum | Tahmini Süre | Kapsam |
 |-------|-------|--------------|--------|
@@ -214,8 +209,8 @@ Sonuç: 0-100 arası risk puanı
   - Navigation properties
 
 ### Libraries
-- **AutoMapper 13.x** - DTO mapping
-- **FluentValidation 11.x** - Validation rules
+- **AutoMapper 12.0.1** - DTO mapping
+- **FluentValidation 12.1.1** - Validation rules
 - **Microsoft.Extensions.DependencyInjection** - IoC Container
 
 ---
@@ -247,7 +242,7 @@ Sonuç: 0-100 arası risk puanı
 ### Temel Tablolar (9 tablo)
 
 1. **Users** - Kullanıcılar
-2. **Roles** - Roller (Admin, Manager, Developer, Viewer)
+2. **Roles** - Roller (Admin, ProjectManager, Developer)
 3. **Projects** - Projeler
 4. **Tasks** - Görevler (parent-child destekli)
 5. **Notifications** - Bildirimler
@@ -346,11 +341,12 @@ Sonuç: 0-100 arası risk puanı
 
 ## 📊 Özellikler Detayları
 
-### Phase 4: Tasks Content (Aktif)
-- **Grid View:** Filtrelenebilir görev listesi
-- **Kanban Board:** Drag & Drop destekli (To Do, In Progress, Done)
-- **Sub-tasks:** Parent-child görev ilişkileri
-- **TaskDetailControl:** Görev ekleme/düzenleme formu
+### Phase 4: Tasks Content (Tamamlandı ✅)
+- **Grid View:** Filtrelenebilir görev listesi ✅
+- **Kanban Board:** Drag & Drop destekli (Pending, In Progress, Completed, Blocked) ✅
+- **View Toggle:** Grid ve Kanban görünümleri arası geçiş ✅
+- **TaskDetailControl:** Görev ekleme/düzenleme formu ✅
+- **Filtering:** Proje ve durum bazlı filtreleme ✅
 
 ### Phase 5: Team Management
 - **Kullanıcı CRUD:** Ekip üyesi ekleme, düzenleme, silme
@@ -387,9 +383,9 @@ Sonuç: 0-100 arası risk puanı
 **Fonksiyonel:**
 - [x] Kullanıcı giriş/çıkış
 - [x] Proje CRUD işlemleri
-- [ ] Görev CRUD işlemleri
+- [x] Görev CRUD işlemleri
 - [ ] Yetki kontrolleri
-- [ ] Dashboard verileri
+- [x] Dashboard verileri
 - [ ] Gantt Chart görüntüleme
 - [ ] Bildirimler
 
@@ -398,7 +394,7 @@ Sonuç: 0-100 arası risk puanı
 - [x] Grid'ler veri gösteriyor
 - [x] Butonlar çalışıyor
 - [x] Dark theme tutarlı
-- [ ] Drag & Drop çalışıyor
+- [x] Drag & Drop çalışıyor (Kanban Board)
 
 ---
 
@@ -406,10 +402,11 @@ Sonuç: 0-100 arası risk puanı
 
 ### Proje Dökümanları
 
-- **[task.md](docs/task.md)** - Detaylı task checklist
-- **[PROJECT_PHASES_OVERVIEW.md](docs/PROJECT_PHASES_OVERVIEW.md)** - Tüm phase'lerin özeti
-- **[UI_DASHBOARD_PHASE4.md](docs/UI_DASHBOARD_PHASE4.md)** - Phase 4 detayları
-- **CODING_STANDARDS.md** - Kod standartları (silinmiş, restore edilecek)
+- **[KANBAN_VIEW_README.md](file:///d:/ProjectTracker/KANBAN_VIEW_README.md)** - Kanban Board implementasyon detayları
+- **[UI_DASHBOARD_PHASE3.md](file:///d:/ProjectTracker/UI_DASHBOARD_PHASE3.md)** - Phase 3 detayları
+- **[UI_DASHBOARD_PHASE4.md](file:///d:/ProjectTracker/UI_DASHBOARD_PHASE4.md)** - Phase 4 detayları
+- **[CODING_STANDARDS.md](file:///d:/ProjectTracker/CODING_STANDARDS.md)** - Kod standartları ve convention'lar
+- **[TEKNOLOJI_KARARLARI.md](file:///d:/ProjectTracker/TEKNOLOJI_KARARLARI.md)** - Teknoloji stack ve kararlar
 
 ### UML Diyagramları (Phase 10)
 
@@ -496,8 +493,8 @@ Bu proje eğitim amaçlı geliştirilmiştir.
 
 ---
 
-**📌 Güncel Durum:** Phase 4 (Tasks Content) başlıyor - Grid & Kanban view  
-**📈 İlerleme:** 30% (3/10 phases tamamlandı)  
-**⏱️ Kalan Süre:** ~35-40 saat
+**📌 Güncel Durum:** Phase 4 (Tasks Content) tamamlandı - Phase 5'e hazır 
+**📈 İlerleme:** 40% (4/10 phases tamamlandı)  
+**⏱️ Kalan Süre:** ~30-35 saat
 
 🚀 **Happy Coding!**

@@ -57,7 +57,7 @@ namespace ProjectTracker.UI
             var connectionString = configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(connectionString)
-                .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking),
+                    .UseLazyLoadingProxies(), // Enable lazy loading
                 ServiceLifetime.Transient);
 
             // ============================================
@@ -80,6 +80,7 @@ namespace ProjectTracker.UI
             // ============================================
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IProjectService, ProjectService>();
+            services.AddTransient<ITaskService, TaskService>();
 
             // ============================================
             // FORMS
@@ -88,6 +89,8 @@ namespace ProjectTracker.UI
             services.AddTransient<Forms.Dashboard.FrmDashboard>();
             services.AddTransient<Forms.Dashboard.Content.DashboardContent>();
             services.AddTransient<Forms.Dashboard.Content.ProjectsContent>();
+            services.AddTransient<Forms.Dashboard.Content.TasksContent>();
+            services.AddTransient<Forms.Dashboard.Content.TaskDetailControl>();
         }
     }
 }

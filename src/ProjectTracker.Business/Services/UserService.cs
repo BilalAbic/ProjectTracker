@@ -45,10 +45,32 @@ namespace ProjectTracker.Business.Services
             if (user == null)
                 return null;
 
-            // Verify password (simple comparison for MVP - in production use BCrypt/PBKDF2)
-            // TODO: Implement proper password hashing
-            if (user.PasswordHash != loginDto.Password) // TEMPORARY - should be hashed
+            // TEMPORARY: Use plain text for testing (replace hash with "admin123" in DB)
+            bool isValidPassword = false;
+            
+            // Try BCrypt first
+            try
+            {
+                if (user.PasswordHash.StartsWith("$2a$") || user.PasswordHash.StartsWith("$2b$"))
+                {
+                    isValidPassword = BCrypt.Net.BCrypt.Verify(loginDto.Password, user.PasswordHash);
+                }
+                else
+                {
+                    // Plain text comparison (TEMPORARY - NOT SECURE!)
+                    isValidPassword = user.PasswordHash == loginDto.Password;
+                }
+            }
+            catch (Exception ex)
+            {
+                // Fallback to plain text
+                isValidPassword = user.PasswordHash == loginDto.Password;
+            }
+            
+            if (!isValidPassword)
+            {
                 return null;
+            }
 
             // Check if user is active
             if (!user.IsActive)
@@ -109,9 +131,8 @@ namespace ProjectTracker.Business.Services
             // Map DTO to Entity
             var user = _mapper.Map<User>(userDto);
 
-            // Hash password (simple for MVP - use BCrypt in production)
-            // TODO: Implement proper password hashing
-            user.PasswordHash = password; // TEMPORARY
+            // Hash password using BCrypt
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(password);
 
             user.CreatedAt = DateTime.Now;
             user.IsActive = true;

@@ -1,4 +1,5 @@
 ﻿using ProjectTracker.Core.Enums;
+using TaskStatus = ProjectTracker.Core.Enums.TaskStatus;
 
 namespace ProjectTracker.Core.Entities
 {
@@ -23,6 +24,11 @@ namespace ProjectTracker.Core.Entities
         public int? AssignedToUserId { get; set; }
 
         /// <summary>
+        /// Foreign key - Parent task for subtasks (nullable)
+        /// </summary>
+        public int? ParentTaskId { get; set; }
+
+        /// <summary>
         /// Name/title of the task
         /// </summary>
         public string TaskName { get; set; } = string.Empty;
@@ -35,12 +41,12 @@ namespace ProjectTracker.Core.Entities
         /// <summary>
         /// Priority level (Low, Medium, High, Critical)
         /// </summary>
-        public string Priority { get; set; } = "Medium";
+        public Priority Priority { get; set; } = Priority.Medium;
 
         /// <summary>
-        /// Current status (Pending, InProgress, Completed, Cancelled)
+        /// Current status (ToDo, InProgress, Done, Blocked)
         /// </summary>
-        public ProjectStatus Status { get; set; } = ProjectStatus.Planned;
+        public TaskStatus Status { get; set; } = TaskStatus.Pending;
 
         /// <summary>
         /// Estimated duration in hours

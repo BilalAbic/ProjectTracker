@@ -146,10 +146,13 @@ namespace ProjectTracker.Data.Context
                 entity.HasKey(e => e.TaskId);
                 entity.Property(e => e.TaskName).IsRequired().HasMaxLength(200);
                 entity.Property(e => e.Description).HasMaxLength(1000);
-                entity.Property(e => e.Priority).IsRequired().HasMaxLength(20).HasDefaultValue("Medium");
-                entity.Property(e => e.Status).IsRequired().HasMaxLength(50).HasConversion<string>().HasDefaultValue(ProjectStatus.Planned);
+                entity.Property(e => e.Priority).IsRequired().HasConversion<string>().HasDefaultValue(Priority.Medium);
+                entity.Property(e => e.Status).IsRequired().HasConversion<string>().HasDefaultValue(Core.Enums.TaskStatus.Pending);
                 entity.Property(e => e.IsCriticalPath).IsRequired().HasDefaultValue(false);
                 entity.Property(e => e.CreatedAt).IsRequired().HasDefaultValueSql("GETDATE()");
+                
+                // Map AssignedToUserId property to AssignedUserId column (migration renamed it)
+                entity.Property(e => e.AssignedToUserId).HasColumnName("AssignedUserId");
 
                 // Relationship: Task -> Project (Many-to-One)
                 entity.HasOne(t => t.Project)
@@ -260,6 +263,182 @@ namespace ProjectTracker.Data.Context
                 entity.Property(e => e.Action).IsRequired().HasMaxLength(20);
                 entity.Property(e => e.PerformedAt).IsRequired().HasDefaultValueSql("GETDATE()");
             });
+
+            // ============================================
+            // SEED DATA
+            // ============================================
+            
+            // Seed Roles
+            modelBuilder.Entity<Role>().HasData(
+                new Role { RoleId = 1, RoleName = "Admin", Description = "System Administrator" },
+                new Role { RoleId = 2, RoleName = "ProjectManager", Description = "Project Manager" },
+                new Role { RoleId = 3, RoleName = "Developer", Description = "Developer" }
+            );
+
+            // Seed Users (Password: admin123 hashed with BCrypt)
+            // Valid BCrypt hash for "admin123" - DO NOT CHANGE
+            modelBuilder.Entity<User>().HasData(
+                new User 
+                { 
+                    UserId = 1, 
+                    Username = "admin", 
+                    PasswordHash = "$2a$11$rBV2/.QxbrR5mCRudV3oD.6KhT/dKLZXQbEJU3BUW8qNZnVlCJWJC", // admin123
+                    FullName = "Admin User", 
+                    Email = "admin@projecttracker.com", 
+                    RoleId = 1, 
+                    IsActive = true,
+                    CreatedAt = new DateTime(2025, 1, 1)
+                }
+            );
+
+            // Seed Projects
+            modelBuilder.Entity<Project>().HasData(
+                new Project 
+                { 
+                    ProjectId = 1, 
+                    ProjectName = "E-Commerce Platform", 
+                    Description = "Building a modern e-commerce platform with microservices architecture",
+                    Status = "Active",
+                    Priority = Priority.High,
+                    StartDate = new DateTime(2025, 10, 29),
+                    EndDate = new DateTime(2026, 4, 29),
+                    Budget = 150000,
+                    CompletionPercentage = 35,
+                    CreatedByUserId = 1,
+                    CreatedAt = new DateTime(2025, 10, 29)
+                },
+                new Project 
+                { 
+                    ProjectId = 2, 
+                    ProjectName = "Mobile Banking App", 
+                    Description = "iOS and Android banking application with biometric authentication",
+                    Status = "Active",
+                    Priority = Priority.Critical,
+                    StartDate = new DateTime(2025, 11 , 29),
+                    EndDate = new DateTime(2026, 3, 29),
+                    Budget = 200000,
+                    CompletionPercentage = 20,
+                    CreatedByUserId = 1,
+                    CreatedAt = new DateTime(2025, 11, 29)
+                },
+                new Project 
+                { 
+                    ProjectId = 3, 
+                    ProjectName = "Internal CRM System", 
+                    Description = "Customer relationship management system for internal use",
+                    Status = "Planned",
+                    Priority = Priority.Medium,
+                    StartDate = new DateTime(2026, 1, 13),
+                    EndDate = new DateTime(2026, 6, 29),
+                    Budget = 80000,
+                    CompletionPercentage = 0,
+                    CreatedByUserId = 1,
+                    CreatedAt = new DateTime(2025, 12, 29)
+                }
+            );
+
+            // Seed Tasks
+            modelBuilder.Entity<Core.Entities.Task>().HasData(
+                // E-Commerce Platform Tasks
+                new Core.Entities.Task 
+                { 
+                    TaskId = 1, 
+                    ProjectId = 1,
+                    AssignedToUserId = 1, // Assigned to admin
+                    TaskName = "Design Product Catalog UI", 
+                    Description = "Create wireframes and mockups for product listing pages",
+                    Priority = Priority.High,
+                    Status = Core.Enums.TaskStatus.Completed,
+                    StartDate = new DateTime(2025, 10, 29),
+                    DueDate = new DateTime(2025, 11, 29),
+                    CompletedDate = new DateTime(2025, 12, 4),
+                    IsCriticalPath = false,
+                    CreatedAt = new DateTime(2025, 10, 29)
+                },
+                new Core.Entities.Task 
+                { 
+                    TaskId = 2, 
+                    ProjectId = 1,
+                    AssignedToUserId = 1, // Assigned to admin
+                    TaskName = "Implement Shopping Cart", 
+                    Description = "Build shopping cart functionality with session management",
+                    Priority = Priority.Critical,
+                    Status = Core.Enums.TaskStatus.InProgress,
+                    StartDate = new DateTime(2025, 12, 19),
+                    DueDate = new DateTime(2026, 1, 3),
+                    IsCriticalPath = true,
+                    CreatedAt = new DateTime(2025, 12, 19)
+                },
+                new Core.Entities.Task 
+                { 
+                    TaskId = 3, 
+                    ProjectId = 1, 
+                    TaskName = "Setup Payment Gateway", 
+                    Description = "Integrate Stripe payment gateway for checkout",
+                    Priority = Priority.High,
+                    Status = Core.Enums.TaskStatus.Pending,
+                    StartDate = new DateTime(2026, 1, 3),
+                    DueDate = new DateTime(2026, 1, 13),
+                    IsCriticalPath = false,
+                    CreatedAt = new DateTime(2025, 12, 29)
+                },
+                new Core.Entities.Task 
+                { 
+                    TaskId = 4, 
+                    ProjectId = 1, 
+                    TaskName = "Performance Testing", 
+                    Description = "Load testing for 10000 concurrent users",
+                    Priority = Priority.Medium,
+                    Status = Core.Enums.TaskStatus.Blocked,
+                    StartDate = new DateTime(2025, 12, 29),
+                    DueDate = new DateTime(2026, 1, 18),
+                    IsCriticalPath = false,
+                    CreatedAt = new DateTime(2025, 12, 29)
+                },
+                
+                // Mobile Banking App Tasks
+                new Core.Entities.Task 
+                { 
+                    TaskId = 5, 
+                    ProjectId = 2, 
+                    TaskName = "Biometric Authentication", 
+                    Description = "Implement fingerprint and face recognition",
+                    Priority = Priority.Critical,
+                    Status = Core.Enums.TaskStatus.InProgress,
+                    StartDate = new DateTime(2025, 12, 24),
+                    DueDate = new DateTime(2026, 1, 8),
+                    IsCriticalPath = true,
+                    CreatedAt = new DateTime(2025, 12, 24)
+                },
+                new Core.Entities.Task 
+                { 
+                    TaskId = 6, 
+                    ProjectId = 2, 
+                    TaskName = "Transaction History UI", 
+                    Description = "Design and implement transaction history screen",
+                    Priority = Priority.High,
+                    Status = Core.Enums.TaskStatus.Pending,
+                    StartDate = new DateTime(2026, 1, 1),
+                    DueDate = new DateTime(2026, 1, 10),
+                    IsCriticalPath = false,
+                    CreatedAt = new DateTime(2025, 12, 29)
+                },
+                
+                // Internal CRM Tasks
+                new Core.Entities.Task 
+                { 
+                    TaskId = 7, 
+                    ProjectId = 3, 
+                    TaskName = "Requirements Gathering", 
+                    Description = "Meet with stakeholders to gather CRM requirements",
+                    Priority = Priority.High,
+                    Status = Core.Enums.TaskStatus.Pending,
+                    StartDate = new DateTime(2026, 1, 13),
+                    DueDate = new DateTime(2026, 1, 18),
+                    IsCriticalPath = false,
+                    CreatedAt = new DateTime(2025, 12, 29)
+                }
+            );
         }
 
         #endregion
