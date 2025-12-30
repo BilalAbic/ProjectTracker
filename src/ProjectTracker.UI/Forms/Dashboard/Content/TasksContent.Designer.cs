@@ -305,42 +305,64 @@
             // 
             // gridView1
             // 
-            gridView1.Appearance.ColumnFilterButton.BackColor = Color.FromArgb(30, 30, 32);
-            gridView1.Appearance.ColumnFilterButton.BorderColor = Color.FromArgb(63, 63, 70);
-            gridView1.Appearance.ColumnFilterButton.ForeColor = Color.FromArgb(228, 228, 231);
+            gridView1.Appearance.ColumnFilterButton.BackColor = Color.FromArgb(21, 21, 21);
+            gridView1.Appearance.ColumnFilterButton.BorderColor = Color.FromArgb(42, 42, 42);
+            gridView1.Appearance.ColumnFilterButton.ForeColor = Color.White;
             gridView1.Appearance.ColumnFilterButton.Options.UseBackColor = true;
             gridView1.Appearance.ColumnFilterButton.Options.UseBorderColor = true;
             gridView1.Appearance.ColumnFilterButton.Options.UseForeColor = true;
-            gridView1.Appearance.FocusedRow.BackColor = Color.FromArgb(55, 65, 81);
+            // Empty grid area
+            gridView1.Appearance.Empty.BackColor = Color.FromArgb(21, 21, 21);
+            gridView1.Appearance.Empty.ForeColor = Color.FromArgb(161, 161, 161);
+            gridView1.Appearance.Empty.Options.UseBackColor = true;
+            gridView1.Appearance.Empty.Options.UseForeColor = true;
+            // Focused row
+            gridView1.Appearance.FocusedRow.BackColor = Color.FromArgb(42, 42, 42);
             gridView1.Appearance.FocusedRow.ForeColor = Color.White;
             gridView1.Appearance.FocusedRow.Options.UseBackColor = true;
             gridView1.Appearance.FocusedRow.Options.UseForeColor = true;
-            gridView1.Appearance.HeaderPanel.BackColor = Color.FromArgb(39, 39, 42);
-            gridView1.Appearance.HeaderPanel.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
-            gridView1.Appearance.HeaderPanel.ForeColor = Color.FromArgb(212, 212, 216);
+            // Header panel
+            gridView1.Appearance.HeaderPanel.BackColor = Color.FromArgb(11, 11, 11);
+            gridView1.Appearance.HeaderPanel.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            gridView1.Appearance.HeaderPanel.ForeColor = Color.FromArgb(161, 161, 161);
             gridView1.Appearance.HeaderPanel.Options.UseBackColor = true;
             gridView1.Appearance.HeaderPanel.Options.UseFont = true;
             gridView1.Appearance.HeaderPanel.Options.UseForeColor = true;
-            gridView1.Appearance.HorzLine.BackColor = Color.FromArgb(63, 63, 70);
+            // Horizontal lines
+            gridView1.Appearance.HorzLine.BackColor = Color.FromArgb(42, 42, 42);
             gridView1.Appearance.HorzLine.Options.UseBackColor = true;
-            gridView1.Appearance.Row.BackColor = Color.FromArgb(24, 24, 27);
-            gridView1.Appearance.Row.ForeColor = Color.FromArgb(228, 228, 231);
+            // Normal row
+            gridView1.Appearance.Row.BackColor = Color.FromArgb(21, 21, 21);
+            gridView1.Appearance.Row.ForeColor = Color.White;
             gridView1.Appearance.Row.Options.UseBackColor = true;
             gridView1.Appearance.Row.Options.UseForeColor = true;
-            gridView1.Appearance.SelectedRow.BackColor = Color.FromArgb(67, 56, 202);
+            // Selected row
+            gridView1.Appearance.SelectedRow.BackColor = Color.FromArgb(42, 42, 42);
             gridView1.Appearance.SelectedRow.ForeColor = Color.White;
             gridView1.Appearance.SelectedRow.Options.UseBackColor = true;
             gridView1.Appearance.SelectedRow.Options.UseForeColor = true;
-            gridView1.Appearance.OddRow.BackColor = Color.FromArgb(30, 30, 32);
+            // Odd row (same as normal row for consistency)
+            gridView1.Appearance.OddRow.BackColor = Color.FromArgb(21, 21, 21);
+            gridView1.Appearance.OddRow.ForeColor = Color.White;
             gridView1.Appearance.OddRow.Options.UseBackColor = true;
-            gridView1.Appearance.HideSelectionRow.BackColor = Color.FromArgb(45, 45, 48);
+            gridView1.Appearance.OddRow.Options.UseForeColor = true;
+            // Hide selection row
+            gridView1.Appearance.HideSelectionRow.BackColor = Color.FromArgb(42, 42, 42);
+            gridView1.Appearance.HideSelectionRow.ForeColor = Color.White;
             gridView1.Appearance.HideSelectionRow.Options.UseBackColor = true;
+            gridView1.Appearance.HideSelectionRow.Options.UseForeColor = true;
+            // Vertical lines
+            gridView1.Appearance.VertLine.BackColor = Color.FromArgb(42, 42, 42);
+            gridView1.Appearance.VertLine.Options.UseBackColor = true;
             gridView1.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] { TaskName, ProjectName, AssignedUserName, StatusColumn, PriorityColumn, DueDate, CompletionPercentage, Actions });
             gridView1.GridControl = grdTasks;
             gridView1.Name = "gridView1";
+            gridView1.OptionsView.EnableAppearanceEvenRow = false;
+            gridView1.OptionsView.EnableAppearanceOddRow = false;
             gridView1.OptionsView.ShowGroupPanel = false;
             gridView1.OptionsView.ShowIndicator = false;
-            gridView1.OptionsView.ShowVerticalLines = DevExpress.Utils.DefaultBoolean.False;
+            gridView1.OptionsView.ShowHorizontalLines = DevExpress.Utils.DefaultBoolean.True;
+            gridView1.OptionsView.ShowVerticalLines = DevExpress.Utils.DefaultBoolean.True;
             // 
             // TaskName
             // 

@@ -12,8 +12,8 @@ using ProjectTracker.Data.Context;
 namespace ProjectTracker.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251229014848_AddSeedData")]
-    partial class AddSeedData
+    [Migration("20251229194518_AddTeamManagementSystem")]
+    partial class AddTeamManagementSystem
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -165,12 +165,17 @@ namespace ProjectTracker.Data.Migrations
                         .HasColumnType("nvarchar(50)")
                         .HasDefaultValue("Planned");
 
+                    b.Property<int>("TeamId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
                     b.HasKey("ProjectId");
 
                     b.HasIndex("CreatedByUserId");
+
+                    b.HasIndex("TeamId");
 
                     b.ToTable("Projects", (string)null);
 
@@ -187,7 +192,8 @@ namespace ProjectTracker.Data.Migrations
                             Priority = 3,
                             ProjectName = "E-Commerce Platform",
                             StartDate = new DateTime(2025, 10, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Status = "Active"
+                            Status = "Active",
+                            TeamId = 1
                         },
                         new
                         {
@@ -201,7 +207,8 @@ namespace ProjectTracker.Data.Migrations
                             Priority = 4,
                             ProjectName = "Mobile Banking App",
                             StartDate = new DateTime(2025, 11, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Status = "Active"
+                            Status = "Active",
+                            TeamId = 1
                         },
                         new
                         {
@@ -215,7 +222,8 @@ namespace ProjectTracker.Data.Migrations
                             Priority = 2,
                             ProjectName = "Internal CRM System",
                             StartDate = new DateTime(2026, 1, 13, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Status = "Planned"
+                            Status = "Planned",
+                            TeamId = 1
                         });
                 });
 
@@ -412,6 +420,7 @@ namespace ProjectTracker.Data.Migrations
                         new
                         {
                             TaskId = 1,
+                            AssignedToUserId = 1,
                             CompletedDate = new DateTime(2025, 12, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedAt = new DateTime(2025, 10, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Create wireframes and mockups for product listing pages",
@@ -426,6 +435,7 @@ namespace ProjectTracker.Data.Migrations
                         new
                         {
                             TaskId = 2,
+                            AssignedToUserId = 1,
                             CreatedAt = new DateTime(2025, 12, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Description = "Build shopping cart functionality with session management",
                             DueDate = new DateTime(2026, 1, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -535,6 +545,152 @@ namespace ProjectTracker.Data.Migrations
                     b.ToTable("TaskComments", (string)null);
                 });
 
+            modelBuilder.Entity("ProjectTracker.Core.Entities.Team", b =>
+                {
+                    b.Property<int>("TeamId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TeamId"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<int>("OwnerId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TeamName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("TeamId");
+
+                    b.HasIndex("OwnerId");
+
+                    b.ToTable("Teams", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            TeamId = 1,
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Auto-created default team for all projects",
+                            IsActive = true,
+                            OwnerId = 1,
+                            TeamName = "Default Team"
+                        });
+                });
+
+            modelBuilder.Entity("ProjectTracker.Core.Entities.TeamInvitation", b =>
+                {
+                    b.Property<int>("InvitationId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("InvitationId"));
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("InvitedByUserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ProposedRole")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("RespondedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("SentAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TeamId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("InvitationId");
+
+                    b.HasIndex("Email");
+
+                    b.HasIndex("InvitedByUserId");
+
+                    b.HasIndex("TeamId");
+
+                    b.HasIndex("Token")
+                        .IsUnique();
+
+                    b.ToTable("TeamInvitations", (string)null);
+                });
+
+            modelBuilder.Entity("ProjectTracker.Core.Entities.TeamMember", b =>
+                {
+                    b.Property<int>("TeamMemberId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TeamMemberId"));
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<DateTime>("JoinedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TeamId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("TeamMemberId");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("TeamId", "UserId")
+                        .IsUnique();
+
+                    b.ToTable("TeamMembers", (string)null);
+                });
+
             modelBuilder.Entity("ProjectTracker.Core.Entities.User", b =>
                 {
                     b.Property<int>("UserId")
@@ -590,7 +746,7 @@ namespace ProjectTracker.Data.Migrations
                             Email = "admin@projecttracker.com",
                             FullName = "Admin User",
                             IsActive = true,
-                            PasswordHash = "AQAAAAEAACcQAAAAEJ5K8X8qF5K8X8qF5K8X8qF5K8X8qF5K8X8qF5K8X8qF5K8X8qF5K8X8qF5K8X8qF5==",
+                            PasswordHash = "$2a$11$rBV2/.QxbrR5mCRudV3oD.6KhT/dKLZXQbEJU3BUW8qNZnVlCJWJC",
                             RoleId = 1,
                             Username = "admin"
                         });
@@ -615,7 +771,15 @@ namespace ProjectTracker.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("ProjectTracker.Core.Entities.Team", "Team")
+                        .WithMany("Projects")
+                        .HasForeignKey("TeamId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.Navigation("CreatedByUser");
+
+                    b.Navigation("Team");
                 });
 
             modelBuilder.Entity("ProjectTracker.Core.Entities.ProjectRisk", b =>
@@ -685,6 +849,55 @@ namespace ProjectTracker.Data.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("ProjectTracker.Core.Entities.Team", b =>
+                {
+                    b.HasOne("ProjectTracker.Core.Entities.User", "Owner")
+                        .WithMany("OwnedTeams")
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Owner");
+                });
+
+            modelBuilder.Entity("ProjectTracker.Core.Entities.TeamInvitation", b =>
+                {
+                    b.HasOne("ProjectTracker.Core.Entities.User", "InvitedBy")
+                        .WithMany("SentInvitations")
+                        .HasForeignKey("InvitedByUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("ProjectTracker.Core.Entities.Team", "Team")
+                        .WithMany("Invitations")
+                        .HasForeignKey("TeamId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("InvitedBy");
+
+                    b.Navigation("Team");
+                });
+
+            modelBuilder.Entity("ProjectTracker.Core.Entities.TeamMember", b =>
+                {
+                    b.HasOne("ProjectTracker.Core.Entities.Team", "Team")
+                        .WithMany("Members")
+                        .HasForeignKey("TeamId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ProjectTracker.Core.Entities.User", "User")
+                        .WithMany("TeamMemberships_New")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Team");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("ProjectTracker.Core.Entities.User", b =>
                 {
                     b.HasOne("ProjectTracker.Core.Entities.Role", "Role")
@@ -715,6 +928,15 @@ namespace ProjectTracker.Data.Migrations
                     b.Navigation("Comments");
                 });
 
+            modelBuilder.Entity("ProjectTracker.Core.Entities.Team", b =>
+                {
+                    b.Navigation("Invitations");
+
+                    b.Navigation("Members");
+
+                    b.Navigation("Projects");
+                });
+
             modelBuilder.Entity("ProjectTracker.Core.Entities.User", b =>
                 {
                     b.Navigation("AssignedTasks");
@@ -723,9 +945,15 @@ namespace ProjectTracker.Data.Migrations
 
                     b.Navigation("Notifications");
 
+                    b.Navigation("OwnedTeams");
+
+                    b.Navigation("SentInvitations");
+
                     b.Navigation("TaskComments");
 
                     b.Navigation("TeamMemberships");
+
+                    b.Navigation("TeamMemberships_New");
                 });
 #pragma warning restore 612, 618
         }

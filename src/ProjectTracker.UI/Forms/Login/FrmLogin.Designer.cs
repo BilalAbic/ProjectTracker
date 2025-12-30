@@ -39,6 +39,7 @@
             btnLogin = new DevExpress.XtraEditors.SimpleButton();
             btnCancel = new DevExpress.XtraEditors.SimpleButton();
             btnClose = new DevExpress.XtraEditors.SimpleButton();
+            lblRegisterLink = new DevExpress.XtraEditors.LabelControl();
             ((System.ComponentModel.ISupportInitialize)pnlLeft).BeginInit();
             pnlLeft.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureEdit1.Properties).BeginInit();
@@ -109,8 +110,14 @@
             txtUsername.Properties.Appearance.Options.UseBorderColor = true;
             txtUsername.Properties.Appearance.Options.UseFont = true;
             txtUsername.Properties.Appearance.Options.UseForeColor = true;
+            txtUsername.Properties.AppearanceFocused.BackColor = Color.FromArgb(25, 25, 25);
+            txtUsername.Properties.AppearanceFocused.Options.UseBackColor = true;
+            txtUsername.Properties.AppearanceReadOnly.ForeColor = Color.FromArgb(96, 96, 96);
+            txtUsername.Properties.AppearanceReadOnly.Options.UseForeColor = true;
             txtUsername.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple;
             txtUsername.Properties.NullText = "Enter username...";
+            txtUsername.Properties.NullValuePrompt = "Enter username...";
+            txtUsername.Properties.NullValuePromptShowForEmptyValue = true;
             txtUsername.Size = new Size(330, 22);
             txtUsername.TabIndex = 3;
             // 
@@ -143,6 +150,7 @@
             txtPassword.Properties.Appearance.Options.UseForeColor = true;
             txtPassword.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple;
             txtPassword.Properties.NullText = "Enter password...";
+            txtPassword.Properties.PasswordChar = '*';
             txtPassword.Size = new Size(330, 22);
             txtPassword.TabIndex = 5;
             // 
@@ -195,6 +203,20 @@
             btnClose.Text = "✕";
             btnClose.Click += btnClose_Click;
             // 
+            // lblRegisterLink
+            // 
+            lblRegisterLink.Appearance.Font = new Font("Segoe UI", 9F);
+            lblRegisterLink.Appearance.ForeColor = Color.FromArgb(0, 102, 255);
+            lblRegisterLink.Appearance.Options.UseFont = true;
+            lblRegisterLink.Appearance.Options.UseForeColor = true;
+            lblRegisterLink.Cursor = Cursors.Hand;
+            lblRegisterLink.Location = new Point(434, 400);
+            lblRegisterLink.Name = "lblRegisterLink";
+            lblRegisterLink.Size = new Size(184, 15);
+            lblRegisterLink.TabIndex = 9;
+            lblRegisterLink.Text = "Don't have an account? Create one";
+            lblRegisterLink.Click += lblRegisterLink_Click;
+            // 
             // FrmLogin
             // 
             Appearance.BackColor = Color.FromArgb(11, 11, 11);
@@ -213,6 +235,7 @@
             Controls.Add(lblUsername);
             Controls.Add(lblTitle);
             Controls.Add(pnlLeft);
+            Controls.Add(lblRegisterLink);
             FormBorderStyle = FormBorderStyle.None;
             MaximizeBox = false;
             MinimizeBox = false;
@@ -244,5 +267,6 @@
         private DevExpress.XtraEditors.SimpleButton btnLogin;
         private DevExpress.XtraEditors.SimpleButton btnCancel;
         private DevExpress.XtraEditors.SimpleButton btnClose;
+        private DevExpress.XtraEditors.LabelControl lblRegisterLink;
     }
 }

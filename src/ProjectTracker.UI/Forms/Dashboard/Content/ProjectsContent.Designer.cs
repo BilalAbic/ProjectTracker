@@ -281,30 +281,46 @@
             gridView1.Appearance.ColumnFilterButton.Options.UseBackColor = true;
             gridView1.Appearance.ColumnFilterButton.Options.UseBorderColor = true;
             gridView1.Appearance.ColumnFilterButton.Options.UseForeColor = true;
+            // Empty grid area
+            gridView1.Appearance.Empty.BackColor = Color.FromArgb(21, 21, 21);
+            gridView1.Appearance.Empty.ForeColor = Color.FromArgb(161, 161, 161);
+            gridView1.Appearance.Empty.Options.UseBackColor = true;
+            gridView1.Appearance.Empty.Options.UseForeColor = true;
+            // Focused row
             gridView1.Appearance.FocusedRow.BackColor = Color.FromArgb(42, 42, 42);
             gridView1.Appearance.FocusedRow.ForeColor = Color.White;
             gridView1.Appearance.FocusedRow.Options.UseBackColor = true;
             gridView1.Appearance.FocusedRow.Options.UseForeColor = true;
-            gridView1.Appearance.HeaderPanel.BackColor = Color.FromArgb(26, 26, 26);
+            // Header panel
+            gridView1.Appearance.HeaderPanel.BackColor = Color.FromArgb(11, 11, 11);
             gridView1.Appearance.HeaderPanel.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             gridView1.Appearance.HeaderPanel.ForeColor = Color.FromArgb(161, 161, 161);
             gridView1.Appearance.HeaderPanel.Options.UseBackColor = true;
             gridView1.Appearance.HeaderPanel.Options.UseFont = true;
             gridView1.Appearance.HeaderPanel.Options.UseForeColor = true;
+            // Horizontal lines
             gridView1.Appearance.HorzLine.BackColor = Color.FromArgb(42, 42, 42);
             gridView1.Appearance.HorzLine.Options.UseBackColor = true;
+            // Normal row
             gridView1.Appearance.Row.BackColor = Color.FromArgb(21, 21, 21);
             gridView1.Appearance.Row.ForeColor = Color.White;
             gridView1.Appearance.Row.Options.UseBackColor = true;
             gridView1.Appearance.Row.Options.UseForeColor = true;
+            // Selected row
             gridView1.Appearance.SelectedRow.BackColor = Color.FromArgb(42, 42, 42);
+            gridView1.Appearance.SelectedRow.ForeColor = Color.White;
             gridView1.Appearance.SelectedRow.Options.UseBackColor = true;
+            gridView1.Appearance.SelectedRow.Options.UseForeColor = true;
+            // Vertical lines
+            gridView1.Appearance.VertLine.BackColor = Color.FromArgb(42, 42, 42);
+            gridView1.Appearance.VertLine.Options.UseBackColor = true;
             gridView1.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] { ProjectName, Status, CompletionPercentage, Priority, ManagerName, EndDate, Actions });
             gridView1.GridControl = grdProjects;
             gridView1.Name = "gridView1";
             gridView1.OptionsView.ShowGroupPanel = false;
             gridView1.OptionsView.ShowIndicator = false;
-            gridView1.OptionsView.ShowVerticalLines = DevExpress.Utils.DefaultBoolean.False;
+            gridView1.OptionsView.ShowHorizontalLines = DevExpress.Utils.DefaultBoolean.True;
+            gridView1.OptionsView.ShowVerticalLines = DevExpress.Utils.DefaultBoolean.True;
             gridView1.RowClick += gridView1_RowClick;
             gridView1.CustomDrawCell += gridView1_CustomDrawCell;
             // 

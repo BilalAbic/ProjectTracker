@@ -170,5 +170,16 @@ namespace ProjectTracker.UI.Forms.Login
             _dragging = false;
         }
 
+        /// <summary>
+        /// Handles register link click event
+        /// Navigates to registration form
+        /// </summary>
+        private void lblRegisterLink_Click(object sender, EventArgs e)
+        {
+            var registerForm = Program.ServiceProvider.GetRequiredService<FrmRegister>();
+            registerForm.Show();
+            this.Hide();
+        }
+
     }
 }

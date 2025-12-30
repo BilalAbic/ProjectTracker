@@ -15,7 +15,8 @@
 |---------|----------|
 | 📁 **Proje Yönetimi** | Proje oluşturma, düzenleme, durum takibi, önceliklendirme |
 | ✅ **Görev Yönetimi** | Alt görevler, atamalar, Kanban board, ilerleme izleme |
-| 👥 **Kullanıcı/Rol Yönetimi** | Rol tabanlı yetkilendirme, ekip yönetimi |
+| 👥 **Team Management** | Team oluşturma, üye yönetimi, davet sistemi, rol atama |
+| 🔐 **Kullanıcı/Rol Yönetimi** | Rol tabanlı yetkilendirme, team-based izinler |
 | 📈 **Gantt Chart** | Görsel zaman çizelgesi, kritik yol analizi (CPM) |
 | ⚠️ **Risk Analizi** | Ağırlıklı risk skoru, gecikme tahminleri |
 | 🔔 **Bildirim Sistemi** | Otomatik uyarılar, deadline hatırlatmaları |
@@ -55,7 +56,7 @@
 ┌─────────────────────────────────────────────────────────┐
 │            DATABASE                                     │
 │                SQL Server 2019+                         │
-│  • 9 Tables (Users, Roles, Projects, Tasks, etc.)      │
+│  • 12 Tables (Users, Roles, Projects, Tasks, Teams...) │
 │  • Navigation Properties                                │
 │  • Audit Logging                                        │
 └─────────────────────────────────────────────────────────┘
@@ -162,7 +163,7 @@ Sonuç: 0-100 arası risk puanı
 
 ## 🚀 Geliştirme Roadmap
 
-### ✅ Tamamlanan Phase'ler (40%)
+### ✅ Tamamlanan Phase'ler (50%)
 
 | Phase | Durum | Süre | Detay |
 |-------|-------|------|-------|
@@ -170,12 +171,12 @@ Sonuç: 0-100 arası risk puanı
 | **Phase 2:** Dashboard Layout | ✅ Tamamlandı | 4h | [FrmDashboard, Sidebar, Top bar] |
 | **Phase 3:** Projects Content | ✅ Tamamlandı | 5h | [ProjectsContent, CRUD, Filters] |
 | **Phase 4:** Tasks Content | ✅ Tamamlandı | 6h | [TasksContent, Grid & Kanban, Drag-drop] |
+| **Phase 5:** Team Management | ✅ Tamamlandı | 5h | [TeamsContent, Members, Invitations] |
 
-### ⚪ Planlanan Phase'ler (60%)
+### ⚪ Planlanan Phase'ler (50%)
 
 | Phase | Durum | Tahmini Süre | Kapsam |
 |-------|-------|--------------|--------|
-| **Phase 5:** Team Management | ⚪ Planlandı | 4h | Kullanıcı yönetimi, rol atama, ekip listesi |
 | **Phase 6:** Reports & Analytics | ⚪ Planlandı | 5h | Charts, istatistikler, PDF/Excel export |
 | **Phase 7:** Gantt Chart | ⚪ Planlandı | 6h | ⭐ CPM algoritması, kritik yol, timeline |
 | **Phase 8:** Settings & Notifications | ⚪ Planlandı | 4h | Ayarlar, bildirim sistemi, kullanıcı tercihleri |
@@ -239,7 +240,7 @@ Sonuç: 0-100 arası risk puanı
     └─────────────────────────────────┘
 ```
 
-### Temel Tablolar (9 tablo)
+### Temel Tablolar (12 tablo)
 
 1. **Users** - Kullanıcılar
 2. **Roles** - Roller (Admin, ProjectManager, Developer)
@@ -250,6 +251,9 @@ Sonuç: 0-100 arası risk puanı
 7. **TaskComments** - Görev yorumları
 8. **ProjectRisks** - Proje riskleri
 9. **AuditLogs** - Audit kayıtları
+10. **Teams** - Takımlar (Phase 5)
+11. **TeamMembers** - Takım üyeleri ve rolleri (Phase 5)
+12. **TeamInvitations** - Takım davet sistemi (Phase 5)
 
 ---
 
@@ -348,10 +352,13 @@ Sonuç: 0-100 arası risk puanı
 - **TaskDetailControl:** Görev ekleme/düzenleme formu ✅
 - **Filtering:** Proje ve durum bazlı filtreleme ✅
 
-### Phase 5: Team Management
-- **Kullanıcı CRUD:** Ekip üyesi ekleme, düzenleme, silme
-- **Rol Yönetimi:** Rol atama ve güncelleme
-- **Ekip İstatistikleri:** Atanan görevler, tamamlananlar
+### Phase 5: Team Management (Tamamlandı ✅)
+- **TeamsContent:** Team listesi, active team switching, search & filter ✅
+- **TeamDetailControl:** Team create/edit, statistics görüntüleme ✅
+- **TeamMembersContent:** Grid-based member management, role editing (inline) ✅
+- **InvitationsContent:** Email invitation system, resend/cancel ✅
+- **Navigation:** Teams → Detail → Members/Invitations akışı ✅
+- **Custom Drawing:** Colored initials badges (role-based) ✅
 
 ### Phase 6: Reports & Analytics ⭐
 - **DevExpress Charts:** Pie, Line, Bar charts
@@ -403,8 +410,13 @@ Sonuç: 0-100 arası risk puanı
 ### Proje Dökümanları
 
 - **[KANBAN_VIEW_README.md](file:///d:/ProjectTracker/KANBAN_VIEW_README.md)** - Kanban Board implementasyon detayları
-- **[UI_DASHBOARD_PHASE3.md](file:///d:/ProjectTracker/UI_DASHBOARD_PHASE3.md)** - Phase 3 detayları
-- **[UI_DASHBOARD_PHASE4.md](file:///d:/ProjectTracker/UI_DASHBOARD_PHASE4.md)** - Phase 4 detayları
+- **[UI_DASHBOARD_PHASE3.md](file:///d:/ProjectTracker/UI_DASHBOARD_PHASE3.md)** - Phase 3: Projects Content
+- **[UI_DASHBOARD_PHASE4.md](file:///d:/ProjectTracker/UI_DASHBOARD_PHASE4.md)** - Phase 4: Tasks Content & Kanban
+- **[UI_DASHBOARD_PHASE5_README.md](file:///d:/ProjectTracker/UI_DASHBOARD_PHASE5_README.md)** - Phase 5: Team Management Overview
+- **[UI_DASHBOARD_PHASE5.1.md](file:///d:/ProjectTracker/UI_DASHBOARD_PHASE5.1.md)** - Teams List & Switcher
+- **[UI_DASHBOARD_PHASE5.2.md](file:///d:/ProjectTracker/UI_DASHBOARD_PHASE5.2.md)** - Team Creation & Settings
+- **[UI_DASHBOARD_PHASE5.3.md](file:///d:/ProjectTracker/UI_DASHBOARD_PHASE5.3.md)** - Invitation System
+- **[UI_DASHBOARD_PHASE5.4.md](file:///d:/ProjectTracker/UI_DASHBOARD_PHASE5.4.md)** - Members Management
 - **[CODING_STANDARDS.md](file:///d:/ProjectTracker/CODING_STANDARDS.md)** - Kod standartları ve convention'lar
 - **[TEKNOLOJI_KARARLARI.md](file:///d:/ProjectTracker/TEKNOLOJI_KARARLARI.md)** - Teknoloji stack ve kararlar
 
@@ -493,8 +505,8 @@ Bu proje eğitim amaçlı geliştirilmiştir.
 
 ---
 
-**📌 Güncel Durum:** Phase 4 (Tasks Content) tamamlandı - Phase 5'e hazır 
-**📈 İlerleme:** 40% (4/10 phases tamamlandı)  
-**⏱️ Kalan Süre:** ~30-35 saat
+**📌 Güncel Durum:** Phase 5 (Team Management) tamamlandı - Phase 6'ya hazır 
+**📈 İlerleme:** 50% (5/10 phases tamamlandı)  
+**⏱️ Kalan Süre:** ~25-30 saat
 
 🚀 **Happy Coding!**

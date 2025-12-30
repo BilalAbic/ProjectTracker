@@ -74,5 +74,20 @@
         /// Navigation property - Comments created by this user
         /// </summary>
         public virtual ICollection<TaskComment> TaskComments { get; set; } = new List<TaskComment>();
+
+        /// <summary>
+        /// Navigation property - Teams owned by this user
+        /// </summary>
+        public virtual ICollection<Team> OwnedTeams { get; set; } = new List<Team>();
+
+        /// <summary>
+        /// Navigation property - Team memberships for this user (new team system)
+        /// </summary>
+        public virtual ICollection<TeamMember> TeamMemberships_New { get; set; } = new List<TeamMember>();
+
+        /// <summary>
+        /// Navigation property - Team invitations sent by this user
+        /// </summary>
+        public virtual ICollection<TeamInvitation> SentInvitations { get; set; } = new List<TeamInvitation>();
     }
 }

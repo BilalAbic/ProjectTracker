@@ -25,6 +25,9 @@ namespace ProjectTracker.Data
         private IRepository<ProjectTeamMember>? _projectTeamMembers;
         private IRepository<ProjectRisk>? _projectRisks;
         private IRepository<AuditLog>? _auditLogs;
+        private IRepository<Team>? _teams;
+        private IRepository<TeamMember>? _teamMembers;
+        private IRepository<TeamInvitation>? _teamInvitations;
 
         public UnitOfWork(AppDbContext context)
         {
@@ -79,6 +82,21 @@ namespace ProjectTracker.Data
         /// Audit Logs repository - lazy initialized
         /// </summary>
         public IRepository<AuditLog> AuditLogs => _auditLogs ??= new Repository<AuditLog>(_context);
+
+        /// <summary>
+        /// Teams repository - lazy initialized
+        /// </summary>
+        public IRepository<Team> Teams => _teams ??= new Repository<Team>(_context);
+
+        /// <summary>
+        /// Team Members repository - lazy initialized
+        /// </summary>
+        public IRepository<TeamMember> TeamMembers => _teamMembers ??= new Repository<TeamMember>(_context);
+
+        /// <summary>
+        /// Team Invitations repository - lazy initialized
+        /// </summary>
+        public IRepository<TeamInvitation> TeamInvitations => _teamInvitations ??= new Repository<TeamInvitation>(_context);
 
         // ============================================
         // TRANSACTION OPERATIONS

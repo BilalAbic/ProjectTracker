@@ -12,7 +12,7 @@ namespace ProjectTracker.UI.Forms.Dashboard
     public partial class FrmDashboard : DevExpress.XtraEditors.XtraForm
     {
         // Current loaded content
-        private UserControl _currentContent;
+        private UserControl? _currentContent;
         private readonly IServiceProvider _serviceProvider;
         // Drag to move fields
         private bool _dragging = false;
@@ -272,8 +272,8 @@ namespace ProjectTracker.UI.Forms.Dashboard
         /// </summary>
         private void btnTeam_Click(object sender, EventArgs e)
         {
-            XtraMessageBox.Show("👥 Team - Coming soon!", "Info",
-                MessageBoxButtons.OK, MessageBoxIcon.Information);
+            var teamsContent = Program.ServiceProvider.GetRequiredService<Content.TeamsContent>();
+            LoadContent(teamsContent);
             UpdateSidebarSelection(btnTeam);
         }
 
