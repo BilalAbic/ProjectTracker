@@ -445,30 +445,49 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             // 
             // gridViewRecentProjects
             // 
-            gridViewRecentProjects.Appearance.EvenRow.BackColor = Color.FromArgb(26, 26, 26);
+            gridViewRecentProjects.Appearance.Empty.BackColor = Color.FromArgb(21, 21, 21);
+            gridViewRecentProjects.Appearance.Empty.ForeColor = Color.FromArgb(161, 161, 161);
+            gridViewRecentProjects.Appearance.Empty.Options.UseBackColor = true;
+            gridViewRecentProjects.Appearance.Empty.Options.UseForeColor = true;
+            gridViewRecentProjects.Appearance.EvenRow.BackColor = Color.FromArgb(21, 21, 21);
+            gridViewRecentProjects.Appearance.EvenRow.ForeColor = Color.White;
             gridViewRecentProjects.Appearance.EvenRow.Options.UseBackColor = true;
+            gridViewRecentProjects.Appearance.EvenRow.Options.UseForeColor = true;
+            gridViewRecentProjects.Appearance.FocusedRow.BackColor = Color.FromArgb(42, 42, 42);
+            gridViewRecentProjects.Appearance.FocusedRow.ForeColor = Color.White;
+            gridViewRecentProjects.Appearance.FocusedRow.Options.UseBackColor = true;
+            gridViewRecentProjects.Appearance.FocusedRow.Options.UseForeColor = true;
             gridViewRecentProjects.Appearance.HeaderPanel.BackColor = Color.FromArgb(11, 11, 11);
+            gridViewRecentProjects.Appearance.HeaderPanel.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             gridViewRecentProjects.Appearance.HeaderPanel.ForeColor = Color.FromArgb(161, 161, 161);
             gridViewRecentProjects.Appearance.HeaderPanel.Options.UseBackColor = true;
+            gridViewRecentProjects.Appearance.HeaderPanel.Options.UseFont = true;
             gridViewRecentProjects.Appearance.HeaderPanel.Options.UseForeColor = true;
+            gridViewRecentProjects.Appearance.HorzLine.BackColor = Color.FromArgb(42, 42, 42);
+            gridViewRecentProjects.Appearance.HorzLine.Options.UseBackColor = true;
             gridViewRecentProjects.Appearance.Row.BackColor = Color.FromArgb(21, 21, 21);
             gridViewRecentProjects.Appearance.Row.ForeColor = Color.White;
             gridViewRecentProjects.Appearance.Row.Options.UseBackColor = true;
             gridViewRecentProjects.Appearance.Row.Options.UseForeColor = true;
+            gridViewRecentProjects.Appearance.SelectedRow.BackColor = Color.FromArgb(42, 42, 42);
+            gridViewRecentProjects.Appearance.SelectedRow.ForeColor = Color.White;
+            gridViewRecentProjects.Appearance.SelectedRow.Options.UseBackColor = true;
+            gridViewRecentProjects.Appearance.SelectedRow.Options.UseForeColor = true;
+            gridViewRecentProjects.Appearance.VertLine.BackColor = Color.FromArgb(42, 42, 42);
+            gridViewRecentProjects.Appearance.VertLine.Options.UseBackColor = true;
             gridViewRecentProjects.GridControl = gridRecentProjects;
             gridViewRecentProjects.Name = "gridViewRecentProjects";
             gridViewRecentProjects.OptionsSelection.EnableAppearanceFocusedCell = false;
             gridViewRecentProjects.OptionsView.ShowGroupPanel = false;
             gridViewRecentProjects.OptionsView.ShowHorizontalLines = DevExpress.Utils.DefaultBoolean.True;
             gridViewRecentProjects.OptionsView.ShowIndicator = false;
-            gridViewRecentProjects.OptionsView.ShowVerticalLines = DevExpress.Utils.DefaultBoolean.False;
+            gridViewRecentProjects.OptionsView.ShowVerticalLines = DevExpress.Utils.DefaultBoolean.True;
             gridViewRecentProjects.DoubleClick += gridViewRecentProjects_DoubleClick;
             // 
             // DashboardContent
             // 
             AutoScaleDimensions = new SizeF(8F, 19F);
             AutoScaleMode = AutoScaleMode.Font;
-            AutoScroll = true;
             BackColor = Color.FromArgb(11, 11, 11);
             Controls.Add(gridRecentProjects);
             Controls.Add(pnlRecentHeader);
@@ -477,7 +496,6 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             ForeColor = Color.White;
             Name = "DashboardContent";
             Size = new Size(1200, 700);
-
             ((System.ComponentModel.ISupportInitialize)pnlWelcomeHeader).EndInit();
             pnlWelcomeHeader.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)pnlKPIContainer).EndInit();

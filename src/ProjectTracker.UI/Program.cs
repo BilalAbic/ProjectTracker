@@ -81,16 +81,23 @@ namespace ProjectTracker.UI
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IProjectService, ProjectService>();
             services.AddTransient<ITaskService, TaskService>();
+            services.AddTransient<ITeamService, TeamService>();
+            services.AddTransient<IInvitationService, InvitationService>();
 
             // ============================================
             // FORMS
             // ============================================
             services.AddTransient<Forms.Login.FrmLogin>();
+            services.AddTransient<Forms.Login.FrmRegister>();
             services.AddTransient<Forms.Dashboard.FrmDashboard>();
             services.AddTransient<Forms.Dashboard.Content.DashboardContent>();
             services.AddTransient<Forms.Dashboard.Content.ProjectsContent>();
             services.AddTransient<Forms.Dashboard.Content.TasksContent>();
             services.AddTransient<Forms.Dashboard.Content.TaskDetailControl>();
+            services.AddTransient<Forms.Dashboard.Content.TeamsContent>();
+            services.AddTransient<Forms.Dashboard.Content.TeamDetailControl>();
+            services.AddTransient<Forms.Dashboard.Content.InvitationsContent>();
+            services.AddTransient<Forms.Dashboard.Content.TeamMembersContent>();
         }
     }
 }

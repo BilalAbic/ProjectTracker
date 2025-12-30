@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ProjectTracker.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class AddSeedData : Migration
+    public partial class AddTeamManagementSystem : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -96,12 +96,37 @@ namespace ProjectTracker.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Teams",
+                columns: table => new
+                {
+                    TeamId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TeamName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    OwnerId = table.Column<int>(type: "int", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Teams", x => x.TeamId);
+                    table.ForeignKey(
+                        name: "FK_Teams_Users_OwnerId",
+                        column: x => x.OwnerId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Projects",
                 columns: table => new
                 {
                     ProjectId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CreatedByUserId = table.Column<int>(type: "int", nullable: false),
+                    TeamId = table.Column<int>(type: "int", nullable: false),
                     ProjectName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -118,8 +143,76 @@ namespace ProjectTracker.Data.Migrations
                 {
                     table.PrimaryKey("PK_Projects", x => x.ProjectId);
                     table.ForeignKey(
+                        name: "FK_Projects_Teams_TeamId",
+                        column: x => x.TeamId,
+                        principalTable: "Teams",
+                        principalColumn: "TeamId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
                         name: "FK_Projects_Users_CreatedByUserId",
                         column: x => x.CreatedByUserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TeamInvitations",
+                columns: table => new
+                {
+                    InvitationId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TeamId = table.Column<int>(type: "int", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    InvitedByUserId = table.Column<int>(type: "int", nullable: false),
+                    ProposedRole = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Token = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    SentAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
+                    ExpiresAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    RespondedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TeamInvitations", x => x.InvitationId);
+                    table.ForeignKey(
+                        name: "FK_TeamInvitations_Teams_TeamId",
+                        column: x => x.TeamId,
+                        principalTable: "Teams",
+                        principalColumn: "TeamId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_TeamInvitations_Users_InvitedByUserId",
+                        column: x => x.InvitedByUserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TeamMembers",
+                columns: table => new
+                {
+                    TeamMemberId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TeamId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    Role = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    JoinedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValue: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TeamMembers", x => x.TeamMemberId);
+                    table.ForeignKey(
+                        name: "FK_TeamMembers_Teams_TeamId",
+                        column: x => x.TeamId,
+                        principalTable: "Teams",
+                        principalColumn: "TeamId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_TeamMembers_Users_UserId",
+                        column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "UserId",
                         onDelete: ReferentialAction.Restrict);
@@ -256,31 +349,36 @@ namespace ProjectTracker.Data.Migrations
             migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "UserId", "CreatedAt", "Email", "FullName", "IsActive", "PasswordHash", "RoleId", "Username" },
-                values: new object[] { 1, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin@projecttracker.com", "Admin User", true, "AQAAAAEAACcQAAAAEJ5K8X8qF5K8X8qF5K8X8qF5K8X8qF5K8X8qF5K8X8qF5K8X8qF5K8X8qF5K8X8qF5==", 1, "admin" });
+                values: new object[] { 1, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin@projecttracker.com", "Admin User", true, "$2a$11$rBV2/.QxbrR5mCRudV3oD.6KhT/dKLZXQbEJU3BUW8qNZnVlCJWJC", 1, "admin" });
+
+            migrationBuilder.InsertData(
+                table: "Teams",
+                columns: new[] { "TeamId", "CreatedAt", "Description", "IsActive", "OwnerId", "TeamName", "UpdatedAt" },
+                values: new object[] { 1, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Auto-created default team for all projects", true, 1, "Default Team", null });
 
             migrationBuilder.InsertData(
                 table: "Projects",
-                columns: new[] { "ProjectId", "Budget", "CompletionPercentage", "CreatedAt", "CreatedByUserId", "Description", "EndDate", "Priority", "ProjectName", "RiskScore", "StartDate", "Status", "UpdatedAt" },
+                columns: new[] { "ProjectId", "Budget", "CompletionPercentage", "CreatedAt", "CreatedByUserId", "Description", "EndDate", "Priority", "ProjectName", "RiskScore", "StartDate", "Status", "TeamId", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { 1, 150000m, 35m, new DateTime(2025, 10, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, "Building a modern e-commerce platform with microservices architecture", new DateTime(2026, 4, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, "E-Commerce Platform", null, new DateTime(2025, 10, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), "Active", null },
-                    { 2, 200000m, 20m, new DateTime(2025, 11, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, "iOS and Android banking application with biometric authentication", new DateTime(2026, 3, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), 4, "Mobile Banking App", null, new DateTime(2025, 11, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), "Active", null }
+                    { 1, 150000m, 35m, new DateTime(2025, 10, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, "Building a modern e-commerce platform with microservices architecture", new DateTime(2026, 4, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, "E-Commerce Platform", null, new DateTime(2025, 10, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), "Active", 1, null },
+                    { 2, 200000m, 20m, new DateTime(2025, 11, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, "iOS and Android banking application with biometric authentication", new DateTime(2026, 3, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), 4, "Mobile Banking App", null, new DateTime(2025, 11, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), "Active", 1, null }
                 });
 
             migrationBuilder.InsertData(
                 table: "Projects",
-                columns: new[] { "ProjectId", "Budget", "CreatedAt", "CreatedByUserId", "Description", "EndDate", "Priority", "ProjectName", "RiskScore", "StartDate", "Status", "UpdatedAt" },
-                values: new object[] { 3, 80000m, new DateTime(2025, 12, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, "Customer relationship management system for internal use", new DateTime(2026, 6, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, "Internal CRM System", null, new DateTime(2026, 1, 13, 0, 0, 0, 0, DateTimeKind.Unspecified), "Planned", null });
+                columns: new[] { "ProjectId", "Budget", "CreatedAt", "CreatedByUserId", "Description", "EndDate", "Priority", "ProjectName", "RiskScore", "StartDate", "Status", "TeamId", "UpdatedAt" },
+                values: new object[] { 3, 80000m, new DateTime(2025, 12, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, "Customer relationship management system for internal use", new DateTime(2026, 6, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, "Internal CRM System", null, new DateTime(2026, 1, 13, 0, 0, 0, 0, DateTimeKind.Unspecified), "Planned", 1, null });
 
             migrationBuilder.InsertData(
                 table: "Tasks",
                 columns: new[] { "TaskId", "ActualHours", "AssignedUserId", "CompletedDate", "CreatedAt", "Description", "DueDate", "EstimatedHours", "ParentTaskId", "Priority", "ProjectId", "StartDate", "Status", "TaskName" },
-                values: new object[] { 1, null, null, new DateTime(2025, 12, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 10, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), "Create wireframes and mockups for product listing pages", new DateTime(2025, 11, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, "High", 1, new DateTime(2025, 10, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), "Completed", "Design Product Catalog UI" });
+                values: new object[] { 1, null, 1, new DateTime(2025, 12, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2025, 10, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), "Create wireframes and mockups for product listing pages", new DateTime(2025, 11, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), null, null, "High", 1, new DateTime(2025, 10, 29, 0, 0, 0, 0, DateTimeKind.Unspecified), "Completed", "Design Product Catalog UI" });
 
             migrationBuilder.InsertData(
                 table: "Tasks",
                 columns: new[] { "TaskId", "ActualHours", "AssignedUserId", "CompletedDate", "CreatedAt", "Description", "DueDate", "EstimatedHours", "IsCriticalPath", "ParentTaskId", "Priority", "ProjectId", "StartDate", "Status", "TaskName" },
-                values: new object[] { 2, null, null, null, new DateTime(2025, 12, 19, 0, 0, 0, 0, DateTimeKind.Unspecified), "Build shopping cart functionality with session management", new DateTime(2026, 1, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), null, true, null, "Critical", 1, new DateTime(2025, 12, 19, 0, 0, 0, 0, DateTimeKind.Unspecified), "InProgress", "Implement Shopping Cart" });
+                values: new object[] { 2, null, 1, null, new DateTime(2025, 12, 19, 0, 0, 0, 0, DateTimeKind.Unspecified), "Build shopping cart functionality with session management", new DateTime(2026, 1, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), null, true, null, "Critical", 1, new DateTime(2025, 12, 19, 0, 0, 0, 0, DateTimeKind.Unspecified), "InProgress", "Implement Shopping Cart" });
 
             migrationBuilder.InsertData(
                 table: "Tasks",
@@ -321,6 +419,11 @@ namespace ProjectTracker.Data.Migrations
                 column: "CreatedByUserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Projects_TeamId",
+                table: "Projects",
+                column: "TeamId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ProjectTeamMembers_ProjectId_UserId",
                 table: "ProjectTeamMembers",
                 columns: new[] { "ProjectId", "UserId" },
@@ -352,6 +455,43 @@ namespace ProjectTracker.Data.Migrations
                 column: "ProjectId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_TeamInvitations_Email",
+                table: "TeamInvitations",
+                column: "Email");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TeamInvitations_InvitedByUserId",
+                table: "TeamInvitations",
+                column: "InvitedByUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TeamInvitations_TeamId",
+                table: "TeamInvitations",
+                column: "TeamId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TeamInvitations_Token",
+                table: "TeamInvitations",
+                column: "Token",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TeamMembers_TeamId_UserId",
+                table: "TeamMembers",
+                columns: new[] { "TeamId", "UserId" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TeamMembers_UserId",
+                table: "TeamMembers",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Teams_OwnerId",
+                table: "Teams",
+                column: "OwnerId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Users_RoleId",
                 table: "Users",
                 column: "RoleId");
@@ -376,10 +516,19 @@ namespace ProjectTracker.Data.Migrations
                 name: "TaskComments");
 
             migrationBuilder.DropTable(
+                name: "TeamInvitations");
+
+            migrationBuilder.DropTable(
+                name: "TeamMembers");
+
+            migrationBuilder.DropTable(
                 name: "Tasks");
 
             migrationBuilder.DropTable(
                 name: "Projects");
+
+            migrationBuilder.DropTable(
+                name: "Teams");
 
             migrationBuilder.DropTable(
                 name: "Users");

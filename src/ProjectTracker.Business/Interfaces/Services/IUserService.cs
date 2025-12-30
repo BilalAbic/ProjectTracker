@@ -51,5 +51,15 @@ namespace ProjectTracker.Business.Interfaces
         /// Check if email exists
         /// </summary>
         Task<bool> EmailExistsAsync(string email);
+
+        /// <summary>
+        /// Register a new user
+        /// </summary>
+        Task<UserDto> RegisterAsync(RegisterDto registerDto);
+
+        /// <summary>
+        /// Get all roles
+        /// </summary>
+        Task<IEnumerable<RoleDto>> GetAllRolesAsync();
     }
 }

@@ -57,6 +57,21 @@ namespace ProjectTracker.Core.Interfaces
         /// </summary>
         IRepository<AuditLog> AuditLogs { get; }
 
+        /// <summary>
+        /// Teams repository
+        /// </summary>
+        IRepository<Team> Teams { get; }
+
+        /// <summary>
+        /// Team Members repository
+        /// </summary>
+        IRepository<TeamMember> TeamMembers { get; }
+
+        /// <summary>
+        /// Team Invitations repository
+        /// </summary>
+        IRepository<TeamInvitation> TeamInvitations { get; }
+
         // ============================================
         // TRANSACTION OPERATIONS
         // ============================================

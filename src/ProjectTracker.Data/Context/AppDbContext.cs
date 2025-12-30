@@ -64,6 +64,21 @@ namespace ProjectTracker.Data.Context
         /// </summary>
         public DbSet<AuditLog> AuditLogs { get; set; }
 
+        /// <summary>
+        /// Teams table - Multi-team workspace support
+        /// </summary>
+        public DbSet<Team> Teams { get; set; }
+
+        /// <summary>
+        /// Team members table - User-Team relationship
+        /// </summary>
+        public DbSet<TeamMember> TeamMembers { get; set; }
+
+        /// <summary>
+        /// Team invitations table - Email-based team invitations
+        /// </summary>
+        public DbSet<TeamInvitation> TeamInvitations { get; set; }
+
         #endregion
 
         #region Model Configuration
@@ -86,6 +101,9 @@ namespace ProjectTracker.Data.Context
             modelBuilder.Entity<ProjectTeamMember>().ToTable("ProjectTeamMembers");
             modelBuilder.Entity<ProjectRisk>().ToTable("ProjectRisks");
             modelBuilder.Entity<AuditLog>().ToTable("AuditLogs");
+            modelBuilder.Entity<Team>().ToTable("Teams");
+            modelBuilder.Entity<TeamMember>().ToTable("TeamMembers");
+            modelBuilder.Entity<TeamInvitation>().ToTable("TeamInvitations");
 
             // ============================================
             // ROLE CONFIGURATION
@@ -265,6 +283,100 @@ namespace ProjectTracker.Data.Context
             });
 
             // ============================================
+            // TEAM CONFIGURATION (Phase 5)
+            // ============================================
+            modelBuilder.Entity<Team>(entity =>
+            {
+                entity.HasKey(e => e.TeamId);
+                entity.Property(e => e.TeamName).IsRequired().HasMaxLength(200);
+                entity.Property(e => e.Description).HasMaxLength(1000);
+                entity.Property(e => e.IsActive).IsRequired().HasDefaultValue(true);
+                entity.Property(e => e.CreatedAt).IsRequired().HasDefaultValueSql("GETDATE()");
+
+                // Relationship: Team -> User (Owner)
+                entity.HasOne(t => t.Owner)
+                    .WithMany(u => u.OwnedTeams)
+                    .HasForeignKey(t => t.OwnerId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                // Relationship: Team -> TeamMember (Members)
+                entity.HasMany(t => t.Members)
+                    .WithOne(m => m.Team)
+                    .HasForeignKey(m => m.TeamId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                // Relationship: Team -> Project (Projects)
+                entity.HasMany(t => t.Projects)
+                    .WithOne(p => p.Team)
+                    .HasForeignKey(p => p.TeamId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                // Relationship: Team -> TeamInvitation (Invitations)
+                entity.HasMany(t => t.Invitations)
+                    .WithOne(i => i.Team)
+                    .HasForeignKey(i => i.TeamId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            // ============================================
+            // TEAM MEMBER CONFIGURATION (Phase 5)
+            // ============================================
+            modelBuilder.Entity<TeamMember>(entity =>
+            {
+                entity.HasKey(e => e.TeamMemberId);
+                entity.Property(e => e.Role).IsRequired().HasConversion<string>();
+                entity.Property(e => e.IsActive).IsRequired().HasDefaultValue(true);
+                entity.Property(e => e.JoinedAt).IsRequired().HasDefaultValueSql("GETDATE()");
+
+                // Relationship: TeamMember -> Team
+                entity.HasOne(tm => tm.Team)
+                    .WithMany(t => t.Members)
+                    .HasForeignKey(tm => tm.TeamId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                // Relationship: TeamMember -> User
+                entity.HasOne(tm => tm.User)
+                    .WithMany(u => u.TeamMemberships_New)
+                    .HasForeignKey(tm => tm.UserId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                // Unique constraint: Same user can't be added to same team twice
+                entity.HasIndex(e => new { e.TeamId, e.UserId }).IsUnique();
+            });
+
+            // ============================================
+            // TEAM INVITATION CONFIGURATION (Phase 5)
+            // ============================================
+            modelBuilder.Entity<TeamInvitation>(entity =>
+            {
+                entity.HasKey(e => e.InvitationId);
+                entity.Property(e => e.Email).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.ProposedRole).IsRequired().HasConversion<string>();
+                entity.Property(e => e.Status).IsRequired().HasConversion<string>();
+                entity.Property(e => e.Token).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.SentAt).IsRequired().HasDefaultValueSql("GETDATE()");
+                entity.Property(e => e.ExpiresAt).IsRequired();
+
+                // Relationship: TeamInvitation -> Team
+                entity.HasOne(ti => ti.Team)
+                    .WithMany(t => t.Invitations)
+                    .HasForeignKey(ti => ti.TeamId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                // Relationship: TeamInvitation -> User (InvitedBy)
+                entity.HasOne(ti => ti.InvitedBy)
+                    .WithMany(u => u.SentInvitations)
+                    .HasForeignKey(ti => ti.InvitedByUserId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                // Unique index on Token for security
+                entity.HasIndex(e => e.Token).IsUnique();
+
+                // Index on Email for faster lookups
+                entity.HasIndex(e => e.Email);
+            });
+
+            // ============================================
             // SEED DATA
             // ============================================
             
@@ -291,11 +403,25 @@ namespace ProjectTracker.Data.Context
                 }
             );
 
+            // Seed Teams (must come before Projects due to FK)
+            modelBuilder.Entity<Team>().HasData(
+                new Team
+                {
+                    TeamId = 1,
+                    TeamName = "Default Team",
+                    Description = "Auto-created default team for all projects",
+                    OwnerId = 1,
+                    IsActive = true,
+                    CreatedAt = new DateTime(2025, 1, 1)
+                }
+            );
+
             // Seed Projects
             modelBuilder.Entity<Project>().HasData(
                 new Project 
                 { 
                     ProjectId = 1, 
+                    TeamId = 1,
                     ProjectName = "E-Commerce Platform", 
                     Description = "Building a modern e-commerce platform with microservices architecture",
                     Status = "Active",
@@ -310,6 +436,7 @@ namespace ProjectTracker.Data.Context
                 new Project 
                 { 
                     ProjectId = 2, 
+                    TeamId = 1,
                     ProjectName = "Mobile Banking App", 
                     Description = "iOS and Android banking application with biometric authentication",
                     Status = "Active",
@@ -324,6 +451,7 @@ namespace ProjectTracker.Data.Context
                 new Project 
                 { 
                     ProjectId = 3, 
+                    TeamId = 1,
                     ProjectName = "Internal CRM System", 
                     Description = "Customer relationship management system for internal use",
                     Status = "Planned",

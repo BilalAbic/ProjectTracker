@@ -16,6 +16,11 @@
         public int CreatedByUserId { get; set; }
 
         /// <summary>
+        /// Foreign key - Team that owns this project
+        /// </summary>
+        public int TeamId { get; set; }
+
+        /// <summary>
         /// Name of the project
         /// </summary>
         public string ProjectName { get; set; } = string.Empty;
@@ -74,6 +79,11 @@
         /// Navigation property - User who created this project
         /// </summary>
         public virtual User CreatedByUser { get; set; } = null!;
+
+        /// <summary>
+        /// Navigation property - Team that owns this project
+        /// </summary>
+        public virtual Team Team { get; set; } = null!;
 
         /// <summary>
         /// Navigation property - Tasks in this project

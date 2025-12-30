@@ -16,15 +16,18 @@ namespace ProjectTracker.Business.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IValidator<LoginDto> _loginValidator;
+        private readonly IValidator<RegisterDto> _registerValidator;
 
         public UserService(
             IUnitOfWork unitOfWork,
             IMapper mapper,
-            IValidator<LoginDto> loginValidator)
+            IValidator<LoginDto> loginValidator,
+            IValidator<RegisterDto> registerValidator)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _loginValidator = loginValidator;
+            _registerValidator = registerValidator;
         }
 
         /// <summary>
@@ -43,7 +46,14 @@ namespace ProjectTracker.Business.Services
             var user = await _unitOfWork.Users.FirstOrDefaultAsync(u => u.Username == loginDto.Username);
 
             if (user == null)
+            {
+                System.Diagnostics.Debug.WriteLine($"❌ LOGIN: User '{loginDto.Username}' not found");
                 return null;
+            }
+
+            System.Diagnostics.Debug.WriteLine($"✅ LOGIN: User found - Id:{user.UserId}, Username:{user.Username}");
+            System.Diagnostics.Debug.WriteLine($"📝 LOGIN: Password Hash: {user.PasswordHash.Substring(0, 20)}...");
+            System.Diagnostics.Debug.WriteLine($"🔑 LOGIN: Input Password: {loginDto.Password}");
 
             // TEMPORARY: Use plain text for testing (replace hash with "admin123" in DB)
             bool isValidPassword = false;
@@ -53,28 +63,40 @@ namespace ProjectTracker.Business.Services
             {
                 if (user.PasswordHash.StartsWith("$2a$") || user.PasswordHash.StartsWith("$2b$"))
                 {
+                    System.Diagnostics.Debug.WriteLine($"🔐 LOGIN: Attempting BCrypt verification...");
                     isValidPassword = BCrypt.Net.BCrypt.Verify(loginDto.Password, user.PasswordHash);
+                    System.Diagnostics.Debug.WriteLine($"🔐 LOGIN: BCrypt result: {isValidPassword}");
                 }
                 else
                 {
+                    System.Diagnostics.Debug.WriteLine($"⚠️  LOGIN: Using plain text comparison (hash doesn't start with $2a$ or $2b$)");
                     // Plain text comparison (TEMPORARY - NOT SECURE!)
                     isValidPassword = user.PasswordHash == loginDto.Password;
                 }
             }
             catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine($"❌ LOGIN: BCrypt exception: {ex.Message}");
                 // Fallback to plain text
                 isValidPassword = user.PasswordHash == loginDto.Password;
             }
             
             if (!isValidPassword)
             {
+                System.Diagnostics.Debug.WriteLine($"❌ LOGIN: Invalid password");
                 return null;
             }
 
+            System.Diagnostics.Debug.WriteLine($"✅ LOGIN: Password valid");
+
             // Check if user is active
             if (!user.IsActive)
+            {
+                System.Diagnostics.Debug.WriteLine($"❌ LOGIN: User is inactive");
                 return null;
+            }
+
+            System.Diagnostics.Debug.WriteLine($"✅ LOGIN: User is active - Login successful!");
 
             // Map to DTO and return
             var userDto = _mapper.Map<UserDto>(user);
@@ -198,6 +220,66 @@ namespace ProjectTracker.Business.Services
         public async Task<bool> EmailExistsAsync(string email)
         {
             return await _unitOfWork.Users.AnyAsync(u => u.Email == email);
+        }
+
+        /// <summary>
+        /// Register a new user
+        /// </summary>
+        public async Task<UserDto> RegisterAsync(RegisterDto registerDto)
+        {
+            // 1. Validate input
+            var validationResult = await _registerValidator.ValidateAsync(registerDto);
+            if (!validationResult.IsValid)
+            {
+                throw new ValidationException(validationResult.Errors);
+            }
+
+            // 2. Check username uniqueness
+            var existingUser = await _unitOfWork.Users
+                .FirstOrDefaultAsync(u => u.Username == registerDto.Username);
+            if (existingUser != null)
+            {
+                throw new Exception("Username already exists");
+            }
+
+            // 3. Check email uniqueness
+            existingUser = await _unitOfWork.Users
+                .FirstOrDefaultAsync(u => u.Email == registerDto.Email);
+            if (existingUser != null)
+            {
+                throw new Exception("Email already exists");
+            }
+
+            // 4. Hash password with BCrypt
+            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(registerDto.Password, 11);
+
+            // 5. Create new user entity
+            var user = new User
+            {
+                Username = registerDto.Username,
+                FullName = registerDto.FullName,
+                Email = registerDto.Email,
+                PasswordHash = hashedPassword,
+                RoleId = registerDto.RoleId,
+                IsActive = true,
+                CreatedAt = DateTime.Now
+            };
+
+            // 6. Save to database
+            await _unitOfWork.Users.AddAsync(user);
+            await _unitOfWork.SaveChangesAsync();
+
+            // 7. Return DTO
+            return _mapper.Map<UserDto>(user);
+        }
+
+        /// <summary>
+        /// Get all roles
+        /// </summary>
+        public async Task<IEnumerable<RoleDto>> GetAllRolesAsync()
+        {
+            var roles = await _unitOfWork.Roles.GetAllAsync();
+            return _mapper.Map<IEnumerable<RoleDto>>(roles);
         }
     }
 }
