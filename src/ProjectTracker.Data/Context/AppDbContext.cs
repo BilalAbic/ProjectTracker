@@ -79,6 +79,16 @@ namespace ProjectTracker.Data.Context
         /// </summary>
         public DbSet<TeamInvitation> TeamInvitations { get; set; }
 
+        /// <summary>
+        /// Time entries table - Detailed time tracking for tasks
+        /// </summary>
+        public DbSet<TimeEntry> TimeEntries { get; set; }
+
+        /// <summary>
+        /// Project snapshots table - Daily historical data for trend analysis
+        /// </summary>
+        public DbSet<ProjectSnapshot> ProjectSnapshots { get; set; }
+
         #endregion
 
         #region Model Configuration
@@ -104,6 +114,8 @@ namespace ProjectTracker.Data.Context
             modelBuilder.Entity<Team>().ToTable("Teams");
             modelBuilder.Entity<TeamMember>().ToTable("TeamMembers");
             modelBuilder.Entity<TeamInvitation>().ToTable("TeamInvitations");
+            modelBuilder.Entity<TimeEntry>().ToTable("TimeEntries");
+            modelBuilder.Entity<ProjectSnapshot>().ToTable("ProjectSnapshots");
 
             // ============================================
             // ROLE CONFIGURATION
@@ -126,6 +138,8 @@ namespace ProjectTracker.Data.Context
                 entity.Property(e => e.FullName).IsRequired().HasMaxLength(100);
                 entity.Property(e => e.Email).IsRequired().HasMaxLength(100);
                 entity.Property(e => e.IsActive).IsRequired().HasDefaultValue(true);
+                entity.Property(e => e.HourlyCost).HasPrecision(10, 2);
+                entity.Property(e => e.Department).HasMaxLength(100);
                 entity.Property(e => e.CreatedAt).IsRequired().HasDefaultValueSql("GETDATE()");
 
                 // Relationship: User -> Role (Many-to-One)
@@ -147,6 +161,8 @@ namespace ProjectTracker.Data.Context
                 entity.Property(e => e.CompletionPercentage).HasPrecision(5, 2).HasDefaultValue(0);
                 entity.Property(e => e.RiskScore).HasPrecision(5, 2);
                 entity.Property(e => e.Budget).HasPrecision(18, 2);
+                entity.Property(e => e.ActualCost).HasPrecision(18, 2).HasDefaultValue(0);
+                entity.Property(e => e.TotalPlannedHours).HasPrecision(10, 2);
                 entity.Property(e => e.CreatedAt).IsRequired().HasDefaultValueSql("GETDATE()");
 
                 // Relationship: Project -> User (Many-to-One)
@@ -377,6 +393,60 @@ namespace ProjectTracker.Data.Context
             });
 
             // ============================================
+            // TIME ENTRY CONFIGURATION (Phase 7)
+            // ============================================
+            modelBuilder.Entity<TimeEntry>(entity =>
+            {
+                entity.HasKey(e => e.TimeEntryId);
+                entity.Property(e => e.WorkDate).IsRequired().HasColumnType("date");
+                entity.Property(e => e.HoursSpent).IsRequired().HasPrecision(5, 2);
+                entity.Property(e => e.IsBillable).IsRequired().HasDefaultValue(true);
+                entity.Property(e => e.Description).HasMaxLength(500);
+                entity.Property(e => e.CreatedAt).IsRequired().HasDefaultValueSql("GETDATE()");
+
+                // Relationship: TimeEntry -> User (Many-to-One)
+                entity.HasOne(te => te.User)
+                    .WithMany(u => u.TimeEntries)
+                    .HasForeignKey(te => te.UserId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                // Relationship: TimeEntry -> Task (Many-to-One)
+                entity.HasOne(te => te.Task)
+                    .WithMany(t => t.TimeEntries)
+                    .HasForeignKey(te => te.TaskId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                // Index on WorkDate for faster date range queries
+                entity.HasIndex(e => e.WorkDate);
+            });
+
+            // ============================================
+            // PROJECT SNAPSHOT CONFIGURATION (Phase 7)
+            // ============================================
+            modelBuilder.Entity<ProjectSnapshot>(entity =>
+            {
+                entity.HasKey(e => e.SnapshotId);
+                entity.Property(e => e.SnapshotDate).IsRequired().HasColumnType("date");
+                entity.Property(e => e.OpenTasksCount).IsRequired().HasDefaultValue(0);
+                entity.Property(e => e.CompletedTasksCount).IsRequired().HasDefaultValue(0);
+                entity.Property(e => e.RemainingHours).IsRequired().HasPrecision(10, 2);
+                entity.Property(e => e.IdealRemainingHours).IsRequired().HasPrecision(10, 2);
+                entity.Property(e => e.BurnedBudget).IsRequired().HasPrecision(18, 2).HasDefaultValue(0);
+                entity.Property(e => e.PlannedValue).IsRequired().HasPrecision(18, 2).HasDefaultValue(0);
+                entity.Property(e => e.EarnedValue).IsRequired().HasPrecision(18, 2).HasDefaultValue(0);
+                entity.Property(e => e.CreatedAt).IsRequired().HasDefaultValueSql("GETDATE()");
+
+                // Relationship: ProjectSnapshot -> Project (Many-to-One)
+                entity.HasOne(ps => ps.Project)
+                    .WithMany(p => p.Snapshots)
+                    .HasForeignKey(ps => ps.ProjectId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                // Unique constraint: One snapshot per project per date
+                entity.HasIndex(e => new { e.ProjectId, e.SnapshotDate }).IsUnique();
+            });
+
+            // ============================================
             // SEED DATA
             // ============================================
             
@@ -384,7 +454,8 @@ namespace ProjectTracker.Data.Context
             modelBuilder.Entity<Role>().HasData(
                 new Role { RoleId = 1, RoleName = "Admin", Description = "System Administrator" },
                 new Role { RoleId = 2, RoleName = "ProjectManager", Description = "Project Manager" },
-                new Role { RoleId = 3, RoleName = "Developer", Description = "Developer" }
+                new Role { RoleId = 3, RoleName = "Developer", Description = "Developer" },
+                new Role { RoleId = 4, RoleName = "Pending", Description = "Waiting for approval - Limited access" }
             );
 
             // Seed Users (Password: admin123 hashed with BCrypt)

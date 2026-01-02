@@ -1,6 +1,7 @@
 ﻿using DevExpress.XtraEditors;
 using Microsoft.Extensions.DependencyInjection;
 using ProjectTracker.Business.Interfaces;
+using ProjectTracker.UI.Helpers;
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -37,12 +38,51 @@ namespace ProjectTracker.UI.Forms.Dashboard
 
             // Setup event handlers
             SetupEventHandlers();
+            
+            // Setup role-based access control
+            SetupRoleBasedAccess();
 
-            // Load initial content (Dashboard) ← AKTIF ET
+            // Load initial content (Dashboard)
             LoadContent(_serviceProvider.GetRequiredService<Content.DashboardContent>());
 
             // Set dashboard as active
             UpdateSidebarSelection(btnDashboard);
+            
+            // Update user display
+            UpdateUserDisplay();
+        }
+        
+        /// <summary>
+        /// Setup role-based access control for sidebar buttons
+        /// </summary>
+        private void SetupRoleBasedAccess()
+        {
+            // Admin: Full access to everything
+            // ProjectManager: No Settings access
+            // Developer: No Reports, Settings, Team management access
+            
+            // Settings - Admin only
+            btnSettings.Visible = SessionManager.IsAdmin;
+            
+            // Reports - Admin and ProjectManager only
+            btnReports.Visible = SessionManager.HasManagementAccess;
+            
+            // Team - Admin and ProjectManager only (for team management)
+            // Developers can still see teams they belong to
+            // btnTeam.Visible = true; // Keep visible but limit functionality inside
+            
+            System.Diagnostics.Debug.WriteLine($"🔐 DASHBOARD: Role-based access configured for {SessionManager.CurrentRoleName}");
+        }
+        
+        /// <summary>
+        /// Update user display in top bar
+        /// </summary>
+        private void UpdateUserDisplay()
+        {
+            if (SessionManager.IsLoggedIn)
+            {
+                btnUser.Text = SessionManager.CurrentUserFullName;
+            }
         }
 
         /// <summary>
@@ -54,13 +94,13 @@ namespace ProjectTracker.UI.Forms.Dashboard
             {
                 // Draw rounded rectangle
                 e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-                using (var brush = new SolidBrush(Color.FromArgb(255, 77, 0))) // Orange
+                using (var brush = new SolidBrush(ColorPalette.AccentRoyalBlue)) // Blue badge
                 {
                     e.Graphics.FillEllipse(brush, 0, 0, 16, 16);
                 }
 
                 // Draw text
-                using (var textBrush = new SolidBrush(Color.White))
+                using (var textBrush = new SolidBrush(ColorPalette.TextPrimary))
                 {
                     var sf = new StringFormat
                     {
@@ -120,7 +160,7 @@ namespace ProjectTracker.UI.Forms.Dashboard
         {
             // Draw rounded rectangle
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-            using (var brush = new SolidBrush(Color.FromArgb(26, 26, 26))) // #1A1A1A
+            using (var brush = new SolidBrush(ColorPalette.BackgroundSlateMedium))
             using (var path = GetRoundedRect(pnlSearchContainer.ClientRectangle, 6))
             {
                 e.Graphics.FillPath(brush, path);
@@ -148,26 +188,26 @@ namespace ProjectTracker.UI.Forms.Dashboard
         {
             // Close button hover (Orange)
             btnClose.MouseEnter += (s, e) =>
-                btnClose.Appearance.ForeColor = Color.FromArgb(255, 77, 0); // Orange
+                btnClose.Appearance.ForeColor = ColorPalette.DangerRed;
             btnClose.MouseLeave += (s, e) =>
-                btnClose.Appearance.ForeColor = Color.FromArgb(161, 161, 161); // Gray
+                btnClose.Appearance.ForeColor = ColorPalette.TextSecondary;
 
             // Notification button hover (White)
             btnNotification.MouseEnter += (s, e) =>
-                btnNotification.Appearance.ForeColor = Color.FromArgb(255, 255, 255); // White
+                btnNotification.Appearance.ForeColor = ColorPalette.TextPrimary;
             btnNotification.MouseLeave += (s, e) =>
-                btnNotification.Appearance.ForeColor = Color.FromArgb(161, 161, 161); // Gray
+                btnNotification.Appearance.ForeColor = ColorPalette.TextSecondary;
 
             // User button hover (White)
             btnUser.MouseEnter += (s, e) =>
             {
-                btnUser.Appearance.ForeColor = Color.FromArgb(255, 255, 255); // White
-                lblUserArrow.Appearance.ForeColor = Color.FromArgb(255, 255, 255); // White
+                btnUser.Appearance.ForeColor = ColorPalette.TextPrimary;
+                lblUserArrow.Appearance.ForeColor = ColorPalette.TextPrimary;
             };
             btnUser.MouseLeave += (s, e) =>
             {
-                btnUser.Appearance.ForeColor = Color.FromArgb(161, 161, 161); // Gray
-                lblUserArrow.Appearance.ForeColor = Color.FromArgb(161, 161, 161); // Gray
+                btnUser.Appearance.ForeColor = ColorPalette.TextSecondary;
+                lblUserArrow.Appearance.ForeColor = ColorPalette.TextSecondary;
             };
         }
 
@@ -197,10 +237,10 @@ namespace ProjectTracker.UI.Forms.Dashboard
             var btn = sender as SimpleButton;
             if (btn == null) return;
 
-            // Don't change color if active (already orange)
+            // Don't change color if active (already blue)
             if (btn != _activeButton)
             {
-                btn.Appearance.ForeColor = Color.FromArgb(255, 255, 255); // White on hover
+                btn.Appearance.ForeColor = ColorPalette.TextPrimary; // White on hover
             }
         }
 
@@ -212,10 +252,10 @@ namespace ProjectTracker.UI.Forms.Dashboard
             var btn = sender as SimpleButton;
             if (btn == null) return;
 
-            // Don't change color if active (keep orange)
+            // Don't change color if active (keep blue)
             if (btn != _activeButton)
             {
-                btn.Appearance.ForeColor = Color.FromArgb(161, 161, 161); // Gray
+                btn.Appearance.ForeColor = ColorPalette.TextSecondary; // Gray
             }
         }
 
@@ -282,9 +322,21 @@ namespace ProjectTracker.UI.Forms.Dashboard
         /// </summary>
         private void btnReports_Click(object sender, EventArgs e)
         {
-            XtraMessageBox.Show("📈 Reports - Coming soon!", "Info",
-                MessageBoxButtons.OK, MessageBoxIcon.Information);
+            var reportsContent = _serviceProvider.GetRequiredService<Content.ReportsContent>();
+            LoadContent(reportsContent);
             UpdateSidebarSelection(btnReports);
+        }
+
+        /// <summary>
+        /// Advanced Analytics button click (Phase 7.4)
+        /// </summary>
+        private void btnAnalytics_Click(object sender, EventArgs e)
+        {
+            // TODO: Implement AdvancedAnalyticsContent
+            FormStyleHelper.ShowInfo("📊 Advanced Analytics - Coming soon!");
+            // var analyticsContent = _serviceProvider.GetRequiredService<Content.AdvancedAnalyticsContent>();
+            // LoadContent(analyticsContent);
+            // UpdateSidebarSelection(btnAnalytics);
         }
 
         /// <summary>
@@ -292,8 +344,7 @@ namespace ProjectTracker.UI.Forms.Dashboard
         /// </summary>
         private void btnSettings_Click(object sender, EventArgs e)
         {
-            XtraMessageBox.Show("⚙ Settings - Coming soon!", "Info",
-                MessageBoxButtons.OK, MessageBoxIcon.Information);
+            FormStyleHelper.ShowInfo("⚙ Settings - Coming soon!");
             UpdateSidebarSelection(btnSettings);
         }
 
@@ -305,11 +356,11 @@ namespace ProjectTracker.UI.Forms.Dashboard
             // Reset all buttons
             foreach (var btn in pnlSidebar.Controls.OfType<SimpleButton>())
             {
-                btn.Appearance.ForeColor = Color.FromArgb(161, 161, 161); // Gray
+                btn.Appearance.ForeColor = ColorPalette.TextSecondary; // Gray
             }
 
             // Highlight active button
-            activeButton.Appearance.ForeColor = Color.FromArgb(255, 77, 0); // Orange
+            activeButton.Appearance.ForeColor = ColorPalette.AccentRoyalBlue; // Blue
             _activeButton = activeButton;
 
             // Animate indicator to active button position

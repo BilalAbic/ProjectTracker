@@ -66,6 +66,18 @@
         public decimal? RiskScore { get; set; }
 
         /// <summary>
+        /// Projeye harcanan gerçek maliyet (Actual Cost for EVM)
+        /// Calculated from TimeEntry: Sum(HoursSpent * UserHourlyCost)
+        /// </summary>
+        public decimal ActualCost { get; set; } = 0;
+
+        /// <summary>
+        /// Başlangıç toplam planlı saat (Burndown baseline)
+        /// Sum of all tasks' EstimatedHours at project start
+        /// </summary>
+        public decimal? TotalPlannedHours { get; set; }
+
+        /// <summary>
         /// When was this project created?
         /// </summary>
         public DateTime CreatedAt { get; set; } = DateTime.Now;
@@ -99,5 +111,10 @@
         /// Navigation property - Risk analysis records
         /// </summary>
         public virtual ICollection<ProjectRisk> Risks { get; set; } = new List<ProjectRisk>();
+
+        /// <summary>
+        /// Navigation property - Daily snapshots for trend analysis
+        /// </summary>
+        public virtual ICollection<ProjectSnapshot> Snapshots { get; set; } = new List<ProjectSnapshot>();
     }
 }

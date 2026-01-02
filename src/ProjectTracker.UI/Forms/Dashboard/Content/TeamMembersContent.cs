@@ -2,6 +2,7 @@
 using DevExpress.XtraEditors.Repository;
 using ProjectTracker.Business.DTOs;
 using ProjectTracker.Business.Interfaces;
+using ProjectTracker.UI.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -88,8 +89,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
                 var activeTeam = await _teamService.GetActiveTeamAsync();
                 if (activeTeam == null)
                 {
-                    XtraMessageBox.Show("No active team selected", "Error",
-                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    FormStyleHelper.ShowWarning("No active team selected");
                     return;
                 }
                 
@@ -101,8 +101,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             }
             catch (Exception ex)
             {
-                XtraMessageBox.Show($"Error loading members: {ex.Message}", "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                FormStyleHelper.ShowError($"Error loading members: {ex.Message}");
             }
             finally
             {
@@ -175,13 +174,11 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
                 member.RoleName = newRoleText;
                 grvMembers.RefreshData();
                 
-                XtraMessageBox.Show($"Role updated to {newRoleText}!", "Success",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                FormStyleHelper.ShowSuccess($"Role updated to {newRoleText}!");
             }
             catch (Exception ex)
             {
-                XtraMessageBox.Show($"Error updating role: {ex.Message}", "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                FormStyleHelper.ShowError($"Error updating role: {ex.Message}");
                 grvMembers.CancelUpdateCurrentRow();
             }
         }
@@ -225,12 +222,12 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
         {
             return roleName switch
             {
-                "Owner" => Color.FromArgb(0, 102, 255),      // Blue
-                "Admin" => Color.FromArgb(155, 89, 182),     // Purple
-                "Project Manager" => Color.FromArgb(255, 184, 0), // Yellow
-                "Developer" => Color.FromArgb(0, 208, 132),  // Green
-                "Observer" => Color.FromArgb(161, 161, 161), // Gray
-                _ => Color.Gray
+                "Owner" => ColorPalette.AccentRoyalBlue,
+                "Admin" => ColorPalette.CategoryPurple,
+                "Project Manager" => ColorPalette.WarningAmber,
+                "Developer" => ColorPalette.SuccessGreen,
+                "Observer" => ColorPalette.TextSecondary,
+                _ => ColorPalette.TextSecondary
             };
         }
         

@@ -2,8 +2,11 @@
 using ProjectTracker.Business.DTOs;
 using ProjectTracker.Business.Interfaces;
 using ProjectTracker.Core.Enums;
+using ProjectTracker.UI.Helpers;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -17,8 +20,10 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
         #region Fields
 
         private readonly IProjectService _projectService;
+        private readonly ITeamService _teamService;
         private ProjectDto? _currentProject;
         private bool _isEditMode;
+        private List<TeamDto> _userTeams = new();
 
         #endregion
 
@@ -36,15 +41,30 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
         /// <summary>
         /// Initializes a new instance of the ProjectDetailControl class
         /// </summary>
-        public ProjectDetailControl(IProjectService projectService, ProjectDto? project = null)
+        public ProjectDetailControl(IProjectService projectService, ITeamService teamService, ProjectDto? project = null)
         {
             InitializeComponent();
             _projectService = projectService;
+            _teamService = teamService;
             _currentProject = project;
             _isEditMode = project != null;
 
+            // YETKİ KONTROLÜ: Developer proje oluşturamaz/güncelleyemez
+            if (SessionManager.IsDeveloper)
+            {
+                this.Load += (s, e) =>
+                {
+                    FormStyleHelper.ShowWarning("You don't have permission to create/edit projects.");
+                    NavigateBack();
+                };
+                return;
+            }
+
             SetupEventHandlers();
             SetupForm();
+            
+            // Load teams after form is loaded
+            this.Load += async (s, e) => await LoadTeamsAsync();
         }
 
         /// <summary>
@@ -75,6 +95,12 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             // Priority dropdown
             cmbPriority.Properties.Items.AddRange(new[] { "Low", "Medium", "High", "Critical" });
 
+            // Team LookUpEdit setup
+            lueManager.Properties.DisplayMember = "TeamName";
+            lueManager.Properties.ValueMember = "TeamId";
+            lueManager.Properties.Columns.Add(new DevExpress.XtraEditors.Controls.LookUpColumnInfo("TeamName", "Team Name"));
+            lueManager.Properties.ShowHeader = false;
+
             if (_isEditMode && _currentProject != null)
             {
                 lblTitle.Text = "📁 Edit Project";
@@ -87,6 +113,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
                 cmbStatus.Text = _currentProject.Status.ToString();
                 cmbPriority.Text = _currentProject.Priority.ToString();
                 spinBudget.Value = _currentProject.Budget ?? 0;
+                // TeamId will be set after teams are loaded
             }
             else
             {
@@ -98,16 +125,51 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             }
         }
 
+        private async System.Threading.Tasks.Task LoadTeamsAsync()
+        {
+            try
+            {
+                // Load teams based on user role
+                if (SessionManager.IsAdmin)
+                {
+                    var teams = await _teamService.GetAllTeamsAsync();
+                    _userTeams = teams.ToList();
+                }
+                else
+                {
+                    var teams = await _teamService.GetUserTeamsAsync();
+                    _userTeams = teams.ToList();
+                }
+
+                lueManager.Properties.DataSource = _userTeams;
+
+                // Set selected team if editing
+                if (_isEditMode && _currentProject != null && _currentProject.TeamId > 0)
+                {
+                    lueManager.EditValue = _currentProject.TeamId;
+                }
+                else if (_userTeams.Count == 1)
+                {
+                    // Auto-select if user has only one team
+                    lueManager.EditValue = _userTeams[0].TeamId;
+                }
+            }
+            catch (Exception ex)
+            {
+                FormStyleHelper.ShowError($"Error loading teams: {ex.Message}");
+            }
+        }
+
         private void SetupHoverEffects()
         {
             btnBack.MouseEnter += (s, e) => btnBack.Appearance.ForeColor = Color.White;
-            btnBack.MouseLeave += (s, e) => btnBack.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            btnBack.MouseLeave += (s, e) => btnBack.Appearance.ForeColor = ColorPalette.TextSecondary;
 
-            btnCancel.MouseEnter += (s, e) => btnCancel.Appearance.BackColor = Color.FromArgb(60, 60, 60);
-            btnCancel.MouseLeave += (s, e) => btnCancel.Appearance.BackColor = Color.FromArgb(42, 42, 42);
+            btnCancel.MouseEnter += (s, e) => btnCancel.Appearance.BackColor = ColorPalette.BackgroundSlateLight;
+            btnCancel.MouseLeave += (s, e) => btnCancel.Appearance.BackColor = ColorPalette.BorderSlate;
 
-            btnSave.MouseEnter += (s, e) => btnSave.Appearance.BackColor = Color.FromArgb(255, 100, 50);
-            btnSave.MouseLeave += (s, e) => btnSave.Appearance.BackColor = Color.FromArgb(255, 77, 0);
+            btnSave.MouseEnter += (s, e) => btnSave.Appearance.BackColor = ColorPalette.AccentSkyBlue;
+            btnSave.MouseLeave += (s, e) => btnSave.Appearance.BackColor = ColorPalette.AccentRoyalBlue;
         }
 
         #endregion
@@ -119,13 +181,8 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
 
         private void btnCancel_Click(object? sender, EventArgs e)
         {
-            var result = XtraMessageBox.Show(
-                "Are you sure you want to cancel?",
-                "Confirm Cancel",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Question);
-
-            if (result == DialogResult.Yes) NavigateBack();
+            if (FormStyleHelper.ShowQuestion("Are you sure you want to cancel?"))
+                NavigateBack();
         }
 
         private async void btnSave_Click(object? sender, EventArgs e)
@@ -144,15 +201,13 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
 
                 ProjectSaved?.Invoke(this, EventArgs.Empty);
 
-                XtraMessageBox.Show(
-                    _isEditMode ? "Project updated!" : "Project created!",
-                    "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                FormStyleHelper.ShowSuccess(_isEditMode ? "Project updated!" : "Project created!");
 
                 NavigateBack();
             }
             catch (Exception ex)
             {
-                XtraMessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                FormStyleHelper.ShowError($"Error: {ex.Message}");
             }
             finally
             {
@@ -169,10 +224,18 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
         {
             if (string.IsNullOrWhiteSpace(txtProjectName.Text))
             {
-                XtraMessageBox.Show("Project name is required.", "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                FormStyleHelper.ShowWarning("Project name is required.");
                 txtProjectName.Focus();
                 return false;
             }
+
+            if (lueManager.EditValue == null || Convert.ToInt32(lueManager.EditValue) <= 0)
+            {
+                FormStyleHelper.ShowWarning("Please select a team for this project.");
+                lueManager.Focus();
+                return false;
+            }
+
             return true;
         }
 
@@ -191,7 +254,8 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
                 Status = Enum.Parse<ProjectStatus>(cmbStatus.Text),
                 Priority = Enum.Parse<Priority>(cmbPriority.Text),
                 Budget = (decimal)spinBudget.Value,
-                CreatedByUserId = 1 // TODO: Get current user ID
+                CreatedByUserId = SessionManager.CurrentUserId,
+                TeamId = Convert.ToInt32(lueManager.EditValue)
             };
 
             await _projectService.CreateProjectAsync(dto);
@@ -210,7 +274,8 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
                 EndDate = dateEndDate.DateTime == DateTime.MinValue ? null : dateEndDate.DateTime,
                 Status = Enum.Parse<ProjectStatus>(cmbStatus.Text),
                 Priority = Enum.Parse<Priority>(cmbPriority.Text),
-                Budget = (decimal)spinBudget.Value
+                Budget = (decimal)spinBudget.Value,
+                TeamId = Convert.ToInt32(lueManager.EditValue)
             };
 
             await _projectService.UpdateProjectAsync(_currentProject.ProjectId, dto);
@@ -225,7 +290,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             var parentForm = this.FindForm() as FrmDashboard;
             if (parentForm != null)
             {
-                var projectsContent = new ProjectsContent(_projectService);
+                var projectsContent = new ProjectsContent(_projectService, _teamService);
                 parentForm.LoadContent(projectsContent);
             }
         }

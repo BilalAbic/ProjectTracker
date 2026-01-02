@@ -1,4 +1,6 @@
-﻿namespace ProjectTracker.UI.Forms.Dashboard.Content
+﻿using ProjectTracker.UI.Helpers;
+
+namespace ProjectTracker.UI.Forms.Dashboard.Content
 {
     partial class TeamMembersContent
     {
@@ -57,7 +59,7 @@
             // 
             // pnlHeader
             // 
-            pnlHeader.Appearance.BackColor = Color.FromArgb(11, 11, 11);
+            pnlHeader.Appearance.BackColor = ColorPalette.BackgroundDeepNavy;
             pnlHeader.Appearance.Options.UseBackColor = true;
             pnlHeader.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
             pnlHeader.Controls.Add(lblTitle);
@@ -71,7 +73,7 @@
             // lblTitle
             // 
             lblTitle.Appearance.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
-            lblTitle.Appearance.ForeColor = Color.FromArgb(255, 255, 255);
+            lblTitle.Appearance.ForeColor = ColorPalette.TextPrimary;
             lblTitle.Appearance.Options.UseFont = true;
             lblTitle.Appearance.Options.UseForeColor = true;
             lblTitle.Location = new Point(0, 10);
@@ -83,7 +85,7 @@
             // lblSubtitle
             // 
             lblSubtitle.Appearance.Font = new Font("Segoe UI", 10F);
-            lblSubtitle.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            lblSubtitle.Appearance.ForeColor = ColorPalette.TextSecondary;
             lblSubtitle.Appearance.Options.UseFont = true;
             lblSubtitle.Appearance.Options.UseForeColor = true;
             lblSubtitle.Location = new Point(0, 48);
@@ -94,7 +96,7 @@
             // 
             // pnlFilters
             // 
-            pnlFilters.Appearance.BackColor = Color.FromArgb(21, 21, 21);
+            pnlFilters.Appearance.BackColor = ColorPalette.BackgroundSlateDark;
             pnlFilters.Appearance.Options.UseBackColor = true;
             pnlFilters.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
             pnlFilters.Controls.Add(txtSearch);
@@ -110,9 +112,9 @@
             // 
             txtSearch.Location = new Point(15, 15);
             txtSearch.Name = "txtSearch";
-            txtSearch.Properties.Appearance.BackColor = Color.FromArgb(26, 26, 26);
+            txtSearch.Properties.Appearance.BackColor = ColorPalette.BackgroundSlateMedium;
             txtSearch.Properties.Appearance.Font = new Font("Segoe UI", 9F);
-            txtSearch.Properties.Appearance.ForeColor = Color.FromArgb(255, 255, 255);
+            txtSearch.Properties.Appearance.ForeColor = ColorPalette.TextPrimary;
             txtSearch.Properties.Appearance.Options.UseBackColor = true;
             txtSearch.Properties.Appearance.Options.UseFont = true;
             txtSearch.Properties.Appearance.Options.UseForeColor = true;
@@ -125,9 +127,9 @@
             // 
             cmbRoleFilter.Location = new Point(330, 15);
             cmbRoleFilter.Name = "cmbRoleFilter";
-            cmbRoleFilter.Properties.Appearance.BackColor = Color.FromArgb(26, 26, 26);
+            cmbRoleFilter.Properties.Appearance.BackColor = ColorPalette.BackgroundSlateMedium;
             cmbRoleFilter.Properties.Appearance.Font = new Font("Segoe UI", 9F);
-            cmbRoleFilter.Properties.Appearance.ForeColor = Color.FromArgb(255, 255, 255);
+            cmbRoleFilter.Properties.Appearance.ForeColor = ColorPalette.TextPrimary;
             cmbRoleFilter.Properties.Appearance.Options.UseBackColor = true;
             cmbRoleFilter.Properties.Appearance.Options.UseFont = true;
             cmbRoleFilter.Properties.Appearance.Options.UseForeColor = true;
@@ -140,9 +142,9 @@
             // 
             // btnClear
             // 
-            btnClear.Appearance.BackColor = Color.FromArgb(42, 42, 42);
+            btnClear.Appearance.BackColor = ColorPalette.BorderSlate;
             btnClear.Appearance.Font = new Font("Segoe UI", 9F);
-            btnClear.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            btnClear.Appearance.ForeColor = ColorPalette.TextSecondary;
             btnClear.Appearance.Options.UseBackColor = true;
             btnClear.Appearance.Options.UseFont = true;
             btnClear.Appearance.Options.UseForeColor = true;
@@ -165,16 +167,16 @@
             // 
             // grvMembers
             // 
-            grvMembers.Appearance.EvenRow.BackColor = Color.FromArgb(26, 26, 26);
+            grvMembers.Appearance.EvenRow.BackColor = ColorPalette.BackgroundSlateDark;
             grvMembers.Appearance.EvenRow.Options.UseBackColor = true;
-            grvMembers.Appearance.HeaderPanel.BackColor = Color.FromArgb(42, 42, 42);
+            grvMembers.Appearance.HeaderPanel.BackColor = ColorPalette.BackgroundSlateDark;
             grvMembers.Appearance.HeaderPanel.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            grvMembers.Appearance.HeaderPanel.ForeColor = Color.FromArgb(255, 255, 255);
+            grvMembers.Appearance.HeaderPanel.ForeColor = ColorPalette.TextSecondary;
             grvMembers.Appearance.HeaderPanel.Options.UseBackColor = true;
             grvMembers.Appearance.HeaderPanel.Options.UseFont = true;
             grvMembers.Appearance.HeaderPanel.Options.UseForeColor = true;
-            grvMembers.Appearance.Row.BackColor = Color.FromArgb(21, 21, 21);
-            grvMembers.Appearance.Row.ForeColor = Color.FromArgb(255, 255, 255);
+            grvMembers.Appearance.Row.BackColor = ColorPalette.BackgroundSlateDark;
+            grvMembers.Appearance.Row.ForeColor = ColorPalette.TextPrimary;
             grvMembers.Appearance.Row.Options.UseBackColor = true;
             grvMembers.Appearance.Row.Options.UseForeColor = true;
             grvMembers.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] { colInitials, colUserName, colEmail, colRole, colJoinedAt, colActions });
@@ -254,7 +256,7 @@
             // 
             AutoScaleDimensions = new SizeF(6F, 13F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.FromArgb(11, 11, 11);
+            BackColor = ColorPalette.BackgroundDeepNavy;
             Controls.Add(grdMembers);
             Controls.Add(pnlFilters);
             Controls.Add(pnlHeader);

@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using ProjectTracker.Business.DTOs;
 using ProjectTracker.Business.Interfaces;
+using ProjectTracker.UI.Helpers;
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -13,6 +14,7 @@ namespace ProjectTracker.UI.Forms.Login
     /// Modern login form with split-panel design
     /// Provides user authentication functionality
     /// Created by: Developer, 18/12/2024
+    /// Updated: 31/12/2024 - Modern Slate Blue Theme Applied
     /// </summary>
     public partial class FrmLogin : DevExpress.XtraEditors.XtraForm
     {
@@ -72,8 +74,7 @@ namespace ProjectTracker.UI.Forms.Login
                 // Validate username
                 if (string.IsNullOrWhiteSpace(txtUsername.Text))
                 {
-                    XtraMessageBox.Show("Please enter username", "Validation",
-                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    FormStyleHelper.ShowWarning("Please enter username");
                     txtUsername.Focus();
                     return;
                 }
@@ -81,8 +82,7 @@ namespace ProjectTracker.UI.Forms.Login
                 // Validate password
                 if (string.IsNullOrWhiteSpace(txtPassword.Text))
                 {
-                    XtraMessageBox.Show("Please enter password", "Validation",
-                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    FormStyleHelper.ShowWarning("Please enter password");
                     txtPassword.Focus();
                     return;
                 }
@@ -102,24 +102,34 @@ namespace ProjectTracker.UI.Forms.Login
 
                 if (user != null)
                 {
+                    // Set session
+                    SessionManager.Login(user);
+
                     // Login successful
                     this.Hide();
 
-                    // Dashboard Show
-                    var dashboard = Program.ServiceProvider
-                        .GetRequiredService<Forms.Dashboard.FrmDashboard>();
-                    dashboard.Show();
-
-                    // Dashboard kapanınca uygulama kapansın
-                    dashboard.FormClosed += (s, args) => Application.Exit();
+                    // Role-based navigation
+                    if (SessionManager.IsPending)
+                    {
+                        // Pending users go to waitlist form
+                        var waitlistForm = Program.ServiceProvider
+                            .GetRequiredService<Forms.Login.FrmPendingWaitlist>();
+                        waitlistForm.Show();
+                        waitlistForm.FormClosed += (s, args) => Application.Exit();
+                    }
+                    else
+                    {
+                        // Other roles go to Dashboard
+                        var dashboard = Program.ServiceProvider
+                            .GetRequiredService<Forms.Dashboard.FrmDashboard>();
+                        dashboard.Show();
+                        dashboard.FormClosed += (s, args) => Application.Exit();
+                    }
                 }
                 else
                 {
                     // Login failed
-                    XtraMessageBox.Show("Invalid username or password",
-                        "Login Failed",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Error);
+                    FormStyleHelper.ShowError("Invalid username or password");
 
                     // Clear password and reset focus
                     txtPassword.Text = string.Empty;
@@ -129,8 +139,7 @@ namespace ProjectTracker.UI.Forms.Login
             catch (Exception ex)
             {
                 // Handle unexpected errors
-                XtraMessageBox.Show($"Error: {ex.Message}", "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                FormStyleHelper.ShowError($"Error: {ex.Message}");
             }
             finally
             {

@@ -1,4 +1,6 @@
-﻿namespace ProjectTracker.UI.Forms.Dashboard.Content
+﻿using ProjectTracker.UI.Helpers;
+
+namespace ProjectTracker.UI.Forms.Dashboard.Content
 {
     partial class TasksContent
     {
@@ -36,11 +38,15 @@
             pnlFilters = new DevExpress.XtraEditors.PanelControl();
             btnClearFilters = new DevExpress.XtraEditors.SimpleButton();
             cmbPriorityFilter = new DevExpress.XtraEditors.ComboBoxEdit();
-            cmbStatusFilter = new DevExpress.XtraEditors.ComboBoxEdit();
+            cmbProjectFilter = new DevExpress.XtraEditors.ComboBoxEdit();
             txtSearch = new DevExpress.XtraEditors.TextEdit();
             pnlContentContainer = new DevExpress.XtraEditors.PanelControl();
             grdKanban = new DevExpress.XtraGrid.GridControl();
             tileViewKanban = new DevExpress.XtraGrid.Views.Tile.TileView();
+            tileViewColumn1 = new DevExpress.XtraGrid.Columns.TileViewColumn();
+            tileViewColumn2 = new DevExpress.XtraGrid.Columns.TileViewColumn();
+            tileViewColumn3 = new DevExpress.XtraGrid.Columns.TileViewColumn();
+            tileViewColumn4 = new DevExpress.XtraGrid.Columns.TileViewColumn();
             grdTasks = new DevExpress.XtraGrid.GridControl();
             gridView1 = new DevExpress.XtraGrid.Views.Grid.GridView();
             TaskName = new DevExpress.XtraGrid.Columns.GridColumn();
@@ -54,16 +60,15 @@
             pnlFooter = new DevExpress.XtraEditors.PanelControl();
             btnRefresh = new DevExpress.XtraEditors.SimpleButton();
             lblRecordCount = new DevExpress.XtraEditors.LabelControl();
-            tileViewColumn1 = new DevExpress.XtraGrid.Columns.TileViewColumn();
-            tileViewColumn2 = new DevExpress.XtraGrid.Columns.TileViewColumn();
-            tileViewColumn3 = new DevExpress.XtraGrid.Columns.TileViewColumn();
-            tileViewColumn4 = new DevExpress.XtraGrid.Columns.TileViewColumn();
+            // Repository Items
+            repositoryItemProgressBar = new DevExpress.XtraEditors.Repository.RepositoryItemProgressBar();
+            repositoryItemButtonEdit = new DevExpress.XtraEditors.Repository.RepositoryItemButtonEdit();
             ((System.ComponentModel.ISupportInitialize)pnlHeader).BeginInit();
             pnlHeader.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pnlFilters).BeginInit();
             pnlFilters.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)cmbPriorityFilter.Properties).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)cmbStatusFilter.Properties).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)cmbProjectFilter.Properties).BeginInit();
             ((System.ComponentModel.ISupportInitialize)txtSearch.Properties).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pnlContentContainer).BeginInit();
             pnlContentContainer.SuspendLayout();
@@ -73,11 +78,13 @@
             ((System.ComponentModel.ISupportInitialize)gridView1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pnlFooter).BeginInit();
             pnlFooter.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)repositoryItemProgressBar).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)repositoryItemButtonEdit).BeginInit();
             SuspendLayout();
             // 
             // pnlHeader
             // 
-            pnlHeader.Appearance.BackColor = Color.FromArgb(11, 11, 11);
+            pnlHeader.Appearance.BackColor = Color.FromArgb(26, 31, 38);
             pnlHeader.Appearance.Options.UseBackColor = true;
             pnlHeader.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
             pnlHeader.Controls.Add(btnViewSwitcher);
@@ -93,8 +100,8 @@
             // btnViewSwitcher
             // 
             btnViewSwitcher.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnViewSwitcher.Appearance.BackColor = Color.FromArgb(42, 42, 42);
-            btnViewSwitcher.Appearance.BorderColor = Color.FromArgb(42, 42, 42);
+            btnViewSwitcher.Appearance.BackColor = Color.FromArgb(51, 65, 85);
+            btnViewSwitcher.Appearance.BorderColor = Color.FromArgb(51, 65, 85);
             btnViewSwitcher.Appearance.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             btnViewSwitcher.Appearance.ForeColor = Color.White;
             btnViewSwitcher.Appearance.Options.UseBackColor = true;
@@ -110,8 +117,8 @@
             // btnNewTask
             // 
             btnNewTask.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnNewTask.Appearance.BackColor = Color.FromArgb(255, 77, 0);
-            btnNewTask.Appearance.BorderColor = Color.FromArgb(255, 77, 0);
+            btnNewTask.Appearance.BackColor = Color.FromArgb(91, 141, 239);
+            btnNewTask.Appearance.BorderColor = Color.FromArgb(91, 141, 239);
             btnNewTask.Appearance.Font = new Font("Segoe UI", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnNewTask.Appearance.ForeColor = Color.White;
             btnNewTask.Appearance.Options.UseBackColor = true;
@@ -127,7 +134,7 @@
             // lblSubtitle
             // 
             lblSubtitle.Appearance.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            lblSubtitle.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            lblSubtitle.Appearance.ForeColor = Color.FromArgb(203, 213, 225);
             lblSubtitle.Appearance.Options.UseFont = true;
             lblSubtitle.Appearance.Options.UseForeColor = true;
             lblSubtitle.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
@@ -152,12 +159,12 @@
             // 
             // pnlFilters
             // 
-            pnlFilters.Appearance.BackColor = Color.FromArgb(21, 21, 21);
+            pnlFilters.Appearance.BackColor = Color.FromArgb(36, 43, 61);
             pnlFilters.Appearance.Options.UseBackColor = true;
             pnlFilters.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
             pnlFilters.Controls.Add(btnClearFilters);
             pnlFilters.Controls.Add(cmbPriorityFilter);
-            pnlFilters.Controls.Add(cmbStatusFilter);
+            pnlFilters.Controls.Add(cmbProjectFilter);
             pnlFilters.Controls.Add(txtSearch);
             pnlFilters.Dock = DockStyle.Top;
             pnlFilters.Location = new Point(0, 80);
@@ -168,10 +175,10 @@
             // 
             // btnClearFilters
             // 
-            btnClearFilters.Appearance.BackColor = Color.FromArgb(42, 42, 42);
-            btnClearFilters.Appearance.BorderColor = Color.FromArgb(42, 42, 42);
+            btnClearFilters.Appearance.BackColor = Color.FromArgb(51, 65, 85);
+            btnClearFilters.Appearance.BorderColor = Color.FromArgb(51, 65, 85);
             btnClearFilters.Appearance.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            btnClearFilters.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            btnClearFilters.Appearance.ForeColor = Color.FromArgb(203, 213, 225);
             btnClearFilters.Appearance.Options.UseBackColor = true;
             btnClearFilters.Appearance.Options.UseBorderColor = true;
             btnClearFilters.Appearance.Options.UseFont = true;
@@ -186,8 +193,8 @@
             // 
             cmbPriorityFilter.Location = new Point(505, 15);
             cmbPriorityFilter.Name = "cmbPriorityFilter";
-            cmbPriorityFilter.Properties.Appearance.BackColor = Color.FromArgb(26, 26, 26);
-            cmbPriorityFilter.Properties.Appearance.BorderColor = Color.FromArgb(42, 42, 42);
+            cmbPriorityFilter.Properties.Appearance.BackColor = Color.FromArgb(30, 42, 58);
+            cmbPriorityFilter.Properties.Appearance.BorderColor = Color.FromArgb(51, 65, 85);
             cmbPriorityFilter.Properties.Appearance.ForeColor = Color.White;
             cmbPriorityFilter.Properties.Appearance.Options.UseBackColor = true;
             cmbPriorityFilter.Properties.Appearance.Options.UseBorderColor = true;
@@ -200,32 +207,31 @@
             cmbPriorityFilter.Size = new Size(160, 30);
             cmbPriorityFilter.TabIndex = 2;
             // 
-            // cmbStatusFilter
+            // cmbProjectFilter
             // 
-            cmbStatusFilter.Location = new Point(330, 15);
-            cmbStatusFilter.Name = "cmbStatusFilter";
-            cmbStatusFilter.Properties.Appearance.BackColor = Color.FromArgb(26, 26, 26);
-            cmbStatusFilter.Properties.Appearance.BorderColor = Color.FromArgb(42, 42, 42);
-            cmbStatusFilter.Properties.Appearance.ForeColor = Color.White;
-            cmbStatusFilter.Properties.Appearance.Options.UseBackColor = true;
-            cmbStatusFilter.Properties.Appearance.Options.UseBorderColor = true;
-            cmbStatusFilter.Properties.Appearance.Options.UseForeColor = true;
-            cmbStatusFilter.Properties.AutoHeight = false;
-            cmbStatusFilter.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple;
-            cmbStatusFilter.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
-            cmbStatusFilter.Properties.Items.AddRange(new object[] { "All Status", "ToDo", "InProgress", "Done", "Blocked" });
-            cmbStatusFilter.Properties.NullText = "All Status";
-            cmbStatusFilter.Size = new Size(160, 30);
-            cmbStatusFilter.TabIndex = 1;
+            cmbProjectFilter.Location = new Point(330, 15);
+            cmbProjectFilter.Name = "cmbProjectFilter";
+            cmbProjectFilter.Properties.Appearance.BackColor = Color.FromArgb(30, 42, 58);
+            cmbProjectFilter.Properties.Appearance.BorderColor = Color.FromArgb(51, 65, 85);
+            cmbProjectFilter.Properties.Appearance.ForeColor = Color.White;
+            cmbProjectFilter.Properties.Appearance.Options.UseBackColor = true;
+            cmbProjectFilter.Properties.Appearance.Options.UseBorderColor = true;
+            cmbProjectFilter.Properties.Appearance.Options.UseForeColor = true;
+            cmbProjectFilter.Properties.AutoHeight = false;
+            cmbProjectFilter.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple;
+            cmbProjectFilter.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
+            cmbProjectFilter.Properties.NullText = "All Projects";
+            cmbProjectFilter.Size = new Size(160, 30);
+            cmbProjectFilter.TabIndex = 1;
             // 
             // txtSearch
             // 
             txtSearch.EditValue = "";
             txtSearch.Location = new Point(15, 15);
             txtSearch.Name = "txtSearch";
-            txtSearch.Properties.Appearance.BackColor = Color.FromArgb(26, 26, 26);
-            txtSearch.Properties.Appearance.BorderColor = Color.FromArgb(42, 42, 42);
-            txtSearch.Properties.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            txtSearch.Properties.Appearance.BackColor = Color.FromArgb(30, 42, 58);
+            txtSearch.Properties.Appearance.BorderColor = Color.FromArgb(51, 65, 85);
+            txtSearch.Properties.Appearance.ForeColor = Color.FromArgb(203, 213, 225);
             txtSearch.Properties.Appearance.Options.UseBackColor = true;
             txtSearch.Properties.Appearance.Options.UseBorderColor = true;
             txtSearch.Properties.Appearance.Options.UseForeColor = true;
@@ -237,7 +243,7 @@
             // 
             // pnlContentContainer
             // 
-            pnlContentContainer.Appearance.BackColor = Color.FromArgb(18, 18, 20);
+            pnlContentContainer.Appearance.BackColor = Color.FromArgb(26, 31, 38);
             pnlContentContainer.Appearance.Options.UseBackColor = true;
             pnlContentContainer.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
             pnlContentContainer.Controls.Add(grdKanban);
@@ -263,27 +269,27 @@
             // 
             // tileViewKanban
             // 
-            tileViewKanban.Appearance.Group.BackColor = Color.FromArgb(18, 18, 20);
+            tileViewKanban.Appearance.EmptySpace.BackColor = Color.FromArgb(26, 31, 38);
+            tileViewKanban.Appearance.EmptySpace.Options.UseBackColor = true;
+            tileViewKanban.Appearance.Group.BackColor = Color.FromArgb(26, 31, 38);
             tileViewKanban.Appearance.Group.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
-            tileViewKanban.Appearance.Group.ForeColor = Color.FromArgb(228, 228, 231);
+            tileViewKanban.Appearance.Group.ForeColor = Color.FromArgb(248, 250, 252);
             tileViewKanban.Appearance.Group.Options.UseBackColor = true;
             tileViewKanban.Appearance.Group.Options.UseFont = true;
             tileViewKanban.Appearance.Group.Options.UseForeColor = true;
             tileViewKanban.Appearance.Group.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Near;
             tileViewKanban.Appearance.Group.TextOptions.VAlignment = DevExpress.Utils.VertAlignment.Center;
-            tileViewKanban.Appearance.ItemHovered.BackColor = Color.FromArgb(45, 45, 48);
-            tileViewKanban.Appearance.ItemHovered.BorderColor = Color.FromArgb(99, 102, 241);
+            tileViewKanban.Appearance.ItemHovered.BackColor = Color.FromArgb(42, 63, 95);
+            tileViewKanban.Appearance.ItemHovered.BorderColor = Color.FromArgb(91, 141, 239);
             tileViewKanban.Appearance.ItemHovered.Options.UseBackColor = true;
             tileViewKanban.Appearance.ItemHovered.Options.UseBorderColor = true;
-            tileViewKanban.Appearance.ItemNormal.BackColor = Color.FromArgb(30, 30, 32);
-            tileViewKanban.Appearance.ItemNormal.BorderColor = Color.FromArgb(63, 63, 70);
+            tileViewKanban.Appearance.ItemNormal.BackColor = Color.FromArgb(30, 42, 58);
+            tileViewKanban.Appearance.ItemNormal.BorderColor = Color.FromArgb(51, 65, 85);
             tileViewKanban.Appearance.ItemNormal.ForeColor = Color.White;
             tileViewKanban.Appearance.ItemNormal.Options.UseBackColor = true;
             tileViewKanban.Appearance.ItemNormal.Options.UseBorderColor = true;
             tileViewKanban.Appearance.ItemNormal.Options.UseForeColor = true;
-            tileViewKanban.Appearance.ViewCaption.BackColor = Color.FromArgb(11, 11, 11);
-            tileViewKanban.Appearance.EmptySpace.BackColor = Color.FromArgb(18, 18, 20);
-            tileViewKanban.Appearance.EmptySpace.Options.UseBackColor = true;
+            tileViewKanban.Appearance.ViewCaption.BackColor = Color.FromArgb(26, 31, 38);
             tileViewKanban.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] { tileViewColumn1, tileViewColumn2, tileViewColumn3, tileViewColumn4 });
             tileViewKanban.GridControl = grdKanban;
             tileViewKanban.Name = "tileViewKanban";
@@ -291,7 +297,34 @@
             tileViewKanban.OptionsTiles.ItemSize = new Size(240, 100);
             tileViewKanban.OptionsTiles.LayoutMode = DevExpress.XtraGrid.Views.Tile.TileViewLayoutMode.Kanban;
             tileViewKanban.OptionsTiles.Padding = new Padding(8);
-            tileViewKanban.OptionsTiles.RowCount = 1;
+            // 
+            // tileViewColumn1
+            // 
+            tileViewColumn1.Caption = "tileViewColumn1";
+            tileViewColumn1.Name = "tileViewColumn1";
+            tileViewColumn1.Visible = true;
+            tileViewColumn1.VisibleIndex = 0;
+            // 
+            // tileViewColumn2
+            // 
+            tileViewColumn2.Caption = "tileViewColumn2";
+            tileViewColumn2.Name = "tileViewColumn2";
+            tileViewColumn2.Visible = true;
+            tileViewColumn2.VisibleIndex = 1;
+            // 
+            // tileViewColumn3
+            // 
+            tileViewColumn3.Caption = "tileViewColumn3";
+            tileViewColumn3.Name = "tileViewColumn3";
+            tileViewColumn3.Visible = true;
+            tileViewColumn3.VisibleIndex = 2;
+            // 
+            // tileViewColumn4
+            // 
+            tileViewColumn4.Caption = "tileViewColumn4";
+            tileViewColumn4.Name = "tileViewColumn4";
+            tileViewColumn4.Visible = true;
+            tileViewColumn4.VisibleIndex = 3;
             // 
             // grdTasks
             // 
@@ -299,69 +332,59 @@
             grdTasks.Location = new Point(0, 15);
             grdTasks.MainView = gridView1;
             grdTasks.Name = "grdTasks";
+            grdTasks.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] { repositoryItemProgressBar, repositoryItemButtonEdit });
             grdTasks.Size = new Size(1100, 525);
             grdTasks.TabIndex = 0;
             grdTasks.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] { gridView1 });
             // 
             // gridView1
             // 
-            gridView1.Appearance.ColumnFilterButton.BackColor = Color.FromArgb(21, 21, 21);
-            gridView1.Appearance.ColumnFilterButton.BorderColor = Color.FromArgb(42, 42, 42);
-            gridView1.Appearance.ColumnFilterButton.ForeColor = Color.White;
+            gridView1.Appearance.ColumnFilterButton.BackColor = Color.FromArgb(36, 43, 61);
+            gridView1.Appearance.ColumnFilterButton.BorderColor = Color.FromArgb(51, 65, 85);
+            gridView1.Appearance.ColumnFilterButton.ForeColor = Color.FromArgb(248, 250, 252);
             gridView1.Appearance.ColumnFilterButton.Options.UseBackColor = true;
             gridView1.Appearance.ColumnFilterButton.Options.UseBorderColor = true;
             gridView1.Appearance.ColumnFilterButton.Options.UseForeColor = true;
-            // Empty grid area
-            gridView1.Appearance.Empty.BackColor = Color.FromArgb(21, 21, 21);
-            gridView1.Appearance.Empty.ForeColor = Color.FromArgb(161, 161, 161);
+            gridView1.Appearance.Empty.BackColor = Color.FromArgb(36, 43, 61);
+            gridView1.Appearance.Empty.ForeColor = Color.FromArgb(203, 213, 225);
             gridView1.Appearance.Empty.Options.UseBackColor = true;
             gridView1.Appearance.Empty.Options.UseForeColor = true;
-            // Focused row
-            gridView1.Appearance.FocusedRow.BackColor = Color.FromArgb(42, 42, 42);
-            gridView1.Appearance.FocusedRow.ForeColor = Color.White;
+            gridView1.Appearance.FocusedRow.BackColor = Color.FromArgb(51, 65, 85);
+            gridView1.Appearance.FocusedRow.ForeColor = Color.FromArgb(248, 250, 252);
             gridView1.Appearance.FocusedRow.Options.UseBackColor = true;
             gridView1.Appearance.FocusedRow.Options.UseForeColor = true;
-            // Header panel
-            gridView1.Appearance.HeaderPanel.BackColor = Color.FromArgb(11, 11, 11);
+            gridView1.Appearance.HeaderPanel.BackColor = Color.FromArgb(36, 43, 61);
             gridView1.Appearance.HeaderPanel.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            gridView1.Appearance.HeaderPanel.ForeColor = Color.FromArgb(161, 161, 161);
+            gridView1.Appearance.HeaderPanel.ForeColor = Color.FromArgb(203, 213, 225);
             gridView1.Appearance.HeaderPanel.Options.UseBackColor = true;
             gridView1.Appearance.HeaderPanel.Options.UseFont = true;
             gridView1.Appearance.HeaderPanel.Options.UseForeColor = true;
-            // Horizontal lines
-            gridView1.Appearance.HorzLine.BackColor = Color.FromArgb(42, 42, 42);
-            gridView1.Appearance.HorzLine.Options.UseBackColor = true;
-            // Normal row
-            gridView1.Appearance.Row.BackColor = Color.FromArgb(21, 21, 21);
-            gridView1.Appearance.Row.ForeColor = Color.White;
-            gridView1.Appearance.Row.Options.UseBackColor = true;
-            gridView1.Appearance.Row.Options.UseForeColor = true;
-            // Selected row
-            gridView1.Appearance.SelectedRow.BackColor = Color.FromArgb(42, 42, 42);
-            gridView1.Appearance.SelectedRow.ForeColor = Color.White;
-            gridView1.Appearance.SelectedRow.Options.UseBackColor = true;
-            gridView1.Appearance.SelectedRow.Options.UseForeColor = true;
-            // Odd row (same as normal row for consistency)
-            gridView1.Appearance.OddRow.BackColor = Color.FromArgb(21, 21, 21);
-            gridView1.Appearance.OddRow.ForeColor = Color.White;
-            gridView1.Appearance.OddRow.Options.UseBackColor = true;
-            gridView1.Appearance.OddRow.Options.UseForeColor = true;
-            // Hide selection row
-            gridView1.Appearance.HideSelectionRow.BackColor = Color.FromArgb(42, 42, 42);
-            gridView1.Appearance.HideSelectionRow.ForeColor = Color.White;
+            gridView1.Appearance.HideSelectionRow.BackColor = Color.FromArgb(51, 65, 85);
+            gridView1.Appearance.HideSelectionRow.ForeColor = Color.FromArgb(248, 250, 252);
             gridView1.Appearance.HideSelectionRow.Options.UseBackColor = true;
             gridView1.Appearance.HideSelectionRow.Options.UseForeColor = true;
-            // Vertical lines
-            gridView1.Appearance.VertLine.BackColor = Color.FromArgb(42, 42, 42);
+            gridView1.Appearance.HorzLine.BackColor = Color.FromArgb(51, 65, 85);
+            gridView1.Appearance.HorzLine.Options.UseBackColor = true;
+            gridView1.Appearance.OddRow.BackColor = Color.FromArgb(36, 43, 61);
+            gridView1.Appearance.OddRow.ForeColor = Color.FromArgb(248, 250, 252);
+            gridView1.Appearance.OddRow.Options.UseBackColor = true;
+            gridView1.Appearance.OddRow.Options.UseForeColor = true;
+            gridView1.Appearance.Row.BackColor = Color.FromArgb(36, 43, 61);
+            gridView1.Appearance.Row.ForeColor = Color.FromArgb(248, 250, 252);
+            gridView1.Appearance.Row.Options.UseBackColor = true;
+            gridView1.Appearance.Row.Options.UseForeColor = true;
+            gridView1.Appearance.SelectedRow.BackColor = Color.FromArgb(51, 65, 85);
+            gridView1.Appearance.SelectedRow.ForeColor = Color.FromArgb(248, 250, 252);
+            gridView1.Appearance.SelectedRow.Options.UseBackColor = true;
+            gridView1.Appearance.SelectedRow.Options.UseForeColor = true;
+            gridView1.Appearance.VertLine.BackColor = Color.FromArgb(51, 65, 85);
             gridView1.Appearance.VertLine.Options.UseBackColor = true;
             gridView1.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] { TaskName, ProjectName, AssignedUserName, StatusColumn, PriorityColumn, DueDate, CompletionPercentage, Actions });
             gridView1.GridControl = grdTasks;
             gridView1.Name = "gridView1";
-            gridView1.OptionsView.EnableAppearanceEvenRow = false;
-            gridView1.OptionsView.EnableAppearanceOddRow = false;
             gridView1.OptionsView.ShowGroupPanel = false;
-            gridView1.OptionsView.ShowIndicator = false;
             gridView1.OptionsView.ShowHorizontalLines = DevExpress.Utils.DefaultBoolean.True;
+            gridView1.OptionsView.ShowIndicator = false;
             gridView1.OptionsView.ShowVerticalLines = DevExpress.Utils.DefaultBoolean.True;
             // 
             // TaskName
@@ -436,6 +459,7 @@
             CompletionPercentage.Visible = true;
             CompletionPercentage.VisibleIndex = 6;
             CompletionPercentage.Width = 100;
+            CompletionPercentage.ColumnEdit = repositoryItemProgressBar;
             // 
             // Actions
             // 
@@ -448,10 +472,31 @@
             Actions.Visible = true;
             Actions.VisibleIndex = 7;
             Actions.Width = 80;
+            Actions.ColumnEdit = repositoryItemButtonEdit;
+            // 
+            // repositoryItemProgressBar
+            // 
+            repositoryItemProgressBar.Minimum = 0;
+            repositoryItemProgressBar.Maximum = 100;
+            repositoryItemProgressBar.ShowTitle = true;
+            repositoryItemProgressBar.PercentView = true;
+            repositoryItemProgressBar.Name = "repositoryItemProgressBar";
+            repositoryItemProgressBar.Appearance.BackColor = Color.FromArgb(51, 65, 85);
+            repositoryItemProgressBar.Appearance.ForeColor = Color.FromArgb(34, 197, 94);
+            // 
+            // repositoryItemButtonEdit
+            // 
+            repositoryItemButtonEdit.Name = "repositoryItemButtonEdit";
+            repositoryItemButtonEdit.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.HideTextEditor;
+            repositoryItemButtonEdit.Buttons.Clear();
+            repositoryItemButtonEdit.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+                new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Glyph) { Caption = "✏", ToolTip = "Edit Task", Width = 30 },
+                new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Glyph) { Caption = "🗑", ToolTip = "Delete Task", Width = 30 }
+            });
             // 
             // pnlFooter
             // 
-            pnlFooter.Appearance.BackColor = Color.FromArgb(11, 11, 11);
+            pnlFooter.Appearance.BackColor = Color.FromArgb(26, 31, 38);
             pnlFooter.Appearance.Options.UseBackColor = true;
             pnlFooter.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
             pnlFooter.Controls.Add(btnRefresh);
@@ -465,10 +510,10 @@
             // btnRefresh
             // 
             btnRefresh.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnRefresh.Appearance.BackColor = Color.FromArgb(42, 42, 42);
-            btnRefresh.Appearance.BorderColor = Color.FromArgb(42, 42, 42);
+            btnRefresh.Appearance.BackColor = Color.FromArgb(51, 65, 85);
+            btnRefresh.Appearance.BorderColor = Color.FromArgb(51, 65, 85);
             btnRefresh.Appearance.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            btnRefresh.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            btnRefresh.Appearance.ForeColor = Color.FromArgb(203, 213, 225);
             btnRefresh.Appearance.Options.UseBackColor = true;
             btnRefresh.Appearance.Options.UseBorderColor = true;
             btnRefresh.Appearance.Options.UseFont = true;
@@ -482,7 +527,7 @@
             // lblRecordCount
             // 
             lblRecordCount.Appearance.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            lblRecordCount.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            lblRecordCount.Appearance.ForeColor = Color.FromArgb(203, 213, 225);
             lblRecordCount.Appearance.Options.UseFont = true;
             lblRecordCount.Appearance.Options.UseForeColor = true;
             lblRecordCount.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
@@ -492,39 +537,11 @@
             lblRecordCount.TabIndex = 0;
             lblRecordCount.Text = "Showing 0 of 0 tasks";
             // 
-            // tileViewColumn1
-            // 
-            tileViewColumn1.Caption = "tileViewColumn1";
-            tileViewColumn1.Name = "tileViewColumn1";
-            tileViewColumn1.Visible = true;
-            tileViewColumn1.VisibleIndex = 0;
-            // 
-            // tileViewColumn2
-            // 
-            tileViewColumn2.Caption = "tileViewColumn2";
-            tileViewColumn2.Name = "tileViewColumn2";
-            tileViewColumn2.Visible = true;
-            tileViewColumn2.VisibleIndex = 1;
-            // 
-            // tileViewColumn3
-            // 
-            tileViewColumn3.Caption = "tileViewColumn3";
-            tileViewColumn3.Name = "tileViewColumn3";
-            tileViewColumn3.Visible = true;
-            tileViewColumn3.VisibleIndex = 2;
-            // 
-            // tileViewColumn4
-            // 
-            tileViewColumn4.Caption = "tileViewColumn4";
-            tileViewColumn4.Name = "tileViewColumn4";
-            tileViewColumn4.Visible = true;
-            tileViewColumn4.VisibleIndex = 3;
-            // 
             // TasksContent
             // 
             AutoScaleDimensions = new SizeF(8F, 19F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.FromArgb(11, 11, 11);
+            BackColor = Color.FromArgb(26, 31, 38);
             Controls.Add(pnlContentContainer);
             Controls.Add(pnlFilters);
             Controls.Add(pnlHeader);
@@ -535,7 +552,7 @@
             ((System.ComponentModel.ISupportInitialize)pnlFilters).EndInit();
             pnlFilters.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)cmbPriorityFilter.Properties).EndInit();
-            ((System.ComponentModel.ISupportInitialize)cmbStatusFilter.Properties).EndInit();
+            ((System.ComponentModel.ISupportInitialize)cmbProjectFilter.Properties).EndInit();
             ((System.ComponentModel.ISupportInitialize)txtSearch.Properties).EndInit();
             ((System.ComponentModel.ISupportInitialize)pnlContentContainer).EndInit();
             pnlContentContainer.ResumeLayout(false);
@@ -545,6 +562,8 @@
             ((System.ComponentModel.ISupportInitialize)gridView1).EndInit();
             ((System.ComponentModel.ISupportInitialize)pnlFooter).EndInit();
             pnlFooter.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)repositoryItemProgressBar).EndInit();
+            ((System.ComponentModel.ISupportInitialize)repositoryItemButtonEdit).EndInit();
             ResumeLayout(false);
         }
 
@@ -557,7 +576,7 @@
         private DevExpress.XtraEditors.SimpleButton btnViewSwitcher;
         private DevExpress.XtraEditors.PanelControl pnlFilters;
         private DevExpress.XtraEditors.TextEdit txtSearch;
-        private DevExpress.XtraEditors.ComboBoxEdit cmbStatusFilter;
+        private DevExpress.XtraEditors.ComboBoxEdit cmbProjectFilter;
         private DevExpress.XtraEditors.ComboBoxEdit cmbPriorityFilter;
         private DevExpress.XtraEditors.SimpleButton btnClearFilters;
         private DevExpress.XtraEditors.PanelControl pnlContentContainer;
@@ -580,5 +599,9 @@
         private DevExpress.XtraGrid.Columns.TileViewColumn tileViewColumn2;
         private DevExpress.XtraGrid.Columns.TileViewColumn tileViewColumn3;
         private DevExpress.XtraGrid.Columns.TileViewColumn tileViewColumn4;
+        
+        // Repository Items (moved from .cs file)
+        private DevExpress.XtraEditors.Repository.RepositoryItemProgressBar repositoryItemProgressBar;
+        private DevExpress.XtraEditors.Repository.RepositoryItemButtonEdit repositoryItemButtonEdit;
     }
 }

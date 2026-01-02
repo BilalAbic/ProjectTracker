@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using ProjectTracker.Business.DTOs;
 using ProjectTracker.Business.Interfaces;
+using ProjectTracker.UI.Helpers;
 using System;
 using System.Windows.Forms;
 
@@ -22,6 +23,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
         {
             InitializeComponent();
             _teamService = teamService;
+            ApplyGroupControlStyling();
         }
 
         /// <summary>
@@ -30,6 +32,20 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
         public TeamDetailControl()
         {
             InitializeComponent();
+            ApplyGroupControlStyling();
+        }
+
+        /// <summary>
+        /// Apply dark theme styling to GroupControls
+        /// </summary>
+        private void ApplyGroupControlStyling()
+        {
+            // Fix GroupControl content area background using LookAndFeel
+            grpTeamInfo.LookAndFeel.UseDefaultLookAndFeel = false;
+            grpTeamInfo.LookAndFeel.Style = DevExpress.LookAndFeel.LookAndFeelStyle.Flat;
+            
+            grpStatistics.LookAndFeel.UseDefaultLookAndFeel = false;
+            grpStatistics.LookAndFeel.Style = DevExpress.LookAndFeel.LookAndFeelStyle.Flat;
         }
 
         /// <summary>
@@ -46,8 +62,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
                 var team = await _teamService.GetTeamByIdAsync(teamId);
                 if (team == null)
                 {
-                    XtraMessageBox.Show("Team not found", "Error",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    FormStyleHelper.ShowError("Team not found");
                     return;
                 }
 
@@ -55,23 +70,25 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
                 txtTeamName.Text = team.TeamName;
                 txtDescription.Text = team.Description;
 
-                // Update UI
+                // Update UI for edit mode
                 lblTitle.Text = "✏️ Edit Team";
-                btnSave.Text = "💾 Update Team";
+                btnSave.Text = "💾 Update";
                 btnDelete.Visible = true;
-                grpStatistics.Visible = true;
+                
+                // Enable action buttons in edit mode
+                btnViewMembers.Enabled = true;
+                btnViewInvitations.Enabled = true;
 
                 // Update statistics
-                lblStats.Text = $"📊 Team Overview:\n" +
-                               $"• Members: {team.MemberCount}\n" +
-                               $"• Active Projects: {team.ProjectCount}\n" +
-                               $"• Created: {team.CreatedAt:dd MMM yyyy}\n" +
+                lblStats.Text = $"📊 Team Overview:\r\n\r\n" +
+                               $"• Members: {team.MemberCount}\r\n" +
+                               $"• Active Projects: {team.ProjectCount}\r\n" +
+                               $"• Created: {team.CreatedAt:dd MMM yyyy}\r\n" +
                                $"• Owner: {team.OwnerName}";
             }
             catch (Exception ex)
             {
-                XtraMessageBox.Show($"Error loading team: {ex.Message}", "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                FormStyleHelper.ShowError($"Error loading team: {ex.Message}");
             }
             finally
             {
@@ -98,8 +115,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
                 // Validation
                 if (string.IsNullOrWhiteSpace(txtTeamName.Text))
                 {
-                    XtraMessageBox.Show("Team name is required", "Validation",
-                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    FormStyleHelper.ShowWarning("Team name is required");
                     txtTeamName.Focus();
                     return;
                 }
@@ -119,8 +135,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
 
                     await _teamService.UpdateTeamAsync(updateDto);
 
-                    XtraMessageBox.Show("Team updated successfully!", "Success",
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    FormStyleHelper.ShowSuccess("Team updated successfully!");
                 }
                 else
                 {
@@ -133,8 +148,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
 
                     await _teamService.CreateTeamAsync(createDto);
 
-                    XtraMessageBox.Show("Team created successfully!", "Success",
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    FormStyleHelper.ShowSuccess("Team created successfully!");
                 }
 
                 // Navigate back to teams list
@@ -142,8 +156,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             }
             catch (Exception ex)
             {
-                XtraMessageBox.Show($"Error saving team: {ex.Message}", "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                FormStyleHelper.ShowError($"Error saving team: {ex.Message}");
             }
             finally
             {
@@ -169,29 +182,22 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             {
                 if (!_editTeamId.HasValue) return;
 
-                var result = XtraMessageBox.Show(
-                    "Are you sure you want to delete this team? This action cannot be undone.",
-                    "Confirm Delete",
-                    MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Warning);
-
-                if (result != DialogResult.Yes) return;
+                if (!FormStyleHelper.ShowQuestion("Are you sure you want to delete this team?\nThis action cannot be undone."))
+                    return;
 
                 Cursor = Cursors.WaitCursor;
                 btnDelete.Enabled = false;
 
                 await _teamService.DeleteTeamAsync(_editTeamId.Value);
 
-                XtraMessageBox.Show("Team deleted successfully!", "Success",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                FormStyleHelper.ShowSuccess("Team deleted successfully!");
 
                 // Navigate back
                 btnBack_Click(sender, e);
             }
             catch (Exception ex)
             {
-                XtraMessageBox.Show($"Error deleting team: {ex.Message}", "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                FormStyleHelper.ShowError($"Error deleting team: {ex.Message}");
             }
             finally
             {
@@ -206,8 +212,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
         {
             if (!_editTeamId.HasValue)
             {
-                XtraMessageBox.Show("Please save the team first", "Info",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                FormStyleHelper.ShowInfo("Please save the team first");
                 return;
             }
 
@@ -218,8 +223,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             }
             catch (Exception ex)
             {
-                XtraMessageBox.Show($"Error opening members: {ex.Message}", "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                FormStyleHelper.ShowError($"Error opening members: {ex.Message}");
             }
         }
 
@@ -230,8 +234,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
         {
             if (!_editTeamId.HasValue)
             {
-                XtraMessageBox.Show("Please save the team first", "Info",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                FormStyleHelper.ShowInfo("Please save the team first");
                 return;
             }
 
@@ -242,8 +245,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             }
             catch (Exception ex)
             {
-                XtraMessageBox.Show($"Error opening invitations: {ex.Message}", "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                FormStyleHelper.ShowError($"Error opening invitations: {ex.Message}");
             }
         }
     }

@@ -30,12 +30,14 @@ namespace ProjectTracker.Business.Mappings
             // ============================================
             CreateMap<Project, ProjectDto>()
                 .ForMember(dest => dest.CreatedByUserName, opt => opt.MapFrom(src => src.CreatedByUser.FullName))
+                .ForMember(dest => dest.TeamName, opt => opt.MapFrom(src => src.Team != null ? src.Team.TeamName : null))
                 .ForMember(dest => dest.TotalTasks, opt => opt.MapFrom(src => src.Tasks.Count))
                 .ForMember(dest => dest.CompletedTasks, opt => opt.MapFrom(src => src.Tasks.Count(t => t.Status == Core.Enums.TaskStatus.Completed)))
                 .ForMember(dest => dest.TeamMemberCount, opt => opt.MapFrom(src => src.TeamMembers.Count));
 
             CreateMap<ProjectDto, Project>()
                 .ForMember(dest => dest.CreatedByUser, opt => opt.Ignore())
+                .ForMember(dest => dest.Team, opt => opt.Ignore())
                 .ForMember(dest => dest.Tasks, opt => opt.Ignore())
                 .ForMember(dest => dest.TeamMembers, opt => opt.Ignore())
                 .ForMember(dest => dest.Risks, opt => opt.Ignore());

@@ -17,28 +17,37 @@ namespace ProjectTracker.Business.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        private int _currentUserId; // TODO: Replace with actual authentication service
+        private readonly ICurrentUserService _currentUserService;
 
-        public InvitationService(IUnitOfWork unitOfWork, IMapper mapper)
+        public InvitationService(IUnitOfWork unitOfWork, IMapper mapper, ICurrentUserService currentUserService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
-            _currentUserId = 1; // TODO: Get from authentication context
+            _currentUserService = currentUserService;
         }
+        
+        /// <summary>
+        /// Get current user ID from session
+        /// </summary>
+        private int CurrentUserId => _currentUserService.CurrentUserId;
 
         /// <summary>
         /// Send team invitation
         /// </summary>
         public async Task<TeamInvitationDto> SendInvitationAsync(TeamInvitationDto invitationDto)
         {
-            // Check if user has permission to invite (owner or admin)
-            var member = await _unitOfWork.TeamMembers
-                .FirstOrDefaultAsync(tm => tm.TeamId == invitationDto.TeamId 
-                    && tm.UserId == _currentUserId 
-                    && tm.IsActive);
+            // System Admin can invite to any team
+            if (!_currentUserService.IsAdmin)
+            {
+                // Check if user has permission to invite (team owner or team admin)
+                var member = await _unitOfWork.TeamMembers
+                    .FirstOrDefaultAsync(tm => tm.TeamId == invitationDto.TeamId 
+                        && tm.UserId == CurrentUserId 
+                        && tm.IsActive);
 
-            if (member == null || (member.Role != TeamRole.Owner && member.Role != TeamRole.Admin))
-                throw new UnauthorizedAccessException("You don't have permission to send invitations");
+                if (member == null || (member.Role != TeamRole.Owner && member.Role != TeamRole.Admin))
+                    throw new UnauthorizedAccessException("You don't have permission to send invitations");
+            }
 
             // Check if user already exists and is already a member
             var existingUser = await _unitOfWork.Users
@@ -70,7 +79,7 @@ namespace ProjectTracker.Business.Services
             {
                 TeamId = invitationDto.TeamId,
                 Email = invitationDto.Email,
-                InvitedByUserId = _currentUserId,
+                InvitedByUserId = CurrentUserId,
                 ProposedRole = invitationDto.ProposedRole,
                 Status = InvitationStatus.Pending,
                 Token = GenerateInvitationToken(),
@@ -110,14 +119,18 @@ namespace ProjectTracker.Business.Services
             if (invitation == null)
                 return false;
 
-            // Check permission
-            var member = await _unitOfWork.TeamMembers
-                .FirstOrDefaultAsync(tm => tm.TeamId == invitation.TeamId 
-                    && tm.UserId == _currentUserId 
-                    && tm.IsActive);
+            // System Admin can resend any invitation
+            if (!_currentUserService.IsAdmin)
+            {
+                // Check permission
+                var member = await _unitOfWork.TeamMembers
+                    .FirstOrDefaultAsync(tm => tm.TeamId == invitation.TeamId 
+                        && tm.UserId == CurrentUserId 
+                        && tm.IsActive);
 
-            if (member == null || (member.Role != TeamRole.Owner && member.Role != TeamRole.Admin))
-                throw new UnauthorizedAccessException("You don't have permission to resend invitations");
+                if (member == null || (member.Role != TeamRole.Owner && member.Role != TeamRole.Admin))
+                    throw new UnauthorizedAccessException("You don't have permission to resend invitations");
+            }
 
             if (invitation.Status != InvitationStatus.Pending)
                 throw new InvalidOperationException("Can only resend pending invitations");
@@ -144,14 +157,18 @@ namespace ProjectTracker.Business.Services
             if (invitation == null)
                 return false;
 
-            // Check permission
-            var member = await _unitOfWork.TeamMembers
-                .FirstOrDefaultAsync(tm => tm.TeamId == invitation.TeamId 
-                    && tm.UserId == _currentUserId 
-                    && tm.IsActive);
+            // System Admin can cancel any invitation
+            if (!_currentUserService.IsAdmin)
+            {
+                // Check permission
+                var member = await _unitOfWork.TeamMembers
+                    .FirstOrDefaultAsync(tm => tm.TeamId == invitation.TeamId 
+                        && tm.UserId == CurrentUserId 
+                        && tm.IsActive);
 
-            if (member == null || (member.Role != TeamRole.Owner && member.Role != TeamRole.Admin))
-                throw new UnauthorizedAccessException("You don't have permission to cancel invitations");
+                if (member == null || (member.Role != TeamRole.Owner && member.Role != TeamRole.Admin))
+                    throw new UnauthorizedAccessException("You don't have permission to cancel invitations");
+            }
 
             if (invitation.Status != InvitationStatus.Pending)
                 throw new InvalidOperationException("Can only cancel pending invitations");

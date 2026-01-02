@@ -2,7 +2,9 @@
 using Microsoft.Extensions.DependencyInjection;
 using ProjectTracker.Business.DTOs;
 using ProjectTracker.Business.Interfaces;
+using ProjectTracker.UI.Helpers;
 using System;
+using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -11,6 +13,7 @@ namespace ProjectTracker.UI.Forms.Login
 {
     /// <summary>
     /// User registration form with dark-themed modern design
+    /// Updated: 02/01/2026 - Added invitation token support for role-based registration
     /// </summary>
     public partial class FrmRegister : XtraForm
     {
@@ -18,6 +21,11 @@ namespace ProjectTracker.UI.Forms.Login
         private bool _isDragging;
         private Point _dragCursorPoint;
         private Point _dragFormPoint;
+        
+        /// <summary>
+        /// Invitation token (if user is registering via invitation link)
+        /// </summary>
+        private string? _invitationToken;
 
         /// <summary>
         /// Constructor with dependency injection
@@ -27,11 +35,27 @@ namespace ProjectTracker.UI.Forms.Login
             InitializeComponent();
             _userService = userService;
         }
+        
+        /// <summary>
+        /// Constructor with invitation token
+        /// </summary>
+        public FrmRegister(IUserService userService, string invitationToken) : this(userService)
+        {
+            _invitationToken = invitationToken;
+        }
 
         /// <summary>
         /// Parameterless constructor for Designer
         /// </summary>
         public FrmRegister() : this(null) { }
+        
+        /// <summary>
+        /// Set invitation token (can be called before showing form)
+        /// </summary>
+        public void SetInvitationToken(string token)
+        {
+            _invitationToken = token;
+        }
 
         /// <summary>
         /// Form load event - set focus to username field
@@ -50,8 +74,7 @@ namespace ProjectTracker.UI.Forms.Login
             {
                 if (_userService == null)
                 {
-                    XtraMessageBox.Show("Service not available", "Error",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    FormStyleHelper.ShowError("Service not available");
                     return;
                 }
 
@@ -62,7 +85,8 @@ namespace ProjectTracker.UI.Forms.Login
                     Email = txtEmail.Text.Trim(),
                     Password = txtPassword.Text,
                     ConfirmPassword = txtConfirmPassword.Text,
-                    RoleId = 3  // Always Developer role
+                    InvitationToken = _invitationToken // Will be null if no invitation
+                    // RoleId will be determined by service based on invitation token
                 };
 
                 this.Cursor = Cursors.WaitCursor;
@@ -70,22 +94,18 @@ namespace ProjectTracker.UI.Forms.Login
 
                 var result = await _userService.RegisterAsync(registerDto);
 
-                XtraMessageBox.Show(
-                    $"Registration successful!\n\nWelcome, {result.FullName}!\nYou can now login with your credentials.",
-                    "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                FormStyleHelper.ShowSuccess($"Registration successful!\n\nWelcome, {result.FullName}!\nYou can now login with your credentials.");
 
                 NavigateToLogin();
             }
             catch (FluentValidation.ValidationException vex)
             {
                 var errors = string.Join("\n", vex.Errors.Select(e => $"• {e.ErrorMessage}"));
-                XtraMessageBox.Show($"Validation Errors:\n\n{errors}", "Validation Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                FormStyleHelper.ShowWarning($"Validation Errors:\n\n{errors}");
             }
             catch (Exception ex)
             {
-                XtraMessageBox.Show($"Registration failed:\n\n{ex.Message}", "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                FormStyleHelper.ShowError($"Registration failed:\n\n{ex.Message}");
             }
             finally
             {

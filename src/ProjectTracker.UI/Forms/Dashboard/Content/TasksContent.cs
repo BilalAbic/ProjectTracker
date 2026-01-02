@@ -1,11 +1,10 @@
 using DevExpress.XtraEditors;
-using DevExpress.XtraEditors.Repository;
-using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraGrid.Views.Tile;
 using Microsoft.Extensions.DependencyInjection;
 using ProjectTracker.Business.DTOs;
 using ProjectTracker.Business.Interfaces;
 using ProjectTracker.Core.Enums;
+using ProjectTracker.UI.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -19,25 +18,24 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
     public partial class TasksContent : UserControl
     {
         private readonly ITaskService _taskService;
+        private readonly IProjectService _projectService;
         private List<TaskDto> _allTasks;
-
-        // Repository Items
-        private RepositoryItemButtonEdit _actionButtonsRepository;
-        private RepositoryItemProgressBar _progressBarRepository;
+        private List<ProjectDto> _userProjects;
 
         // View State
         private bool _isKanbanView = false;
 
-        public TasksContent(ITaskService taskService)
+        public TasksContent(ITaskService taskService, IProjectService projectService)
         {
             InitializeComponent();
             _taskService = taskService;
+            _projectService = projectService;
 
             InitializeGrid();
             InitializeKanban();
             SetupEvents();
 
-            // Ilk y�kleme
+            // Ilk yükleme
             this.Load += async (s, e) => await LoadDataAsync();
         }
 
@@ -48,40 +46,9 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
 
         private void InitializeGrid()
         {
-            // --- ProgressBar ---
-            _progressBarRepository = new RepositoryItemProgressBar();
-            _progressBarRepository.Minimum = 0;
-            _progressBarRepository.Maximum = 100;
-            _progressBarRepository.ShowTitle = true;
-            _progressBarRepository.PercentView = true;
-            _progressBarRepository.Appearance.BackColor = Color.FromArgb(42, 42, 42);
-            _progressBarRepository.Appearance.ForeColor = Color.ForestGreen;
-
-            if (gridView1.Columns["CompletionPercentage"] != null)
-                gridView1.Columns["CompletionPercentage"].ColumnEdit = _progressBarRepository;
-
-            // --- Action Buttons (Edit/Delete) ---
-            _actionButtonsRepository = new RepositoryItemButtonEdit();
-            _actionButtonsRepository.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.HideTextEditor;
-            _actionButtonsRepository.Buttons.Clear();
-
-            var editBtn = new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Glyph);
-            editBtn.Caption = "?";
-            editBtn.ToolTip = "Edit Task";
-
-            var deleteBtn = new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Glyph);
-            deleteBtn.Caption = "??";
-            deleteBtn.ToolTip = "Delete Task";
-
-            _actionButtonsRepository.Buttons.Add(editBtn);
-            _actionButtonsRepository.Buttons.Add(deleteBtn);
-            _actionButtonsRepository.ButtonClick += ActionButtonsRepository_ButtonClick;
-
-            if (grdTasks.RepositoryItems.IndexOf(_actionButtonsRepository) < 0)
-                grdTasks.RepositoryItems.Add(_actionButtonsRepository);
-
-            if (gridView1.Columns["Actions"] != null)
-                gridView1.Columns["Actions"].ColumnEdit = _actionButtonsRepository;
+            // Repository items are now defined in Designer.cs
+            // Just assign the event handler for action buttons
+            repositoryItemButtonEdit.ButtonClick += ActionButtonsRepository_ButtonClick;
         }
 
         private void SetupEvents()
@@ -97,7 +64,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
 
             // Search & Filter Events
             txtSearch.EditValueChanged += (s, e) => ApplyFilters();
-            cmbStatusFilter.SelectedIndexChanged += (s, e) => ApplyFilters();
+            cmbProjectFilter.SelectedIndexChanged += (s, e) => ApplyFilters();
             cmbPriorityFilter.SelectedIndexChanged += (s, e) => ApplyFilters();
         }
 
@@ -107,18 +74,64 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             try
             {
                 Cursor = Cursors.WaitCursor;
-                var tasks = await _taskService.GetAllTasksAsync();
-                _allTasks = tasks.ToList();
+                
+                // Load user's accessible projects for filter
+                await LoadProjectFilterAsync();
+                
+                // ROL BAZLI FİLTRELEME
+                if (SessionManager.IsAdmin)
+                {
+                    // Admin: Tüm taskleri göster
+                    var tasks = await _taskService.GetAllTasksAsync();
+                    _allTasks = tasks.ToList();
+                }
+                else
+                {
+                    // ProjectManager/Developer: Sadece üye oldukları takımlara ait projelerin taskleri
+                    var tasks = await _taskService.GetUserTasksAsync(SessionManager.CurrentUserId);
+                    _allTasks = tasks.ToList();
+                }
 
                 ApplyFilters();
             }
             catch (Exception ex)
             {
-                XtraMessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                FormStyleHelper.ShowError($"Error: {ex.Message}");
             }
             finally
             {
                 Cursor = Cursors.Default;
+            }
+        }
+
+        private async System.Threading.Tasks.Task LoadProjectFilterAsync()
+        {
+            try
+            {
+                // Load projects based on user role
+                if (SessionManager.IsAdmin)
+                {
+                    var projects = await _projectService.GetAllAsync();
+                    _userProjects = projects.ToList();
+                }
+                else
+                {
+                    var projects = await _projectService.GetUserProjectsAsync(SessionManager.CurrentUserId);
+                    _userProjects = projects.ToList();
+                }
+
+                // Add project names to ComboBox
+                cmbProjectFilter.Properties.Items.Clear();
+                cmbProjectFilter.Properties.Items.Add("All Projects");
+                foreach (var project in _userProjects)
+                {
+                    cmbProjectFilter.Properties.Items.Add(project.ProjectName);
+                }
+                cmbProjectFilter.SelectedIndex = 0; // Default to "All Projects"
+            }
+            catch (Exception ex)
+            {
+                FormStyleHelper.ShowError($"Error loading projects: {ex.Message}");
             }
         }
 
@@ -137,20 +150,11 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
                     (t.ProjectName != null && t.ProjectName.ToLower().Contains(search)));
             }
 
-            // Status Filter - Map UI text to actual enum values
-            if (cmbStatusFilter.SelectedIndex > 0 && cmbStatusFilter.Text != "All Status")
+            // Project Filter
+            if (cmbProjectFilter.SelectedIndex > 0 && cmbProjectFilter.Text != "All Projects")
             {
-                // Map UI-friendly names to database enum values
-                string statusValue = cmbStatusFilter.Text switch
-                {
-                    "ToDo" => "Pending",
-                    "InProgress" => "InProgress",
-                    "Done" => "Completed",
-                    "Blocked" => "Blocked",
-                    _ => cmbStatusFilter.Text
-                };
-                
-                filtered = filtered.Where(t => t.Status == statusValue);
+                string selectedProjectName = cmbProjectFilter.Text;
+                filtered = filtered.Where(t => t.ProjectName == selectedProjectName);
             }
 
             // Priority Filter
@@ -177,7 +181,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
         private void BtnClearFilters_Click(object sender, EventArgs e)
         {
             txtSearch.Text = "";
-            cmbStatusFilter.SelectedIndex = 0;
+            cmbProjectFilter.SelectedIndex = 0; // Reset to "All Projects"
             cmbPriorityFilter.SelectedIndex = 0;
         }
 
@@ -214,27 +218,41 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
 
         private async void ActionButtonsRepository_ButtonClick(object sender, DevExpress.XtraEditors.Controls.ButtonPressedEventArgs e)
         {
-            var view = gridView1;
-            var rowHandle = view.FocusedRowHandle;
-            if (rowHandle < 0) return;
-
-            var task = view.GetRow(rowHandle) as TaskDto;
-            if (task == null) return;
-
-            if (e.Button.Caption == "?")
+            try
             {
-                // Edit Task
-                var detailControl = Program.ServiceProvider.GetRequiredService<TaskDetailControl>();
-                detailControl.LoadTaskForEdit(task.TaskId);
-                ((FrmDashboard)this.ParentForm).LoadContent(detailControl);
-            }
-            else if (e.Button.Caption == "??")
-            {
-                if (XtraMessageBox.Show($"Are you sure you want to delete '{task.TaskName}'?", "Confirm Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+                var view = gridView1;
+                var rowHandle = view.FocusedRowHandle;
+                if (rowHandle < 0) return;
+
+                var task = view.GetRow(rowHandle) as TaskDto;
+                if (task == null) return;
+
+                if (e.Button.Caption == "✏")
                 {
-                    await _taskService.DeleteTaskAsync(task.TaskId);
-                    await LoadDataAsync();
+                    // Edit Task
+                    var detailControl = Program.ServiceProvider.GetRequiredService<TaskDetailControl>();
+                    detailControl.LoadTaskForEdit(task.TaskId);
+                    ((FrmDashboard)this.ParentForm).LoadContent(detailControl);
                 }
+                else if (e.Button.Caption == "🗑")
+                {
+                    // YETKİ KONTROLÜ: Developer task silemez
+                    if (SessionManager.IsDeveloper)
+                    {
+                        FormStyleHelper.ShowWarning("You don't have permission to delete tasks.");
+                        return;
+                    }
+
+                    if (FormStyleHelper.ShowQuestion($"Are you sure you want to delete '{task.TaskName}'?"))
+                    {
+                        await _taskService.DeleteTaskAsync(task.TaskId);
+                        await LoadDataAsync();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                FormStyleHelper.ShowError($"Error: {ex.Message}");
             }
         }
 
@@ -260,14 +278,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             else if (e.Column.FieldName == "Priority")
             {
                 string priority = e.CellValue?.ToString() ?? "";
-                Color color = priority switch
-                {
-                    "Critical" => Color.FromArgb(239, 68, 68),    // Red-500
-                    "High" => Color.FromArgb(251, 146, 60),        // Orange-400
-                    "Medium" => Color.FromArgb(14, 165, 233),      // Sky-500
-                    "Low" => Color.FromArgb(16, 185, 129),         // Emerald-500
-                    _ => Color.FromArgb(161, 161, 161)
-                };
+                Color color = ColorPalette.GetPriorityColor(Enum.TryParse<Priority>(priority, out var p) ? p : Priority.Medium);
 
                 e.Appearance.DrawBackground(e.Cache, e.Bounds);
                 e.Cache.DrawString(priority, e.Appearance.Font, new SolidBrush(color), e.Bounds, e.Appearance.GetStringFormat());
@@ -426,8 +437,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             }
             catch (Exception ex)
             {
-                XtraMessageBox.Show($"Failed to update task status: {ex.Message}", "Error", 
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                FormStyleHelper.ShowError($"Failed to update task status: {ex.Message}");
                 
                 // Try to cancel drag operation
                 try 
@@ -461,14 +471,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             if (task == null) return;
             
             // Get priority color (Modern palette)
-            Color priorityColor = task.Priority switch
-            {
-                "Critical" => Color.FromArgb(239, 68, 68),    // Red-500
-                "High" => Color.FromArgb(251, 146, 60),        // Orange-400
-                "Medium" => Color.FromArgb(14, 165, 233),      // Sky-500
-                "Low" => Color.FromArgb(16, 185, 129),         // Emerald-500
-                _ => Color.FromArgb(161, 161, 161)             // Gray-400
-            };
+            Color priorityColor = ColorPalette.GetPriorityColor(Enum.TryParse<Priority>(task.Priority, out var p) ? p : Priority.Medium);
             
             // Apply border color
             e.Item.AppearanceItem.Normal.BorderColor = priorityColor;

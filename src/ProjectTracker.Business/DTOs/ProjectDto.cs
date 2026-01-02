@@ -9,6 +9,7 @@ namespace ProjectTracker.Business.DTOs
     {
         public int ProjectId { get; set; }
         public int CreatedByUserId { get; set; }
+        public int TeamId { get; set; }
         public string ProjectName { get; set; } = string.Empty;
         public string? Description { get; set; }
         public DateTime StartDate { get; set; }
@@ -23,6 +24,9 @@ namespace ProjectTracker.Business.DTOs
 
         // Navigation - Creator Name
         public string? CreatedByUserName { get; set; }
+
+        // Navigation - Team Name
+        public string? TeamName { get; set; }
 
         // Statistics
         public int TotalTasks { get; set; }

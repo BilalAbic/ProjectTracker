@@ -29,8 +29,11 @@ namespace ProjectTracker.Business.Validators
                 .NotEmpty().WithMessage("Please confirm your password")
                 .Equal(x => x.Password).WithMessage("Passwords do not match");
 
+            // RoleId validation: 2=ProjectManager, 3=Developer, 4=Pending
+            // Note: RoleId is now set automatically by UserService based on invitation token
+            // 4 (Pending) is the default for users without invitation
             RuleFor(x => x.RoleId)
-                .InclusiveBetween(2, 3).WithMessage("Invalid role selection");
+                .InclusiveBetween(2, 4).WithMessage("Invalid role selection");
         }
     }
 }

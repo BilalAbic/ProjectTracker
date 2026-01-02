@@ -28,6 +28,8 @@ namespace ProjectTracker.Data
         private IRepository<Team>? _teams;
         private IRepository<TeamMember>? _teamMembers;
         private IRepository<TeamInvitation>? _teamInvitations;
+        private IRepository<TimeEntry>? _timeEntries;
+        private IRepository<ProjectSnapshot>? _projectSnapshots;
 
         public UnitOfWork(AppDbContext context)
         {
@@ -97,6 +99,16 @@ namespace ProjectTracker.Data
         /// Team Invitations repository - lazy initialized
         /// </summary>
         public IRepository<TeamInvitation> TeamInvitations => _teamInvitations ??= new Repository<TeamInvitation>(_context);
+
+        /// <summary>
+        /// Time Entries repository - lazy initialized (Phase 7)
+        /// </summary>
+        public IRepository<TimeEntry> TimeEntries => _timeEntries ??= new Repository<TimeEntry>(_context);
+
+        /// <summary>
+        /// Project Snapshots repository - lazy initialized (Phase 7)
+        /// </summary>
+        public IRepository<ProjectSnapshot> ProjectSnapshots => _projectSnapshots ??= new Repository<ProjectSnapshot>(_context);
 
         // ============================================
         // TRANSACTION OPERATIONS

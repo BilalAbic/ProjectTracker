@@ -4,7 +4,9 @@ using ProjectTracker.Business.DTOs;
 using ProjectTracker.Business.Interfaces;
 using ProjectTracker.Core.Enums;
 using ProjectTracker.UI.Forms.Dashboard;
+using ProjectTracker.UI.Helpers;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -51,8 +53,17 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
         {
             try
             {
-                // Load Projects
-                var projects = await _projectService.GetAllAsync();
+                // ROL BAZLI PROJE LİSTESİ
+                IEnumerable<ProjectDto> projects;
+                if (SessionManager.IsAdmin)
+                {
+                    projects = await _projectService.GetAllAsync();
+                }
+                else
+                {
+                    projects = await _projectService.GetUserProjectsAsync(SessionManager.CurrentUserId);
+                }
+                
                 lueProject.Properties.DataSource = projects;
                 lueProject.Properties.DisplayMember = "ProjectName";
                 lueProject.Properties.ValueMember = "ProjectId";
@@ -77,7 +88,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             }
             catch (Exception ex)
             {
-                XtraMessageBox.Show($"Error loading data: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                FormStyleHelper.ShowError($"Error loading data: {ex.Message}");
             }
         }
 
@@ -110,7 +121,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             }
             catch (Exception ex)
             {
-                XtraMessageBox.Show($"Error loading task: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                FormStyleHelper.ShowError($"Error loading task: {ex.Message}");
             }
         }
 
@@ -119,27 +130,27 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             // Validation
             if (string.IsNullOrWhiteSpace(txtTaskName.Text))
             {
-                XtraMessageBox.Show("Task Name is required!", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                FormStyleHelper.ShowWarning("Task Name is required!");
                 txtTaskName.Focus();
                 return;
             }
 
             if (lueProject.EditValue == null)
             {
-                XtraMessageBox.Show("Please select a project!", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                FormStyleHelper.ShowWarning("Please select a project!");
                 lueProject.Focus();
                 return;
             }
 
             if (dateStart.DateTime == DateTime.MinValue || dateDue.DateTime == DateTime.MinValue)
             {
-                XtraMessageBox.Show("Please select start and due dates!", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                FormStyleHelper.ShowWarning("Please select start and due dates!");
                 return;
             }
 
             if (dateDue.DateTime < dateStart.DateTime)
             {
-                XtraMessageBox.Show("Due date cannot be earlier than start date!", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                FormStyleHelper.ShowWarning("Due date cannot be earlier than start date!");
                 return;
             }
 
@@ -162,7 +173,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
                     };
 
                     await _taskService.UpdateTaskAsync(_editingTaskId.Value, updateDto);
-                    XtraMessageBox.Show("Task updated successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    FormStyleHelper.ShowSuccess("Task updated successfully!");
                 }
                 else
                 {
@@ -180,7 +191,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
                     };
 
                     await _taskService.CreateTaskAsync(createDto);
-                    XtraMessageBox.Show("Task created successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    FormStyleHelper.ShowSuccess("Task created successfully!");
                 }
 
                 // Navigate back
@@ -188,7 +199,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             }
             catch (Exception ex)
             {
-                XtraMessageBox.Show($"Error saving task: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                FormStyleHelper.ShowError($"Error saving task: {ex.Message}");
             }
         }
 

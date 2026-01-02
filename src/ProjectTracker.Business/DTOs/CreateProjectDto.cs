@@ -46,5 +46,10 @@ namespace ProjectTracker.Business.DTOs
         /// Gets or sets the creator user ID
         /// </summary>
         public int CreatedByUserId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the team ID that owns this project
+        /// </summary>
+        public int TeamId { get; set; }
     }
 }

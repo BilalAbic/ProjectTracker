@@ -41,6 +41,17 @@
         public bool IsActive { get; set; } = true;
 
         /// <summary>
+        /// Kullanıcının saatlik maliyeti (finansal hesaplamalar için)
+        /// TimeEntry * HourlyCost = Actual Cost
+        /// </summary>
+        public decimal? HourlyCost { get; set; }
+
+        /// <summary>
+        /// Kullanıcının departmanı (raporlama ve segmentasyon için)
+        /// </summary>
+        public string? Department { get; set; }
+
+        /// <summary>
         /// When was this user created?
         /// </summary>
         public DateTime CreatedAt { get; set; } = DateTime.Now;
@@ -89,5 +100,10 @@
         /// Navigation property - Team invitations sent by this user
         /// </summary>
         public virtual ICollection<TeamInvitation> SentInvitations { get; set; } = new List<TeamInvitation>();
+
+        /// <summary>
+        /// Navigation property - Time entries logged by this user
+        /// </summary>
+        public virtual ICollection<TimeEntry> TimeEntries { get; set; } = new List<TimeEntry>();
     }
 }

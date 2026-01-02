@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using ProjectTracker.Business.DTOs;
 using ProjectTracker.Business.Interfaces;
 using ProjectTracker.Core.Enums;
+using ProjectTracker.UI.Helpers;
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -22,22 +23,30 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
     {
         private readonly IProjectService _projectService;
         private readonly IUserService _userService;
+        private readonly IAuditLogService _auditLogService;
 
         /// <summary>
         /// Initializes a new instance of the DashboardContent class
         /// </summary>
-        public DashboardContent(IProjectService projectService, IUserService userService)
+        public DashboardContent(
+            IProjectService projectService, 
+            IUserService userService,
+            IAuditLogService auditLogService)
         {
             InitializeComponent();
 
             _projectService = projectService;
             _userService = userService;
+            _auditLogService = auditLogService;
 
             // Setup card shadows
             SetupCardShadows();
 
             // Setup grid
             SetupGrid();
+
+            // Setup recent activities grid
+            SetupRecentActivitiesGrid();
 
             // Setup event handlers
             SetupEventHandlers();
@@ -72,8 +81,8 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
 
             // Draw rounded rectangle with subtle shadow effect
             using (var path = GetRoundedRect(panel.ClientRectangle, 8))
-            using (var brush = new SolidBrush(Color.FromArgb(21, 21, 21))) // #151515
-            using (var borderPen = new Pen(Color.FromArgb(42, 42, 42), 1)) // #2A2A2A
+            using (var brush = new SolidBrush(ColorPalette.BackgroundSlateDark))
+            using (var borderPen = new Pen(ColorPalette.BorderSlate, 1))
             {
                 e.Graphics.FillPath(brush, path);
                 e.Graphics.DrawPath(borderPen, path);
@@ -99,60 +108,8 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
         /// </summary>
         private void SetupGrid()
         {
-            // Clear existing columns
-            gridViewRecentProjects.Columns.Clear();
-
-            // Add columns
-            gridViewRecentProjects.Columns.AddRange(new[]
-            {
-                new DevExpress.XtraGrid.Columns.GridColumn
-                {
-                    FieldName = "Name",
-                    Caption = "Project Name",
-                    Visible = true,
-                    Width = 300,
-                    OptionsColumn = { AllowEdit = false }
-                },
-                new DevExpress.XtraGrid.Columns.GridColumn
-                {
-                    FieldName = "Status",
-                    Caption = "Status",
-                    Visible = true,
-                    Width = 150,
-                    OptionsColumn = { AllowEdit = false }
-                },
-                new DevExpress.XtraGrid.Columns.GridColumn
-                {
-                    FieldName = "Progress",
-                    Caption = "Progress",
-                    Visible = true,
-                    Width = 150,
-                    OptionsColumn = { AllowEdit = false }
-                },
-                new DevExpress.XtraGrid.Columns.GridColumn
-                {
-                    FieldName = "ManagerName",
-                    Caption = "Manager",
-                    Visible = true,
-                    Width = 200,
-                    OptionsColumn = { AllowEdit = false }
-                },
-                new DevExpress.XtraGrid.Columns.GridColumn
-                {
-                    FieldName = "DueDate",
-                    Caption = "Due Date",
-                    Visible = true,
-                    Width = 150,
-                    DisplayFormat = { FormatType = DevExpress.Utils.FormatType.DateTime, FormatString = "dd MMM yyyy" },
-                    OptionsColumn = { AllowEdit = false }
-                }
-            });
-
-            // Grid options
-            gridViewRecentProjects.OptionsBehavior.Editable = false;
-            gridViewRecentProjects.OptionsCustomization.AllowColumnMoving = false;
-            gridViewRecentProjects.OptionsCustomization.AllowFilter = false;
-            gridViewRecentProjects.OptionsCustomization.AllowSort = false;
+            // Grid columns are now defined in Designer.cs
+            // No additional setup needed
         }
 
         /// <summary>
@@ -215,8 +172,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
                 var project = view.GetRow(hitInfo.RowHandle) as ProjectDto;
                 if (project != null)
                 {
-                    XtraMessageBox.Show($"Open project: {project.ProjectName}", "Info",
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    FormStyleHelper.ShowInfo($"Open project: {project.ProjectName}");
                 }
             }
         }
@@ -265,13 +221,15 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
 
                 gridRecentProjects.DataSource = recentProjects;
 
+                // Load recent activities (ROL BAZLI)
+                await LoadRecentActivitiesAsync();
+
                 // Update trends (mock data for now)
                 UpdateTrends();
             }
             catch (Exception ex)
             {
-                XtraMessageBox.Show($"Error loading dashboard data: {ex.Message}", "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                FormStyleHelper.ShowError($"Error loading dashboard data: {ex.Message}");
             }
         }
 
@@ -282,14 +240,51 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
         {
             // Mock trends
             lblCard1Trend.Text = "↑ +3 today";
-            lblCard1Trend.Appearance.ForeColor = Color.FromArgb(0, 208, 132); // Green
+            lblCard1Trend.Appearance.ForeColor = ColorPalette.SuccessGreen;
 
             lblCard2Trend.Text = "↑ +12 this week";
-            lblCard2Trend.Appearance.ForeColor = Color.FromArgb(0, 208, 132); // Green
+            lblCard2Trend.Appearance.ForeColor = ColorPalette.SuccessGreen;
 
             lblCard3Trend.Text = "Online: 8";
-            lblCard3Trend.Appearance.ForeColor = Color.FromArgb(161, 161, 161); // Gray
+            lblCard3Trend.Appearance.ForeColor = ColorPalette.TextSecondary;
         }
- 
+
+        /// <summary>
+        /// Setup recent activities grid columns and appearance
+        /// </summary>
+        private void SetupRecentActivitiesGrid()
+        {
+            // Grid columns are now defined in Designer.cs
+            // No additional setup needed
+        }
+
+        /// <summary>
+        /// Load recent activities based on user role
+        /// </summary>
+        private async Task LoadRecentActivitiesAsync()
+        {
+            try
+            {
+                var activities = await _auditLogService.GetUserRecentActivitiesAsync(
+                    SessionManager.CurrentUserId,
+                    SessionManager.IsAdmin,
+                    count: 10);
+
+                var activityList = activities.Select(a => new
+                {
+                    Icon = a.Icon,
+                    Description = $"{a.UserName} {a.ActionDescription}",
+                    Target = a.TargetName,
+                    Project = a.ProjectName ?? "-",
+                    Time = a.RelativeTime
+                }).ToList();
+
+                gridRecentActivities.DataSource = activityList;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error loading activities: {ex.Message}");
+            }
+        }
     }
 }
