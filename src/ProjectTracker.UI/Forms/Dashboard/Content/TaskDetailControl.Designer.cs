@@ -1,4 +1,6 @@
-﻿namespace ProjectTracker.UI.Forms.Dashboard.Content
+﻿using ProjectTracker.UI.Helpers;
+
+namespace ProjectTracker.UI.Forms.Dashboard.Content
 {
     partial class TaskDetailControl
     {
@@ -68,7 +70,7 @@
             // 
             // pnlHeader
             // 
-            pnlHeader.Appearance.BackColor = Color.FromArgb(11, 11, 11);
+            pnlHeader.Appearance.BackColor = Color.FromArgb(26, 31, 38);
             pnlHeader.Appearance.Options.UseBackColor = true;
             pnlHeader.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
             pnlHeader.Controls.Add(btnBack);
@@ -81,8 +83,8 @@
             // 
             // btnBack
             // 
-            btnBack.Appearance.BackColor = Color.FromArgb(42, 42, 42);
-            btnBack.Appearance.BorderColor = Color.FromArgb(42, 42, 42);
+            btnBack.Appearance.BackColor = Color.FromArgb(51, 65, 85);
+            btnBack.Appearance.BorderColor = Color.FromArgb(51, 65, 85);
             btnBack.Appearance.Font = new Font("Segoe UI", 9F);
             btnBack.Appearance.ForeColor = Color.White;
             btnBack.Appearance.Options.UseBackColor = true;
@@ -110,7 +112,7 @@
             // 
             // pnlFormContainer
             // 
-            pnlFormContainer.Appearance.BackColor = Color.FromArgb(11, 11, 11);
+            pnlFormContainer.Appearance.BackColor = Color.FromArgb(26, 31, 38);
             pnlFormContainer.Appearance.Options.UseBackColor = true;
             pnlFormContainer.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
             pnlFormContainer.Controls.Add(btnCancel);
@@ -138,15 +140,15 @@
             // 
             // btnCancel
             // 
-            btnCancel.Appearance.BackColor = Color.FromArgb(42, 42, 42);
-            btnCancel.Appearance.BorderColor = Color.FromArgb(42, 42, 42);
-            btnCancel.Appearance.Font = new Font("Segoe UI", 9.75F);
-            btnCancel.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            btnCancel.Appearance.BackColor = Color.FromArgb(51, 65, 85);
+            btnCancel.Appearance.BorderColor = Color.FromArgb(51, 65, 85);
+            btnCancel.Appearance.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            btnCancel.Appearance.ForeColor = Color.FromArgb(203, 213, 225);
             btnCancel.Appearance.Options.UseBackColor = true;
             btnCancel.Appearance.Options.UseBorderColor = true;
             btnCancel.Appearance.Options.UseFont = true;
             btnCancel.Appearance.Options.UseForeColor = true;
-            btnCancel.Location = new Point(340, 533);
+            btnCancel.Location = new Point(340, 480);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new Size(100, 40);
             btnCancel.TabIndex = 17;
@@ -154,15 +156,15 @@
             // 
             // btnSave
             // 
-            btnSave.Appearance.BackColor = Color.FromArgb(255, 77, 0);
-            btnSave.Appearance.BorderColor = Color.FromArgb(255, 77, 0);
+            btnSave.Appearance.BackColor = Color.FromArgb(91, 141, 239);
+            btnSave.Appearance.BorderColor = Color.FromArgb(91, 141, 239);
             btnSave.Appearance.Font = new Font("Segoe UI", 9.75F, FontStyle.Bold);
             btnSave.Appearance.ForeColor = Color.White;
             btnSave.Appearance.Options.UseBackColor = true;
             btnSave.Appearance.Options.UseBorderColor = true;
             btnSave.Appearance.Options.UseFont = true;
             btnSave.Appearance.Options.UseForeColor = true;
-            btnSave.Location = new Point(450, 533);
+            btnSave.Location = new Point(450, 480);
             btnSave.Name = "btnSave";
             btnSave.Size = new Size(150, 40);
             btnSave.TabIndex = 16;
@@ -170,70 +172,76 @@
             // 
             // cmbPriority
             // 
-            cmbPriority.Location = new Point(310, 444);
+            cmbPriority.Location = new Point(310, 420);
             cmbPriority.Name = "cmbPriority";
-            cmbPriority.Properties.Appearance.BackColor = Color.FromArgb(26, 26, 26);
-            cmbPriority.Properties.Appearance.BorderColor = Color.FromArgb(42, 42, 42);
+            cmbPriority.Properties.Appearance.BackColor = Color.FromArgb(30, 42, 58);
+            cmbPriority.Properties.Appearance.BorderColor = Color.FromArgb(51, 65, 85);
+            cmbPriority.Properties.Appearance.Font = new Font("Segoe UI", 10F);
             cmbPriority.Properties.Appearance.ForeColor = Color.White;
             cmbPriority.Properties.Appearance.Options.UseBackColor = true;
             cmbPriority.Properties.Appearance.Options.UseBorderColor = true;
+            cmbPriority.Properties.Appearance.Options.UseFont = true;
             cmbPriority.Properties.Appearance.Options.UseForeColor = true;
             cmbPriority.Properties.AutoHeight = false;
             cmbPriority.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple;
             cmbPriority.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
-            cmbPriority.Size = new Size(290, 35);
+            cmbPriority.Size = new Size(290, 36);
             cmbPriority.TabIndex = 15;
             // 
             // lblPriority
             // 
-            lblPriority.Appearance.Font = new Font("Segoe UI", 9F);
-            lblPriority.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            lblPriority.Appearance.Font = new Font("Segoe UI", 9.75F);
+            lblPriority.Appearance.ForeColor = Color.FromArgb(203, 213, 225);
             lblPriority.Appearance.Options.UseFont = true;
             lblPriority.Appearance.Options.UseForeColor = true;
-            lblPriority.Location = new Point(310, 419);
+            lblPriority.Location = new Point(310, 395);
             lblPriority.Name = "lblPriority";
-            lblPriority.Size = new Size(38, 15);
+            lblPriority.Size = new Size(44, 17);
             lblPriority.TabIndex = 14;
             lblPriority.Text = "Priority";
             // 
             // cmbStatus
             // 
-            cmbStatus.Location = new Point(0, 444);
+            cmbStatus.Location = new Point(0, 420);
             cmbStatus.Name = "cmbStatus";
-            cmbStatus.Properties.Appearance.BackColor = Color.FromArgb(26, 26, 26);
-            cmbStatus.Properties.Appearance.BorderColor = Color.FromArgb(42, 42, 42);
+            cmbStatus.Properties.Appearance.BackColor = Color.FromArgb(30, 42, 58);
+            cmbStatus.Properties.Appearance.BorderColor = Color.FromArgb(51, 65, 85);
+            cmbStatus.Properties.Appearance.Font = new Font("Segoe UI", 10F);
             cmbStatus.Properties.Appearance.ForeColor = Color.White;
             cmbStatus.Properties.Appearance.Options.UseBackColor = true;
             cmbStatus.Properties.Appearance.Options.UseBorderColor = true;
+            cmbStatus.Properties.Appearance.Options.UseFont = true;
             cmbStatus.Properties.Appearance.Options.UseForeColor = true;
             cmbStatus.Properties.AutoHeight = false;
             cmbStatus.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple;
             cmbStatus.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
-            cmbStatus.Size = new Size(290, 35);
+            cmbStatus.Size = new Size(290, 36);
             cmbStatus.TabIndex = 13;
             // 
             // lblStatus
             // 
-            lblStatus.Appearance.Font = new Font("Segoe UI", 9F);
-            lblStatus.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            lblStatus.Appearance.Font = new Font("Segoe UI", 9.75F);
+            lblStatus.Appearance.ForeColor = Color.FromArgb(203, 213, 225);
             lblStatus.Appearance.Options.UseFont = true;
             lblStatus.Appearance.Options.UseForeColor = true;
-            lblStatus.Location = new Point(0, 419);
+            lblStatus.Location = new Point(0, 395);
             lblStatus.Name = "lblStatus";
-            lblStatus.Size = new Size(32, 15);
+            lblStatus.Size = new Size(40, 17);
             lblStatus.TabIndex = 12;
             lblStatus.Text = "Status";
             // 
             // dateDue
             // 
             dateDue.EditValue = null;
-            dateDue.Location = new Point(310, 364);
+            dateDue.Location = new Point(310, 345);
             dateDue.Name = "dateDue";
-            dateDue.Properties.Appearance.BackColor = Color.FromArgb(26, 26, 26);
-            dateDue.Properties.Appearance.BorderColor = Color.FromArgb(42, 42, 42);
+            dateDue.Properties.Appearance.BackColor = Color.FromArgb(30, 42, 58);
+            dateDue.Properties.Appearance.BorderColor = Color.FromArgb(51, 65, 85);
+            dateDue.Properties.Appearance.Font = new Font("Segoe UI", 10F);
             dateDue.Properties.Appearance.ForeColor = Color.White;
             dateDue.Properties.Appearance.Options.UseBackColor = true;
             dateDue.Properties.Appearance.Options.UseBorderColor = true;
+            dateDue.Properties.Appearance.Options.UseFont = true;
             dateDue.Properties.Appearance.Options.UseForeColor = true;
             dateDue.Properties.AutoHeight = false;
             dateDue.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple;
@@ -241,31 +249,33 @@
             dateDue.Properties.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
             dateDue.Properties.CalendarView = DevExpress.XtraEditors.Repository.CalendarView.Fluent;
             dateDue.Properties.VistaDisplayMode = DevExpress.Utils.DefaultBoolean.False;
-            dateDue.Size = new Size(290, 35);
+            dateDue.Size = new Size(290, 36);
             dateDue.TabIndex = 11;
             // 
             // lblDueDate
             // 
-            lblDueDate.Appearance.Font = new Font("Segoe UI", 9F);
-            lblDueDate.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            lblDueDate.Appearance.Font = new Font("Segoe UI", 9.75F);
+            lblDueDate.Appearance.ForeColor = Color.FromArgb(203, 213, 225);
             lblDueDate.Appearance.Options.UseFont = true;
             lblDueDate.Appearance.Options.UseForeColor = true;
-            lblDueDate.Location = new Point(310, 339);
+            lblDueDate.Location = new Point(310, 320);
             lblDueDate.Name = "lblDueDate";
-            lblDueDate.Size = new Size(48, 15);
+            lblDueDate.Size = new Size(55, 17);
             lblDueDate.TabIndex = 10;
             lblDueDate.Text = "Due Date";
             // 
             // dateStart
             // 
             dateStart.EditValue = null;
-            dateStart.Location = new Point(0, 364);
+            dateStart.Location = new Point(0, 345);
             dateStart.Name = "dateStart";
-            dateStart.Properties.Appearance.BackColor = Color.FromArgb(26, 26, 26);
-            dateStart.Properties.Appearance.BorderColor = Color.FromArgb(42, 42, 42);
+            dateStart.Properties.Appearance.BackColor = Color.FromArgb(30, 42, 58);
+            dateStart.Properties.Appearance.BorderColor = Color.FromArgb(51, 65, 85);
+            dateStart.Properties.Appearance.Font = new Font("Segoe UI", 10F);
             dateStart.Properties.Appearance.ForeColor = Color.White;
             dateStart.Properties.Appearance.Options.UseBackColor = true;
             dateStart.Properties.Appearance.Options.UseBorderColor = true;
+            dateStart.Properties.Appearance.Options.UseFont = true;
             dateStart.Properties.Appearance.Options.UseForeColor = true;
             dateStart.Properties.AutoHeight = false;
             dateStart.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple;
@@ -273,30 +283,32 @@
             dateStart.Properties.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
             dateStart.Properties.CalendarView = DevExpress.XtraEditors.Repository.CalendarView.Fluent;
             dateStart.Properties.VistaDisplayMode = DevExpress.Utils.DefaultBoolean.False;
-            dateStart.Size = new Size(290, 35);
+            dateStart.Size = new Size(290, 36);
             dateStart.TabIndex = 9;
             // 
             // lblStartDate
             // 
-            lblStartDate.Appearance.Font = new Font("Segoe UI", 9F);
-            lblStartDate.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            lblStartDate.Appearance.Font = new Font("Segoe UI", 9.75F);
+            lblStartDate.Appearance.ForeColor = Color.FromArgb(203, 213, 225);
             lblStartDate.Appearance.Options.UseFont = true;
             lblStartDate.Appearance.Options.UseForeColor = true;
-            lblStartDate.Location = new Point(0, 339);
+            lblStartDate.Location = new Point(0, 320);
             lblStartDate.Name = "lblStartDate";
-            lblStartDate.Size = new Size(51, 15);
+            lblStartDate.Size = new Size(68, 17);
             lblStartDate.TabIndex = 8;
-            lblStartDate.Text = "Start Date";
+            lblStartDate.Text = "Start Date *";
             // 
             // lueAssignee
             // 
-            lueAssignee.Location = new Point(310, 284);
+            lueAssignee.Location = new Point(310, 270);
             lueAssignee.Name = "lueAssignee";
-            lueAssignee.Properties.Appearance.BackColor = Color.FromArgb(26, 26, 26);
-            lueAssignee.Properties.Appearance.BorderColor = Color.FromArgb(42, 42, 42);
+            lueAssignee.Properties.Appearance.BackColor = Color.FromArgb(30, 42, 58);
+            lueAssignee.Properties.Appearance.BorderColor = Color.FromArgb(51, 65, 85);
+            lueAssignee.Properties.Appearance.Font = new Font("Segoe UI", 10F);
             lueAssignee.Properties.Appearance.ForeColor = Color.White;
             lueAssignee.Properties.Appearance.Options.UseBackColor = true;
             lueAssignee.Properties.Appearance.Options.UseBorderColor = true;
+            lueAssignee.Properties.Appearance.Options.UseFont = true;
             lueAssignee.Properties.Appearance.Options.UseForeColor = true;
             lueAssignee.Properties.AutoHeight = false;
             lueAssignee.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple;
@@ -304,60 +316,64 @@
             lueAssignee.Properties.NullText = "Unassigned";
             lueAssignee.Properties.PopupWidth = 500;
             lueAssignee.Properties.ShowFooter = false;
-            lueAssignee.Size = new Size(290, 35);
+            lueAssignee.Size = new Size(290, 36);
             lueAssignee.TabIndex = 7;
             // 
             // lblAssignee
             // 
-            lblAssignee.Appearance.Font = new Font("Segoe UI", 9F);
-            lblAssignee.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            lblAssignee.Appearance.Font = new Font("Segoe UI", 9.75F);
+            lblAssignee.Appearance.ForeColor = Color.FromArgb(203, 213, 225);
             lblAssignee.Appearance.Options.UseFont = true;
             lblAssignee.Appearance.Options.UseForeColor = true;
-            lblAssignee.Location = new Point(310, 259);
+            lblAssignee.Location = new Point(310, 245);
             lblAssignee.Name = "lblAssignee";
-            lblAssignee.Size = new Size(47, 15);
+            lblAssignee.Size = new Size(54, 17);
             lblAssignee.TabIndex = 6;
             lblAssignee.Text = "Assignee";
             // 
             // lueProject
             // 
-            lueProject.Location = new Point(0, 284);
+            lueProject.Location = new Point(0, 270);
             lueProject.Name = "lueProject";
-            lueProject.Properties.Appearance.BackColor = Color.FromArgb(26, 26, 26);
-            lueProject.Properties.Appearance.BorderColor = Color.FromArgb(42, 42, 42);
+            lueProject.Properties.Appearance.BackColor = Color.FromArgb(30, 42, 58);
+            lueProject.Properties.Appearance.BorderColor = Color.FromArgb(51, 65, 85);
+            lueProject.Properties.Appearance.Font = new Font("Segoe UI", 10F);
             lueProject.Properties.Appearance.ForeColor = Color.White;
             lueProject.Properties.Appearance.Options.UseBackColor = true;
             lueProject.Properties.Appearance.Options.UseBorderColor = true;
+            lueProject.Properties.Appearance.Options.UseFont = true;
             lueProject.Properties.Appearance.Options.UseForeColor = true;
             lueProject.Properties.AutoHeight = false;
             lueProject.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple;
             lueProject.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
             lueProject.Properties.PopupWidth = 600;
             lueProject.Properties.ShowFooter = false;
-            lueProject.Size = new Size(290, 35);
+            lueProject.Size = new Size(290, 36);
             lueProject.TabIndex = 5;
             // 
             // lblProject
             // 
-            lblProject.Appearance.Font = new Font("Segoe UI", 9F);
-            lblProject.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            lblProject.Appearance.Font = new Font("Segoe UI", 9.75F);
+            lblProject.Appearance.ForeColor = Color.FromArgb(203, 213, 225);
             lblProject.Appearance.Options.UseFont = true;
             lblProject.Appearance.Options.UseForeColor = true;
-            lblProject.Location = new Point(0, 259);
+            lblProject.Location = new Point(0, 245);
             lblProject.Name = "lblProject";
-            lblProject.Size = new Size(37, 15);
+            lblProject.Size = new Size(53, 17);
             lblProject.TabIndex = 4;
-            lblProject.Text = "Project";
+            lblProject.Text = "Project *";
             // 
             // txtDescription
             // 
-            txtDescription.Location = new Point(0, 110);
+            txtDescription.Location = new Point(0, 100);
             txtDescription.Name = "txtDescription";
-            txtDescription.Properties.Appearance.BackColor = Color.FromArgb(26, 26, 26);
-            txtDescription.Properties.Appearance.BorderColor = Color.FromArgb(42, 42, 42);
+            txtDescription.Properties.Appearance.BackColor = Color.FromArgb(30, 42, 58);
+            txtDescription.Properties.Appearance.BorderColor = Color.FromArgb(51, 65, 85);
+            txtDescription.Properties.Appearance.Font = new Font("Segoe UI", 10F);
             txtDescription.Properties.Appearance.ForeColor = Color.White;
             txtDescription.Properties.Appearance.Options.UseBackColor = true;
             txtDescription.Properties.Appearance.Options.UseBorderColor = true;
+            txtDescription.Properties.Appearance.Options.UseFont = true;
             txtDescription.Properties.Appearance.Options.UseForeColor = true;
             txtDescription.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple;
             txtDescription.Size = new Size(600, 130);
@@ -365,13 +381,13 @@
             // 
             // lblDescription
             // 
-            lblDescription.Appearance.Font = new Font("Segoe UI", 9F);
-            lblDescription.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            lblDescription.Appearance.Font = new Font("Segoe UI", 9.75F);
+            lblDescription.Appearance.ForeColor = Color.FromArgb(203, 213, 225);
             lblDescription.Appearance.Options.UseFont = true;
             lblDescription.Appearance.Options.UseForeColor = true;
-            lblDescription.Location = new Point(0, 85);
+            lblDescription.Location = new Point(0, 75);
             lblDescription.Name = "lblDescription";
-            lblDescription.Size = new Size(60, 15);
+            lblDescription.Size = new Size(70, 17);
             lblDescription.TabIndex = 2;
             lblDescription.Text = "Description";
             // 
@@ -379,35 +395,37 @@
             // 
             txtTaskName.Location = new Point(0, 25);
             txtTaskName.Name = "txtTaskName";
-            txtTaskName.Properties.Appearance.BackColor = Color.FromArgb(26, 26, 26);
-            txtTaskName.Properties.Appearance.BorderColor = Color.FromArgb(42, 42, 42);
+            txtTaskName.Properties.Appearance.BackColor = Color.FromArgb(30, 42, 58);
+            txtTaskName.Properties.Appearance.BorderColor = Color.FromArgb(51, 65, 85);
+            txtTaskName.Properties.Appearance.Font = new Font("Segoe UI", 10F);
             txtTaskName.Properties.Appearance.ForeColor = Color.White;
             txtTaskName.Properties.Appearance.Options.UseBackColor = true;
             txtTaskName.Properties.Appearance.Options.UseBorderColor = true;
+            txtTaskName.Properties.Appearance.Options.UseFont = true;
             txtTaskName.Properties.Appearance.Options.UseForeColor = true;
             txtTaskName.Properties.AutoHeight = false;
             txtTaskName.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple;
             txtTaskName.Properties.NullText = "Enter task name...";
-            txtTaskName.Size = new Size(600, 35);
+            txtTaskName.Size = new Size(600, 36);
             txtTaskName.TabIndex = 1;
             // 
             // lblTaskName
             // 
-            lblTaskName.Appearance.Font = new Font("Segoe UI", 9F);
-            lblTaskName.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            lblTaskName.Appearance.Font = new Font("Segoe UI", 9.75F);
+            lblTaskName.Appearance.ForeColor = Color.FromArgb(203, 213, 225);
             lblTaskName.Appearance.Options.UseFont = true;
             lblTaskName.Appearance.Options.UseForeColor = true;
             lblTaskName.Location = new Point(0, 0);
             lblTaskName.Name = "lblTaskName";
-            lblTaskName.Size = new Size(59, 15);
+            lblTaskName.Size = new Size(75, 17);
             lblTaskName.TabIndex = 0;
-            lblTaskName.Text = "Task Name";
+            lblTaskName.Text = "Task Name *";
             // 
             // TaskDetailControl
             // 
             AutoScaleDimensions = new SizeF(8F, 19F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.FromArgb(11, 11, 11);
+            BackColor = Color.FromArgb(26, 31, 38);
             Controls.Add(pnlFormContainer);
             Controls.Add(pnlHeader);
             Name = "TaskDetailControl";

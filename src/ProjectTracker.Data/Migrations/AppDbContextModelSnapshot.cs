@@ -115,6 +115,12 @@ namespace ProjectTracker.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProjectId"));
 
+                    b.Property<decimal>("ActualCost")
+                        .ValueGeneratedOnAdd()
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)")
+                        .HasDefaultValue(0m);
+
                     b.Property<decimal?>("Budget")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
@@ -165,6 +171,10 @@ namespace ProjectTracker.Data.Migrations
                     b.Property<int>("TeamId")
                         .HasColumnType("int");
 
+                    b.Property<decimal?>("TotalPlannedHours")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
@@ -180,6 +190,7 @@ namespace ProjectTracker.Data.Migrations
                         new
                         {
                             ProjectId = 1,
+                            ActualCost = 0m,
                             Budget = 150000m,
                             CompletionPercentage = 35m,
                             CreatedAt = new DateTime(2025, 10, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -195,6 +206,7 @@ namespace ProjectTracker.Data.Migrations
                         new
                         {
                             ProjectId = 2,
+                            ActualCost = 0m,
                             Budget = 200000m,
                             CompletionPercentage = 20m,
                             CreatedAt = new DateTime(2025, 11, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -210,6 +222,7 @@ namespace ProjectTracker.Data.Migrations
                         new
                         {
                             ProjectId = 3,
+                            ActualCost = 0m,
                             Budget = 80000m,
                             CompletionPercentage = 0m,
                             CreatedAt = new DateTime(2025, 12, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
@@ -264,6 +277,69 @@ namespace ProjectTracker.Data.Migrations
                     b.HasIndex("ProjectId");
 
                     b.ToTable("ProjectRisks", (string)null);
+                });
+
+            modelBuilder.Entity("ProjectTracker.Core.Entities.ProjectSnapshot", b =>
+                {
+                    b.Property<int>("SnapshotId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SnapshotId"));
+
+                    b.Property<decimal>("BurnedBudget")
+                        .ValueGeneratedOnAdd()
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)")
+                        .HasDefaultValue(0m);
+
+                    b.Property<int>("CompletedTasksCount")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<decimal>("EarnedValue")
+                        .ValueGeneratedOnAdd()
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)")
+                        .HasDefaultValue(0m);
+
+                    b.Property<decimal>("IdealRemainingHours")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<int>("OpenTasksCount")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
+                    b.Property<decimal>("PlannedValue")
+                        .ValueGeneratedOnAdd()
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)")
+                        .HasDefaultValue(0m);
+
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("RemainingHours")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<DateTime>("SnapshotDate")
+                        .HasColumnType("date");
+
+                    b.HasKey("SnapshotId");
+
+                    b.HasIndex("ProjectId", "SnapshotDate")
+                        .IsUnique();
+
+                    b.ToTable("ProjectSnapshots", (string)null);
                 });
 
             modelBuilder.Entity("ProjectTracker.Core.Entities.ProjectTeamMember", b =>
@@ -338,6 +414,12 @@ namespace ProjectTracker.Data.Migrations
                             RoleId = 3,
                             Description = "Developer",
                             RoleName = "Developer"
+                        },
+                        new
+                        {
+                            RoleId = 4,
+                            Description = "Waiting for approval - Limited access",
+                            RoleName = "Pending"
                         });
                 });
 
@@ -688,6 +770,52 @@ namespace ProjectTracker.Data.Migrations
                     b.ToTable("TeamMembers", (string)null);
                 });
 
+            modelBuilder.Entity("ProjectTracker.Core.Entities.TimeEntry", b =>
+                {
+                    b.Property<int>("TimeEntryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TimeEntryId"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<decimal>("HoursSpent")
+                        .HasPrecision(5, 2)
+                        .HasColumnType("decimal(5,2)");
+
+                    b.Property<bool>("IsBillable")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<int>("TaskId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("WorkDate")
+                        .HasColumnType("date");
+
+                    b.HasKey("TimeEntryId");
+
+                    b.HasIndex("TaskId");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("WorkDate");
+
+                    b.ToTable("TimeEntries", (string)null);
+                });
+
             modelBuilder.Entity("ProjectTracker.Core.Entities.User", b =>
                 {
                     b.Property<int>("UserId")
@@ -701,6 +829,10 @@ namespace ProjectTracker.Data.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETDATE()");
 
+                    b.Property<string>("Department")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -710,6 +842,10 @@ namespace ProjectTracker.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<decimal?>("HourlyCost")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
 
                     b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()
@@ -783,6 +919,17 @@ namespace ProjectTracker.Data.Migrations
                 {
                     b.HasOne("ProjectTracker.Core.Entities.Project", "Project")
                         .WithMany("Risks")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Project");
+                });
+
+            modelBuilder.Entity("ProjectTracker.Core.Entities.ProjectSnapshot", b =>
+                {
+                    b.HasOne("ProjectTracker.Core.Entities.Project", "Project")
+                        .WithMany("Snapshots")
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -895,6 +1042,25 @@ namespace ProjectTracker.Data.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("ProjectTracker.Core.Entities.TimeEntry", b =>
+                {
+                    b.HasOne("ProjectTracker.Core.Entities.Task", "Task")
+                        .WithMany("TimeEntries")
+                        .HasForeignKey("TaskId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ProjectTracker.Core.Entities.User", "User")
+                        .WithMany("TimeEntries")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Task");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("ProjectTracker.Core.Entities.User", b =>
                 {
                     b.HasOne("ProjectTracker.Core.Entities.Role", "Role")
@@ -910,6 +1076,8 @@ namespace ProjectTracker.Data.Migrations
                 {
                     b.Navigation("Risks");
 
+                    b.Navigation("Snapshots");
+
                     b.Navigation("Tasks");
 
                     b.Navigation("TeamMembers");
@@ -923,6 +1091,8 @@ namespace ProjectTracker.Data.Migrations
             modelBuilder.Entity("ProjectTracker.Core.Entities.Task", b =>
                 {
                     b.Navigation("Comments");
+
+                    b.Navigation("TimeEntries");
                 });
 
             modelBuilder.Entity("ProjectTracker.Core.Entities.Team", b =>
@@ -951,6 +1121,8 @@ namespace ProjectTracker.Data.Migrations
                     b.Navigation("TeamMemberships");
 
                     b.Navigation("TeamMemberships_New");
+
+                    b.Navigation("TimeEntries");
                 });
 #pragma warning restore 612, 618
         }

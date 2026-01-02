@@ -224,6 +224,7 @@ namespace ProjectTracker.Business.Services
 
         /// <summary>
         /// Register a new user
+        /// Handles invitation-based registration and pending user registration
         /// </summary>
         public async Task<UserDto> RegisterAsync(RegisterDto registerDto)
         {
@@ -250,26 +251,77 @@ namespace ProjectTracker.Business.Services
                 throw new Exception("Email already exists");
             }
 
-            // 4. Hash password with BCrypt
+            // 4. Determine role based on invitation token
+            int roleId = 4; // Default: Pending
+            Core.Entities.TeamInvitation? invitation = null;
+            
+            if (!string.IsNullOrEmpty(registerDto.InvitationToken))
+            {
+                // Check if invitation exists and is valid
+                invitation = await _unitOfWork.TeamInvitations
+                    .FirstOrDefaultAsync(ti => ti.Token == registerDto.InvitationToken 
+                        && ti.Status == Core.Enums.InvitationStatus.Pending
+                        && ti.ExpiresAt > DateTime.Now);
+                
+                if (invitation != null)
+                {
+                    // Valid invitation - assign Developer role (or based on invitation)
+                    roleId = 3; // Developer
+                    System.Diagnostics.Debug.WriteLine($"✅ REGISTER: Valid invitation found, assigning Developer role");
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine($"⚠️ REGISTER: Invalid/expired invitation token, assigning Pending role");
+                }
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine($"📝 REGISTER: No invitation token, assigning Pending role");
+            }
+
+            // 5. Hash password with BCrypt
             string hashedPassword = BCrypt.Net.BCrypt.HashPassword(registerDto.Password, 11);
 
-            // 5. Create new user entity
+            // 6. Create new user entity
             var user = new User
             {
                 Username = registerDto.Username,
                 FullName = registerDto.FullName,
                 Email = registerDto.Email,
                 PasswordHash = hashedPassword,
-                RoleId = registerDto.RoleId,
+                RoleId = roleId,
                 IsActive = true,
                 CreatedAt = DateTime.Now
             };
 
-            // 6. Save to database
+            // 7. Save to database
             await _unitOfWork.Users.AddAsync(user);
             await _unitOfWork.SaveChangesAsync();
 
-            // 7. Return DTO
+            // 8. If invitation was valid, update invitation status and add to team
+            if (invitation != null)
+            {
+                // Add user to team
+                var teamMember = new Core.Entities.TeamMember
+                {
+                    TeamId = invitation.TeamId,
+                    UserId = user.UserId,
+                    Role = invitation.ProposedRole,
+                    JoinedAt = DateTime.Now,
+                    IsActive = true
+                };
+                await _unitOfWork.TeamMembers.AddAsync(teamMember);
+
+                // Update invitation status
+                invitation.Status = Core.Enums.InvitationStatus.Accepted;
+                invitation.RespondedAt = DateTime.Now;
+                _unitOfWork.TeamInvitations.Update(invitation);
+                
+                await _unitOfWork.SaveChangesAsync();
+                System.Diagnostics.Debug.WriteLine($"✅ REGISTER: User added to team {invitation.TeamId}");
+            }
+
+            // 9. Return DTO
             return _mapper.Map<UserDto>(user);
         }
 

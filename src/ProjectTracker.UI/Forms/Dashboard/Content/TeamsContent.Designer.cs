@@ -1,4 +1,6 @@
-﻿namespace ProjectTracker.UI.Forms.Dashboard.Content
+﻿using ProjectTracker.UI.Helpers;
+
+namespace ProjectTracker.UI.Forms.Dashboard.Content
 {
     partial class TeamsContent
     {
@@ -55,7 +57,7 @@
             // 
             // pnlHeader
             // 
-            pnlHeader.Appearance.BackColor = Color.FromArgb(11, 11, 11);
+            pnlHeader.Appearance.BackColor = Color.FromArgb(26, 31, 38);
             pnlHeader.Appearance.Options.UseBackColor = true;
             pnlHeader.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
             pnlHeader.Controls.Add(btnCreateTeam);
@@ -69,15 +71,16 @@
             // 
             // btnCreateTeam
             // 
-            btnCreateTeam.Appearance.BackColor = Color.FromArgb(255, 77, 0);
-            btnCreateTeam.Appearance.BorderColor = Color.FromArgb(255, 77, 0);
+            btnCreateTeam.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnCreateTeam.Appearance.BackColor = Color.FromArgb(91, 141, 239);
+            btnCreateTeam.Appearance.BorderColor = Color.FromArgb(91, 141, 239);
             btnCreateTeam.Appearance.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             btnCreateTeam.Appearance.ForeColor = Color.White;
             btnCreateTeam.Appearance.Options.UseBackColor = true;
             btnCreateTeam.Appearance.Options.UseBorderColor = true;
             btnCreateTeam.Appearance.Options.UseFont = true;
             btnCreateTeam.Appearance.Options.UseForeColor = true;
-            btnCreateTeam.Location = new Point(960, 25);
+            btnCreateTeam.Location = new Point(955, 25);
             btnCreateTeam.Name = "btnCreateTeam";
             btnCreateTeam.Size = new Size(130, 36);
             btnCreateTeam.TabIndex = 2;
@@ -86,7 +89,7 @@
             // lblSubtitle
             // 
             lblSubtitle.Appearance.Font = new Font("Segoe UI", 10F);
-            lblSubtitle.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            lblSubtitle.Appearance.ForeColor = Color.FromArgb(203, 213, 225);
             lblSubtitle.Appearance.Options.UseFont = true;
             lblSubtitle.Appearance.Options.UseForeColor = true;
             lblSubtitle.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
@@ -111,7 +114,7 @@
             // 
             // pnlSwitcher
             // 
-            pnlSwitcher.Appearance.BackColor = Color.FromArgb(21, 21, 21);
+            pnlSwitcher.Appearance.BackColor = Color.FromArgb(36, 43, 61);
             pnlSwitcher.Appearance.Options.UseBackColor = true;
             pnlSwitcher.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
             pnlSwitcher.Controls.Add(txtSearch);
@@ -128,9 +131,9 @@
             // 
             txtSearch.Location = new Point(780, 15);
             txtSearch.Name = "txtSearch";
-            txtSearch.Properties.Appearance.BackColor = Color.FromArgb(26, 26, 26);
-            txtSearch.Properties.Appearance.BorderColor = Color.FromArgb(42, 42, 42);
-            txtSearch.Properties.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            txtSearch.Properties.Appearance.BackColor = Color.FromArgb(30, 42, 58);
+            txtSearch.Properties.Appearance.BorderColor = Color.FromArgb(51, 65, 85);
+            txtSearch.Properties.Appearance.ForeColor = Color.FromArgb(203, 213, 225);
             txtSearch.Properties.Appearance.Options.UseBackColor = true;
             txtSearch.Properties.Appearance.Options.UseBorderColor = true;
             txtSearch.Properties.Appearance.Options.UseForeColor = true;
@@ -144,8 +147,8 @@
             // 
             lueActiveTeam.Location = new Point(120, 15);
             lueActiveTeam.Name = "lueActiveTeam";
-            lueActiveTeam.Properties.Appearance.BackColor = Color.FromArgb(26, 26, 26);
-            lueActiveTeam.Properties.Appearance.BorderColor = Color.FromArgb(42, 42, 42);
+            lueActiveTeam.Properties.Appearance.BackColor = Color.FromArgb(30, 42, 58);
+            lueActiveTeam.Properties.Appearance.BorderColor = Color.FromArgb(51, 65, 85);
             lueActiveTeam.Properties.Appearance.ForeColor = Color.White;
             lueActiveTeam.Properties.Appearance.Options.UseBackColor = true;
             lueActiveTeam.Properties.Appearance.Options.UseBorderColor = true;
@@ -174,7 +177,7 @@
             // 
             // pnlCardsContainer
             // 
-            pnlCardsContainer.Appearance.BackColor = Color.FromArgb(11, 11, 11);
+            pnlCardsContainer.Appearance.BackColor = Color.FromArgb(26, 31, 38);
             pnlCardsContainer.Appearance.Options.UseBackColor = true;
             pnlCardsContainer.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
             pnlCardsContainer.Controls.Add(flowTeamCards);
@@ -188,15 +191,15 @@
             // flowTeamCards
             // 
             flowTeamCards.AutoScroll = true;
-            flowTeamCards.BackColor = Color.FromArgb(11, 11, 11);
-            flowTeamCards.Location = new Point(15, 15);
+            flowTeamCards.BackColor = Color.FromArgb(26, 31, 38);
+            flowTeamCards.Location = new Point(0, 15);
             flowTeamCards.Name = "flowTeamCards";
-            flowTeamCards.Size = new Size(1070, 590);
+            flowTeamCards.Size = new Size(1100, 525);
             flowTeamCards.TabIndex = 0;
             // 
             // pnlFooter
             // 
-            pnlFooter.Appearance.BackColor = Color.FromArgb(11, 11, 11);
+            pnlFooter.Appearance.BackColor = Color.FromArgb(26, 31, 38);
             pnlFooter.Appearance.Options.UseBackColor = true;
             pnlFooter.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
             pnlFooter.Controls.Add(btnRefresh);
@@ -209,10 +212,11 @@
             // 
             // btnRefresh
             // 
-            btnRefresh.Appearance.BackColor = Color.FromArgb(42, 42, 42);
-            btnRefresh.Appearance.BorderColor = Color.FromArgb(42, 42, 42);
-            btnRefresh.Appearance.Font = new Font("Segoe UI", 9F);
-            btnRefresh.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            btnRefresh.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnRefresh.Appearance.BackColor = Color.FromArgb(51, 65, 85);
+            btnRefresh.Appearance.BorderColor = Color.FromArgb(51, 65, 85);
+            btnRefresh.Appearance.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            btnRefresh.Appearance.ForeColor = Color.FromArgb(203, 213, 225);
             btnRefresh.Appearance.Options.UseBackColor = true;
             btnRefresh.Appearance.Options.UseBorderColor = true;
             btnRefresh.Appearance.Options.UseFont = true;
@@ -226,11 +230,11 @@
             // lblRecordCount
             // 
             lblRecordCount.Appearance.Font = new Font("Segoe UI", 9F);
-            lblRecordCount.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            lblRecordCount.Appearance.ForeColor = Color.FromArgb(203, 213, 225);
             lblRecordCount.Appearance.Options.UseFont = true;
             lblRecordCount.Appearance.Options.UseForeColor = true;
             lblRecordCount.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
-            lblRecordCount.Location = new Point(15, 15);
+            lblRecordCount.Location = new Point(0, 15);
             lblRecordCount.Name = "lblRecordCount";
             lblRecordCount.Size = new Size(200, 20);
             lblRecordCount.TabIndex = 0;
@@ -240,7 +244,7 @@
             // 
             AutoScaleDimensions = new SizeF(8F, 19F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.FromArgb(11, 11, 11);
+            BackColor = Color.FromArgb(26, 31, 38);
             Controls.Add(pnlCardsContainer);
             Controls.Add(pnlFooter);
             Controls.Add(pnlSwitcher);

@@ -12,6 +12,11 @@ namespace ProjectTracker.Business.Interfaces
     public interface ITeamService
     {
         /// <summary>
+        /// Get all teams in the system (Admin only)
+        /// </summary>
+        Task<IEnumerable<TeamDto>> GetAllTeamsAsync();
+
+        /// <summary>
         /// Get all teams for the current user
         /// </summary>
         Task<IEnumerable<TeamDto>> GetUserTeamsAsync();

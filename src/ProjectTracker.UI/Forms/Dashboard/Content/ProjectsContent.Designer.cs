@@ -1,4 +1,6 @@
-﻿namespace ProjectTracker.UI.Forms.Dashboard.Content
+﻿using ProjectTracker.UI.Helpers;
+
+namespace ProjectTracker.UI.Forms.Dashboard.Content
 {
     partial class ProjectsContent
     {
@@ -46,10 +48,12 @@
             ProjectName = new DevExpress.XtraGrid.Columns.GridColumn();
             Status = new DevExpress.XtraGrid.Columns.GridColumn();
             CompletionPercentage = new DevExpress.XtraGrid.Columns.GridColumn();
+            repositoryItemProgressBar = new DevExpress.XtraEditors.Repository.RepositoryItemProgressBar();
             Priority = new DevExpress.XtraGrid.Columns.GridColumn();
             ManagerName = new DevExpress.XtraGrid.Columns.GridColumn();
             EndDate = new DevExpress.XtraGrid.Columns.GridColumn();
             Actions = new DevExpress.XtraGrid.Columns.GridColumn();
+            repositoryItemButtonEdit = new DevExpress.XtraEditors.Repository.RepositoryItemButtonEdit();
             ((System.ComponentModel.ISupportInitialize)pnlHeader).BeginInit();
             pnlHeader.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pnlFilters).BeginInit();
@@ -63,11 +67,13 @@
             pnlFooter.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)grdProjects).BeginInit();
             ((System.ComponentModel.ISupportInitialize)gridView1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)repositoryItemProgressBar).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)repositoryItemButtonEdit).BeginInit();
             SuspendLayout();
             // 
             // pnlHeader
             // 
-            pnlHeader.Appearance.BackColor = Color.FromArgb(11, 11, 11);
+            pnlHeader.Appearance.BackColor = Color.FromArgb(26, 31, 38);
             pnlHeader.Appearance.Options.UseBackColor = true;
             pnlHeader.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
             pnlHeader.Controls.Add(btnNewProject);
@@ -81,15 +87,15 @@
             // 
             // btnNewProject
             // 
-            btnNewProject.Appearance.BackColor = Color.FromArgb(255, 77, 0);
-            btnNewProject.Appearance.BorderColor = Color.FromArgb(255, 77, 0);
+            btnNewProject.Appearance.BackColor = Color.FromArgb(91, 141, 239);
+            btnNewProject.Appearance.BorderColor = Color.FromArgb(91, 141, 239);
             btnNewProject.Appearance.Font = new Font("Segoe UI", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnNewProject.Appearance.ForeColor = Color.White;
+            btnNewProject.Appearance.ForeColor = Color.FromArgb(248, 250, 252);
             btnNewProject.Appearance.Options.UseBackColor = true;
             btnNewProject.Appearance.Options.UseBorderColor = true;
             btnNewProject.Appearance.Options.UseFont = true;
             btnNewProject.Appearance.Options.UseForeColor = true;
-            btnNewProject.Location = new Point(960, 25);
+            btnNewProject.Location = new Point(1030, 25);
             btnNewProject.Name = "btnNewProject";
             btnNewProject.Size = new Size(130, 36);
             btnNewProject.TabIndex = 2;
@@ -99,7 +105,7 @@
             // lblSubtitle
             // 
             lblSubtitle.Appearance.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            lblSubtitle.Appearance.ForeColor = Color.FromArgb(161, 161, 161, 161);
+            lblSubtitle.Appearance.ForeColor = Color.FromArgb(203, 213, 225);
             lblSubtitle.Appearance.Options.UseFont = true;
             lblSubtitle.Appearance.Options.UseForeColor = true;
             lblSubtitle.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
@@ -112,7 +118,7 @@
             // lblTitle
             // 
             lblTitle.Appearance.Font = new Font("Segoe UI", 18F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblTitle.Appearance.ForeColor = Color.White;
+            lblTitle.Appearance.ForeColor = Color.FromArgb(248, 250, 252);
             lblTitle.Appearance.Options.UseFont = true;
             lblTitle.Appearance.Options.UseForeColor = true;
             lblTitle.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
@@ -124,7 +130,7 @@
             // 
             // pnlFilters
             // 
-            pnlFilters.Appearance.BackColor = Color.FromArgb(21, 21, 21);
+            pnlFilters.Appearance.BackColor = Color.FromArgb(36, 43, 61);
             pnlFilters.Appearance.Options.UseBackColor = true;
             pnlFilters.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
             pnlFilters.Controls.Add(btnClearFilters);
@@ -140,10 +146,10 @@
             // 
             // btnClearFilters
             // 
-            btnClearFilters.Appearance.BackColor = Color.FromArgb(42, 42, 42);
-            btnClearFilters.Appearance.BorderColor = Color.FromArgb(42, 42, 42);
+            btnClearFilters.Appearance.BackColor = Color.FromArgb(51, 65, 85);
+            btnClearFilters.Appearance.BorderColor = Color.FromArgb(51, 65, 85);
             btnClearFilters.Appearance.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            btnClearFilters.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            btnClearFilters.Appearance.ForeColor = Color.FromArgb(203, 213, 225);
             btnClearFilters.Appearance.Options.UseBackColor = true;
             btnClearFilters.Appearance.Options.UseBorderColor = true;
             btnClearFilters.Appearance.Options.UseFont = true;
@@ -159,9 +165,9 @@
             // 
             cmbPriorityFilter.Location = new Point(505, 15);
             cmbPriorityFilter.Name = "cmbPriorityFilter";
-            cmbPriorityFilter.Properties.Appearance.BackColor = Color.FromArgb(26, 26, 26);
-            cmbPriorityFilter.Properties.Appearance.BorderColor = Color.FromArgb(42, 42, 42);
-            cmbPriorityFilter.Properties.Appearance.ForeColor = Color.White;
+            cmbPriorityFilter.Properties.Appearance.BackColor = Color.FromArgb(30, 42, 58);
+            cmbPriorityFilter.Properties.Appearance.BorderColor = Color.FromArgb(51, 65, 85);
+            cmbPriorityFilter.Properties.Appearance.ForeColor = Color.FromArgb(248, 250, 252);
             cmbPriorityFilter.Properties.Appearance.Options.UseBackColor = true;
             cmbPriorityFilter.Properties.Appearance.Options.UseBorderColor = true;
             cmbPriorityFilter.Properties.Appearance.Options.UseForeColor = true;
@@ -176,9 +182,9 @@
             // 
             cmbStatusFilter.Location = new Point(330, 15);
             cmbStatusFilter.Name = "cmbStatusFilter";
-            cmbStatusFilter.Properties.Appearance.BackColor = Color.FromArgb(26, 26, 26);
-            cmbStatusFilter.Properties.Appearance.BorderColor = Color.FromArgb(42, 42, 42);
-            cmbStatusFilter.Properties.Appearance.ForeColor = Color.White;
+            cmbStatusFilter.Properties.Appearance.BackColor = Color.FromArgb(30, 42, 58);
+            cmbStatusFilter.Properties.Appearance.BorderColor = Color.FromArgb(51, 65, 85);
+            cmbStatusFilter.Properties.Appearance.ForeColor = Color.FromArgb(248, 250, 252);
             cmbStatusFilter.Properties.Appearance.Options.UseBackColor = true;
             cmbStatusFilter.Properties.Appearance.Options.UseBorderColor = true;
             cmbStatusFilter.Properties.Appearance.Options.UseForeColor = true;
@@ -194,9 +200,9 @@
             txtSearch.EditValue = "";
             txtSearch.Location = new Point(15, 15);
             txtSearch.Name = "txtSearch";
-            txtSearch.Properties.Appearance.BackColor = Color.FromArgb(26, 26, 26);
-            txtSearch.Properties.Appearance.BorderColor = Color.FromArgb(42, 42, 42);
-            txtSearch.Properties.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            txtSearch.Properties.Appearance.BackColor = Color.FromArgb(30, 42, 58);
+            txtSearch.Properties.Appearance.BorderColor = Color.FromArgb(51, 65, 85);
+            txtSearch.Properties.Appearance.ForeColor = Color.FromArgb(203, 213, 225);
             txtSearch.Properties.Appearance.Options.UseBackColor = true;
             txtSearch.Properties.Appearance.Options.UseBorderColor = true;
             txtSearch.Properties.Appearance.Options.UseForeColor = true;
@@ -209,7 +215,7 @@
             // 
             // pnlGridContainer
             // 
-            pnlGridContainer.Appearance.BackColor = Color.FromArgb(11, 11, 11);
+            pnlGridContainer.Appearance.BackColor = Color.FromArgb(26, 31, 38);
             pnlGridContainer.Appearance.Options.UseBackColor = true;
             pnlGridContainer.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
             pnlGridContainer.Controls.Add(pnlFooter);
@@ -223,7 +229,7 @@
             // 
             // pnlFooter
             // 
-            pnlFooter.Appearance.BackColor = Color.FromArgb(11, 11, 11);
+            pnlFooter.Appearance.BackColor = Color.FromArgb(26, 31, 38);
             pnlFooter.Appearance.Options.UseBackColor = true;
             pnlFooter.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
             pnlFooter.Controls.Add(btnRefresh);
@@ -236,15 +242,15 @@
             // 
             // btnRefresh
             // 
-            btnRefresh.Appearance.BackColor = Color.FromArgb(42, 42, 42);
-            btnRefresh.Appearance.BorderColor = Color.FromArgb(42, 42, 42);
+            btnRefresh.Appearance.BackColor = Color.FromArgb(51, 65, 85);
+            btnRefresh.Appearance.BorderColor = Color.FromArgb(51, 65, 85);
             btnRefresh.Appearance.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            btnRefresh.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            btnRefresh.Appearance.ForeColor = Color.FromArgb(203, 213, 225);
             btnRefresh.Appearance.Options.UseBackColor = true;
             btnRefresh.Appearance.Options.UseBorderColor = true;
             btnRefresh.Appearance.Options.UseFont = true;
             btnRefresh.Appearance.Options.UseForeColor = true;
-            btnRefresh.Location = new Point(1000, 10);
+            btnRefresh.Location = new Point(1060, 10);
             btnRefresh.Name = "btnRefresh";
             btnRefresh.Size = new Size(90, 30);
             btnRefresh.TabIndex = 1;
@@ -253,7 +259,7 @@
             // lblRecordCount
             // 
             lblRecordCount.Appearance.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            lblRecordCount.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            lblRecordCount.Appearance.ForeColor = Color.FromArgb(203, 213, 225);
             lblRecordCount.Appearance.Options.UseFont = true;
             lblRecordCount.Appearance.Options.UseForeColor = true;
             lblRecordCount.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
@@ -269,57 +275,51 @@
             grdProjects.Location = new Point(0, 15);
             grdProjects.MainView = gridView1;
             grdProjects.Name = "grdProjects";
+            grdProjects.RepositoryItems.AddRange(new DevExpress.XtraEditors.Repository.RepositoryItem[] { repositoryItemProgressBar, repositoryItemButtonEdit });
             grdProjects.Size = new Size(1100, 575);
             grdProjects.TabIndex = 0;
             grdProjects.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] { gridView1 });
             // 
             // gridView1
             // 
-            gridView1.Appearance.ColumnFilterButton.BackColor = Color.FromArgb(21, 21, 21);
-            gridView1.Appearance.ColumnFilterButton.BorderColor = Color.FromArgb(42, 42, 42);
-            gridView1.Appearance.ColumnFilterButton.ForeColor = Color.White;
+            gridView1.Appearance.ColumnFilterButton.BackColor = Color.FromArgb(36, 43, 61);
+            gridView1.Appearance.ColumnFilterButton.BorderColor = Color.FromArgb(51, 65, 85);
+            gridView1.Appearance.ColumnFilterButton.ForeColor = Color.FromArgb(248, 250, 252);
             gridView1.Appearance.ColumnFilterButton.Options.UseBackColor = true;
             gridView1.Appearance.ColumnFilterButton.Options.UseBorderColor = true;
             gridView1.Appearance.ColumnFilterButton.Options.UseForeColor = true;
-            // Empty grid area
-            gridView1.Appearance.Empty.BackColor = Color.FromArgb(21, 21, 21);
-            gridView1.Appearance.Empty.ForeColor = Color.FromArgb(161, 161, 161);
+            gridView1.Appearance.Empty.BackColor = Color.FromArgb(36, 43, 61);
+            gridView1.Appearance.Empty.ForeColor = Color.FromArgb(203, 213, 225);
             gridView1.Appearance.Empty.Options.UseBackColor = true;
             gridView1.Appearance.Empty.Options.UseForeColor = true;
-            // Focused row
-            gridView1.Appearance.FocusedRow.BackColor = Color.FromArgb(42, 42, 42);
-            gridView1.Appearance.FocusedRow.ForeColor = Color.White;
+            gridView1.Appearance.FocusedRow.BackColor = Color.FromArgb(51, 65, 85);
+            gridView1.Appearance.FocusedRow.ForeColor = Color.FromArgb(248, 250, 252);
             gridView1.Appearance.FocusedRow.Options.UseBackColor = true;
             gridView1.Appearance.FocusedRow.Options.UseForeColor = true;
-            // Header panel
-            gridView1.Appearance.HeaderPanel.BackColor = Color.FromArgb(11, 11, 11);
+            gridView1.Appearance.HeaderPanel.BackColor = Color.FromArgb(36, 43, 61);
             gridView1.Appearance.HeaderPanel.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            gridView1.Appearance.HeaderPanel.ForeColor = Color.FromArgb(161, 161, 161);
+            gridView1.Appearance.HeaderPanel.ForeColor = Color.Black;
             gridView1.Appearance.HeaderPanel.Options.UseBackColor = true;
             gridView1.Appearance.HeaderPanel.Options.UseFont = true;
             gridView1.Appearance.HeaderPanel.Options.UseForeColor = true;
-            // Horizontal lines
-            gridView1.Appearance.HorzLine.BackColor = Color.FromArgb(42, 42, 42);
+            gridView1.Appearance.HorzLine.BackColor = Color.FromArgb(51, 65, 85);
             gridView1.Appearance.HorzLine.Options.UseBackColor = true;
-            // Normal row
-            gridView1.Appearance.Row.BackColor = Color.FromArgb(21, 21, 21);
-            gridView1.Appearance.Row.ForeColor = Color.White;
+            gridView1.Appearance.Row.BackColor = Color.FromArgb(36, 43, 61);
+            gridView1.Appearance.Row.ForeColor = Color.FromArgb(248, 250, 252);
             gridView1.Appearance.Row.Options.UseBackColor = true;
             gridView1.Appearance.Row.Options.UseForeColor = true;
-            // Selected row
-            gridView1.Appearance.SelectedRow.BackColor = Color.FromArgb(42, 42, 42);
-            gridView1.Appearance.SelectedRow.ForeColor = Color.White;
+            gridView1.Appearance.SelectedRow.BackColor = Color.FromArgb(51, 65, 85);
+            gridView1.Appearance.SelectedRow.ForeColor = Color.FromArgb(248, 250, 252);
             gridView1.Appearance.SelectedRow.Options.UseBackColor = true;
             gridView1.Appearance.SelectedRow.Options.UseForeColor = true;
-            // Vertical lines
-            gridView1.Appearance.VertLine.BackColor = Color.FromArgb(42, 42, 42);
+            gridView1.Appearance.VertLine.BackColor = Color.FromArgb(51, 65, 85);
             gridView1.Appearance.VertLine.Options.UseBackColor = true;
             gridView1.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] { ProjectName, Status, CompletionPercentage, Priority, ManagerName, EndDate, Actions });
             gridView1.GridControl = grdProjects;
             gridView1.Name = "gridView1";
             gridView1.OptionsView.ShowGroupPanel = false;
-            gridView1.OptionsView.ShowIndicator = false;
             gridView1.OptionsView.ShowHorizontalLines = DevExpress.Utils.DefaultBoolean.True;
+            gridView1.OptionsView.ShowIndicator = false;
             gridView1.OptionsView.ShowVerticalLines = DevExpress.Utils.DefaultBoolean.True;
             gridView1.RowClick += gridView1_RowClick;
             gridView1.CustomDrawCell += gridView1_CustomDrawCell;
@@ -349,11 +349,19 @@
             // CompletionPercentage
             // 
             CompletionPercentage.Caption = "Progress";
+            CompletionPercentage.ColumnEdit = repositoryItemProgressBar;
             CompletionPercentage.FieldName = "CompletionPercentage";
             CompletionPercentage.Name = "CompletionPercentage";
             CompletionPercentage.Visible = true;
             CompletionPercentage.VisibleIndex = 2;
             CompletionPercentage.Width = 93;
+            // 
+            // repositoryItemProgressBar
+            // 
+            repositoryItemProgressBar.Appearance.BackColor = Color.FromArgb(51, 65, 85);
+            repositoryItemProgressBar.Appearance.ForeColor = Color.FromArgb(91, 141, 239);
+            repositoryItemProgressBar.Name = "repositoryItemProgressBar";
+            repositoryItemProgressBar.ShowTitle = true;
             // 
             // Priority
             // 
@@ -367,8 +375,8 @@
             // 
             // ManagerName
             // 
-            ManagerName.Caption = "Manager";
-            ManagerName.FieldName = "CreatedByUserName";
+            ManagerName.Caption = "Team";
+            ManagerName.FieldName = "TeamName";
             ManagerName.Name = "ManagerName";
             ManagerName.OptionsColumn.AllowEdit = false;
             ManagerName.Visible = true;
@@ -390,6 +398,7 @@
             // Actions
             // 
             Actions.Caption = "Actions";
+            Actions.ColumnEdit = repositoryItemButtonEdit;
             Actions.FieldName = "Actions";
             Actions.Name = "Actions";
             Actions.OptionsColumn.AllowSort = DevExpress.Utils.DefaultBoolean.False;
@@ -399,11 +408,17 @@
             Actions.VisibleIndex = 6;
             Actions.Width = 117;
             // 
+            // repositoryItemButtonEdit
+            // 
+            repositoryItemButtonEdit.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Glyph), new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Glyph) });
+            repositoryItemButtonEdit.Name = "repositoryItemButtonEdit";
+            repositoryItemButtonEdit.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.HideTextEditor;
+            // 
             // ProjectsContent
             // 
             AutoScaleDimensions = new SizeF(8F, 19F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.FromArgb(11, 11, 11);
+            BackColor = Color.FromArgb(26, 31, 38);
             Controls.Add(pnlGridContainer);
             Controls.Add(pnlFilters);
             Controls.Add(pnlHeader);
@@ -422,6 +437,8 @@
             pnlFooter.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)grdProjects).EndInit();
             ((System.ComponentModel.ISupportInitialize)gridView1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)repositoryItemProgressBar).EndInit();
+            ((System.ComponentModel.ISupportInitialize)repositoryItemButtonEdit).EndInit();
             ResumeLayout(false);
         }
 
@@ -449,5 +466,9 @@
         private DevExpress.XtraEditors.PanelControl pnlFooter;
         private DevExpress.XtraEditors.SimpleButton btnRefresh;
         private DevExpress.XtraEditors.LabelControl lblRecordCount;
+        
+        // Repository Items (moved from .cs file)
+        private DevExpress.XtraEditors.Repository.RepositoryItemProgressBar repositoryItemProgressBar;
+        private DevExpress.XtraEditors.Repository.RepositoryItemButtonEdit repositoryItemButtonEdit;
     }
 }

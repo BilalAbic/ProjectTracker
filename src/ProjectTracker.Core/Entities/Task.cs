@@ -97,5 +97,10 @@ namespace ProjectTracker.Core.Entities
         /// Navigation property - Comments on this task
         /// </summary>
         public virtual ICollection<TaskComment> Comments { get; set; } = new List<TaskComment>();
+
+        /// <summary>
+        /// Navigation property - Time entries logged for this task
+        /// </summary>
+        public virtual ICollection<TimeEntry> TimeEntries { get; set; } = new List<TimeEntry>();
     }
 }

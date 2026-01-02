@@ -17,7 +17,12 @@
     <PackageReference Include="DevExpress.Data" Version="25.1.7" />
     <PackageReference Include="DevExpress.Utils" Version="25.1.7" />
     <PackageReference Include="DevExpress.Win" Version="25.1.7" />
+    <PackageReference Include="DevExpress.Win.Charts" Version="25.1.7" />
+    <PackageReference Include="DevExpress.Win.Design" Version="25.1.7" />
+    <PackageReference Include="DevExpress.Win.Gauges" Version="25.1.7" />
+    <PackageReference Include="EPPlus" Version="6.2.4" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
+    <PackageReference Include="iTextSharp" Version="5.5.13.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -25,7 +30,8 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>

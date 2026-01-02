@@ -11,17 +11,19 @@
 
 ### ✨ Temel Özellikler
 
-| Özellik | Açıklama |
-|---------|----------|
-| 📁 **Proje Yönetimi** | Proje oluşturma, düzenleme, durum takibi, önceliklendirme |
-| ✅ **Görev Yönetimi** | Alt görevler, atamalar, Kanban board, ilerleme izleme |
-| 👥 **Team Management** | Team oluşturma, üye yönetimi, davet sistemi, rol atama |
-| 🔐 **Kullanıcı/Rol Yönetimi** | Rol tabanlı yetkilendirme, team-based izinler |
-| 📈 **Gantt Chart** | Görsel zaman çizelgesi, kritik yol analizi (CPM) |
-| ⚠️ **Risk Analizi** | Ağırlıklı risk skoru, gecikme tahminleri |
-| 🔔 **Bildirim Sistemi** | Otomatik uyarılar, deadline hatırlatmaları |
-| 📊 **Raporlama & Analytics** | Performans grafikleri, durum raporları, PDF/Excel export |
-| 🎨 **Modern Dashboard** | Anlık KPI'lar, interaktif grafikler, dark theme UI |
+| Özellik | Açıklama | Durum |
+|---------|----------|-------|
+| 📁 **Proje Yönetimi** | Proje oluşturma, düzenleme, durum takibi, takım ataması | ✅ |
+| ✅ **Görev Yönetimi** | Alt görevler, atamalar, Kanban board, ilerleme izleme | ✅ |
+| 👥 **Takım Yönetimi** | Takım oluşturma, üye yönetimi, davet sistemi, rol atama | ✅ |
+| 🔐 **Rol Tabanlı Yetkilendirme** | Admin, ProjectManager, Developer, Pending rolleri | ✅ |
+| �  **Raporlama & Analytics** | Performans grafikleri, durum raporları, PDF/Excel export | ✅ |
+| 📝 **Audit Log Sistemi** | Aktivite takibi, değişiklik geçmişi | ✅ |
+| 🎨 **Modern Dashboard** | Anlık KPI'lar, interaktif grafikler, dark theme UI | ✅ |
+| � **RÖzel Mesaj Kutusu** | Dark-themed, renk kodlu mesaj sistemi | ✅ |
+| 📈 **Gantt Chart** | Görsel zaman çizelgesi, kritik yol analizi (CPM) | 🔄 |
+| ⚠️ **Risk Analizi** | Ağırlıklı risk skoru, gecikme tahminleri | 🔄 |
+| 🔔 **Bildirim Sistemi** | Otomatik uyarılar, deadline hatırlatmaları | 🔄 |
 
 ---
 
@@ -33,186 +35,180 @@
 ┌─────────────────────────────────────────────────────────┐
 │            PRESENTATION LAYER (UI)                      │
 │        Windows Forms + DevExpress Controls              │
-│  • FrmLogin, FrmDashboard                               │
-│  • UserControls (Projects, Tasks, Reports, etc.)        │
+│  • Forms: FrmLogin, FrmDashboard, FrmPendingWaitlist   │
+│  • UserControls: 10 Content/Detail kontrolü             │
+│  • Helpers: ColorPalette, FormStyleHelper, Session      │
 └─────────────────────────────────────────────────────────┘
                           ↓
 ┌─────────────────────────────────────────────────────────┐
 │            BUSINESS LAYER                               │
 │        Services + DTOs + Validation + Algorithms        │
-│  • ProjectService, TaskService, UserService             │
-│  • Risk Calculation Algorithm                           │
-│  • Critical Path Method (CPM) Algorithm                 │
+│  • 8 Service (Project, Task, Team, User, Report, etc.) │
+│  • 16 DTO (Create/Update/View varyantları)             │
+│  • AuditLogService, AdvancedReportService              │
 └─────────────────────────────────────────────────────────┘
                           ↓
 ┌─────────────────────────────────────────────────────────┐
 │            DATA ACCESS LAYER                            │
 │        Repository Pattern + Unit of Work + EF Core      │
 │  • Generic Repository<T>                                │
-│  • UnitOfWork                                           │
-│  • Migrations                                           │
+│  • UnitOfWork (14 Repository)                          │
+│  • 4 Migration                                          │
 └─────────────────────────────────────────────────────────┘
                           ↓
 ┌─────────────────────────────────────────────────────────┐
 │            DATABASE                                     │
 │                SQL Server 2019+                         │
-│  • 12 Tables (Users, Roles, Projects, Tasks, Teams...) │
+│  • 14 Tablo                                            │
 │  • Navigation Properties                                │
 │  • Audit Logging                                        │
 └─────────────────────────────────────────────────────────┘
 ```
 
-### Klasör Yapısı
+### 📁 Klasör Yapısı
 
 ```
 ProjectTracker/
 │
 ├── src/
 │   ├── ProjectTracker.Core/              [Domain Layer]
-│   │   ├── Entities/                     [Entity sınıfları]
+│   │   ├── Entities/                     [14 Entity sınıfı]
 │   │   │   ├── User.cs
 │   │   │   ├── Role.cs
 │   │   │   ├── Project.cs
 │   │   │   ├── Task.cs
-│   │   │   ├── Notification.cs
+│   │   │   ├── Team.cs
+│   │   │   ├── TeamMember.cs
+│   │   │   ├── TeamInvitation.cs
+│   │   │   ├── AuditLog.cs
+│   │   │   ├── ProjectSnapshot.cs
+│   │   │   ├── TimeEntry.cs
 │   │   │   └── ...
-│   │   ├── Enums/                        [Enum tanımları]
+│   │   ├── Enums/                        [7 Enum tanımı]
 │   │   │   ├── ProjectStatus.cs
 │   │   │   ├── TaskStatus.cs
-│   │   │   └── Priority.cs
+│   │   │   ├── Priority.cs
+│   │   │   ├── TeamRole.cs
+│   │   │   ├── ActivityType.cs
+│   │   │   └── ...
 │   │   └── Interfaces/                   [Repository & UoW]
 │   │
 │   ├── ProjectTracker.Data/              [Data Access Layer]
 │   │   ├── Context/
-│   │   │   └── AppDbContext.cs
+│   │   │   ├── AppDbContext.cs
+│   │   │   └── AppDbContextFactory.cs
 │   │   ├── Repositories/
-│   │   │   ├── GenericRepository.cs
-│   │   │   └── ...
-│   │   └── Migrations/
+│   │   │   ├── Repository.cs (Generic)
+│   │   │   ├── ProjectRepository.cs
+│   │   │   └── TaskRepository.cs
+│   │   ├── UnitOfWork.cs
+│   │   └── Migrations/                   [4 Migration]
 │   │
 │   ├── ProjectTracker.Business/          [Business Logic Layer]
-│   │   ├── Services/
+│   │   ├── Services/                     [8 Service]
 │   │   │   ├── ProjectService.cs
 │   │   │   ├── TaskService.cs
-│   │   │   └── ...
-│   │   ├── DTOs/
-│   │   │   ├── ProjectDto.cs
-│   │   │   ├── CreateProjectDto.cs
-│   │   │   └── ...
+│   │   │   ├── TeamService.cs
+│   │   │   ├── UserService.cs
+│   │   │   ├── InvitationService.cs
+│   │   │   ├── AuditLogService.cs
+│   │   │   ├── ReportService.cs
+│   │   │   └── AdvancedReportService.cs
+│   │   ├── DTOs/                         [16 DTO]
+│   │   │   ├── ProjectDto.cs, CreateProjectDto.cs, UpdateProjectDto.cs
+│   │   │   ├── TaskDto.cs, CreateTaskDto.cs, UpdateTaskDto.cs
+│   │   │   ├── TeamDto.cs, TeamMemberDto.cs, TeamInvitationDto.cs
+│   │   │   ├── ActivityDto.cs
+│   │   │   ├── Statistics/               [İstatistik DTO'ları]
+│   │   │   └── Analytics/                [Analitik DTO'ları]
+│   │   ├── Interfaces/                   [Service Interfaces]
+│   │   │   └── Services/
+│   │   │       ├── IProjectService.cs
+│   │   │       ├── ITaskService.cs
+│   │   │       ├── ITeamService.cs
+│   │   │       ├── IAuditLogService.cs
+│   │   │       ├── ICurrentUserService.cs
+│   │   │       └── ...
 │   │   ├── Validators/                   [FluentValidation]
-│   │   └── Mappings/                     [AutoMapper]
+│   │   ├── Mappings/                     [AutoMapper]
+│   │   └── BackgroundServices/           [Arka plan servisleri]
 │   │
 │   └── ProjectTracker.UI/                [Presentation Layer]
 │       ├── Forms/
+│       │   ├── Common/
+│       │   │   └── FrmMessage.cs         [Özel mesaj kutusu]
 │       │   ├── Login/
-│       │   │   └── FrmLogin.cs
+│       │   │   ├── FrmLogin.cs
+│       │   │   ├── FrmRegister.cs
+│       │   │   └── FrmPendingWaitlist.cs [Pending rol bekleme]
 │       │   └── Dashboard/
 │       │       ├── FrmDashboard.cs
-│       │       └── Content/
+│       │       └── Content/              [10 UserControl]
 │       │           ├── DashboardContent.cs
 │       │           ├── ProjectsContent.cs
 │       │           ├── ProjectDetailControl.cs
 │       │           ├── TasksContent.cs
-│       │           └── TaskDetailControl.cs
+│       │           ├── TaskDetailControl.cs
+│       │           ├── TeamsContent.cs
+│       │           ├── TeamDetailControl.cs
+│       │           ├── TeamMembersContent.cs
+│       │           ├── InvitationsContent.cs
+│       │           └── ReportsContent.cs
+│       ├── Helpers/
+│       │   ├── ColorPalette.cs           [Renk yönetimi]
+│       │   ├── FormStyleHelper.cs        [Mesaj kutuları]
+│       │   ├── SessionManager.cs         [Oturum yönetimi]
+│       │   └── CurrentUserService.cs     [DI için kullanıcı servisi]
 │       └── Program.cs                    [DI Container]
 │
-└── docs/
-    ├── UML/                              [UML Diyagramları]
-    ├── Screenshots/                      [Ekran Görüntüleri]
-    └── Reports/                          [Proje Raporları]
+├── tests/
+│   └── ProjectTracker.Tests/             [Unit Tests]
+│
+├── docs/
+│   ├── UML/                              [UML Diyagramları]
+│   ├── Screenshots/                      [Ekran Görüntüleri]
+│   └── Reports/                          [Proje Raporları]
+│
+├── SeedDataScript/
+│   ├── seed.sql                          [Test verileri]
+│   └── add_pending_role.sql              [Pending rol script]
+│
+└── bank/                                 [Geliştirme notları]
 ```
-
----
-
-## 🧠 Akıllı Algoritmalar (Akademik Gereksinim)
-
-### 1. Ağırlıklı Risk Skoru Hesaplama
-
-**Amaç:** Projelerin gecikme riskini matematiksel olarak hesaplamak
-
-**Formül:**
-```
-RiskSkoru = (GörevSayısı × 0.3) + 
-            ((100 - TamamlanmaOranı) × 0.4) + 
-            ((1 / TakımBüyüklüğü) × 0.2) + 
-            (BütçeKullanımOranı × 0.3)
-
-Sonuç: 0-100 arası risk puanı
-• 0-40:   Düşük Risk (🟢 Yeşil)
-• 41-70:  Orta Risk (🟡 Sarı)
-• 71-100: Yüksek Risk (🔴 Kırmızı)
-```
-
-### 2. Kritik Yol Analizi (CPM - Critical Path Method)
-
-**Amaç:** Projenin minimum tamamlanma süresini ve kritik görevleri belirlemek
-
-**Algoritma Adımları:**
-1. **Forward Pass:** Her görev için en erken başlangıç/bitiş zamanını hesapla
-2. **Backward Pass:** Her görev için en geç başlangıç/bitiş zamanını hesapla
-3. **Slack Time:** `Slack = En Geç Başlangıç - En Erken Başlangıç`
-4. **Kritik Görevler:** Slack = 0 olan görevler
-5. **Kritik Yol:** Kritik görevlerin zinciri
-
-**Çıktılar:**
-- Projenin minimum tamamlanma süresi
-- Geciktirilemeyecek görevler
-- Gantt Chart'ta kırmızı vurgulama
-
----
-
-## 🚀 Geliştirme Roadmap
-
-### ✅ Tamamlanan Phase'ler (50%)
-
-| Phase | Durum | Süre | Detay |
-|-------|-------|------|-------|
-| **Phase 1:** Login & Auth | ✅ Tamamlandı | 2h | [FrmLogin, Session yönetimi] |
-| **Phase 2:** Dashboard Layout | ✅ Tamamlandı | 4h | [FrmDashboard, Sidebar, Top bar] |
-| **Phase 3:** Projects Content | ✅ Tamamlandı | 5h | [ProjectsContent, CRUD, Filters] |
-| **Phase 4:** Tasks Content | ✅ Tamamlandı | 6h | [TasksContent, Grid & Kanban, Drag-drop] |
-| **Phase 5:** Team Management | ✅ Tamamlandı | 5h | [TeamsContent, Members, Invitations] |
-
-### ⚪ Planlanan Phase'ler (50%)
-
-| Phase | Durum | Tahmini Süre | Kapsam |
-|-------|-------|--------------|--------|
-| **Phase 6:** Reports & Analytics | ⚪ Planlandı | 5h | Charts, istatistikler, PDF/Excel export |
-| **Phase 7:** Gantt Chart | ⚪ Planlandı | 6h | ⭐ CPM algoritması, kritik yol, timeline |
-| **Phase 8:** Settings & Notifications | ⚪ Planlandı | 4h | Ayarlar, bildirim sistemi, kullanıcı tercihleri |
-| **Phase 9:** Testing & Refinement | ⚪ Planlandı | 4h | Unit tests, bug fixes, optimization |
-| **Phase 10:** Documentation | ⚪ Planlandı | 5h | ⭐ UML diyagramları, deployment, raporlar |
-
-**Toplam Tahmini Süre:** ~45-50 saat  
-**⭐ İşaretli:** Akademik gereksinim içerir
 
 ---
 
 ## 💻 Teknoloji Stack
 
 ### Framework & Runtime
-- **.NET 8.0** - Son versiyon framework
-- **Windows Forms** - Native UI framework
-- **C# 12.0** - Modern syntax features
+| Teknoloji | Versiyon | Açıklama |
+|-----------|----------|----------|
+| .NET | 8.0 | Son versiyon framework |
+| Windows Forms | - | Native UI framework |
+| C# | 12.0 | Modern syntax features |
 
 ### UI Framework
-- **DevExpress WinForms 25.1.7** - Professional UI controls
-  - GridControl (data grids)
-  - Charts & Gauges
-  - XtraEditors (input controls)
-  - Ribbon & Navigation
+| Teknoloji | Versiyon | Açıklama |
+|-----------|----------|----------|
+| DevExpress WinForms | 25.1.7 | Professional UI controls |
+| - GridControl | - | Data grids, Kanban |
+| - Charts & Gauges | - | Grafikler |
+| - XtraEditors | - | Input controls |
 
 ### Database & ORM
-- **SQL Server 2019+** - RDBMS
-- **Entity Framework Core 8.0** - ORM
-  - Code-First yaklaşım
-  - Migrations
-  - Navigation properties
+| Teknoloji | Versiyon | Açıklama |
+|-----------|----------|----------|
+| SQL Server | 2019+ | RDBMS |
+| Entity Framework Core | 8.0 | ORM (Code-First) |
 
 ### Libraries
-- **AutoMapper 12.0.1** - DTO mapping
-- **FluentValidation 12.1.1** - Validation rules
-- **Microsoft.Extensions.DependencyInjection** - IoC Container
+| Kütüphane | Versiyon | Kullanım |
+|-----------|----------|----------|
+| AutoMapper | 12.0.1 | DTO mapping |
+| FluentValidation | 12.1.1 | Validation rules |
+| Microsoft.Extensions.DependencyInjection | 8.0 | IoC Container |
+| iTextSharp | 5.5.13.3 | PDF export |
+| BouncyCastle | 1.8.9 | PDF şifreleme |
 
 ---
 
@@ -221,70 +217,123 @@ Sonuç: 0-100 arası risk puanı
 ### Entity İlişkileri
 
 ```
-┌──────────┐       ┌──────────┐
-│  Roles   │───┐   │  Users   │
-└──────────┘   │   └────┬─────┘
-               └────────┘
-                    │
-         ┌──────────┼──────────┐
-         │          │          │
-    ┌────▼────┐ ┌───▼────┐ ┌──▼──────────┐
-    │Projects │ │ Tasks  │ │Notifications│
-    └────┬────┘ └───┬────┘ └─────────────┘
-         │          │
-    ┌────▼──────────▼────────────────┐
-    │  ProjectTeamMembers             │
-    │  TaskComments                   │
-    │  ProjectRisks                   │
-    │  AuditLogs                      │
-    └─────────────────────────────────┘
+┌──────────┐       ┌──────────┐       ┌──────────┐
+│  Roles   │───────│  Users   │───────│  Teams   │
+└──────────┘       └────┬─────┘       └────┬─────┘
+                        │                   │
+         ┌──────────────┼───────────────────┤
+         │              │                   │
+    ┌────▼────┐    ┌────▼────┐    ┌────────▼────────┐
+    │Projects │    │  Tasks  │    │  TeamMembers    │
+    │(TeamId) │    │         │    │  TeamInvitations│
+    └────┬────┘    └────┬────┘    └─────────────────┘
+         │              │
+    ┌────▼──────────────▼────────────────┐
+    │  ProjectTeamMembers                 │
+    │  TaskComments                       │
+    │  ProjectRisks                       │
+    │  ProjectSnapshots                   │
+    │  TimeEntries                        │
+    │  AuditLogs                          │
+    └─────────────────────────────────────┘
 ```
 
-### Temel Tablolar (12 tablo)
+### Tablolar (14 tablo)
 
-1. **Users** - Kullanıcılar
-2. **Roles** - Roller (Admin, ProjectManager, Developer)
-3. **Projects** - Projeler
-4. **Tasks** - Görevler (parent-child destekli)
-5. **Notifications** - Bildirimler
-6. **ProjectTeamMembers** - Proje ekip üyeleri
-7. **TaskComments** - Görev yorumları
-8. **ProjectRisks** - Proje riskleri
-9. **AuditLogs** - Audit kayıtları
-10. **Teams** - Takımlar (Phase 5)
-11. **TeamMembers** - Takım üyeleri ve rolleri (Phase 5)
-12. **TeamInvitations** - Takım davet sistemi (Phase 5)
+| # | Tablo | Açıklama |
+|---|-------|----------|
+| 1 | **Users** | Kullanıcılar |
+| 2 | **Roles** | Roller (Admin, ProjectManager, Developer, Pending) |
+| 3 | **Projects** | Projeler (TeamId ile takıma bağlı) |
+| 4 | **Tasks** | Görevler (parent-child destekli) |
+| 5 | **Teams** | Takımlar |
+| 6 | **TeamMembers** | Takım üyeleri ve rolleri |
+| 7 | **TeamInvitations** | Takım davet sistemi |
+| 8 | **ProjectTeamMembers** | Proje ekip üyeleri |
+| 9 | **TaskComments** | Görev yorumları |
+| 10 | **ProjectRisks** | Proje riskleri |
+| 11 | **ProjectSnapshots** | Burndown/Burnup için snapshot |
+| 12 | **TimeEntries** | Zaman takibi |
+| 13 | **AuditLogs** | Aktivite logları |
+| 14 | **Notifications** | Bildirimler |
+
+---
+
+## 👥 Kullanıcı Rolleri ve Yetkileri
+
+| Rol | Yetkiler | Kısıtlamalar |
+|-----|----------|--------------|
+| **Admin** | • Tüm yetkiler<br>• Kullanıcı yönetimi<br>• Sistem ayarları<br>• Tüm projeleri görme | - |
+| **ProjectManager** | • Proje CRUD<br>• Görev atama<br>• Takım yönetimi<br>• Raporlar | Kullanıcı ekleme/silme yapamaz |
+| **Developer** | • Atanan görevleri güncelleme<br>• Yorum yazma<br>• Kendi takım projelerini görme | Proje/Task oluşturamaz/silemez |
+| **Pending** | • Bekleme ekranı | Onay bekliyor, sisteme erişim yok |
 
 ---
 
 ## 🎨 UI Tasarımı
 
-### Dark Theme (Cursor-Inspired)
+### Modern Slate Blue Theme
 
-| Element | Color | Hex |
-|---------|-------|-----|
-| Background | `#0B0B0B` | 11, 11, 11 |
-| Card/Panel | `#151515` | 21, 21, 21 |
-| Input Background | `#1A1A1A` | 26, 26, 26 |
-| Border | `#2A2A2A` | 42, 42, 42 |
-| **Orange Accent** | `#FF4D00` | 255, 77, 0 |
-| Text Primary | `#FFFFFF` | 255, 255, 255 |
-| Text Secondary | `#A1A1A1` | 161, 161, 161 |
+Proje genelinde tutarlı renk kullanımı için `ColorPalette.cs` helper class kullanılır.
 
-### Status & Priority Colors
+#### Core Background Colors
+| Element | Hex | Kullanım |
+|---------|-----|----------|
+| BackgroundDeepNavy | `#1A1F26` | Form backgrounds |
+| BackgroundSlateDark | `#242B3D` | Cards, panels |
+| BackgroundSlateMedium | `#1E2A3A` | Input backgrounds |
+| BorderSlate | `#334155` | Borders |
 
-**Status:**
-- 🟢 Active / Completed: `#00D084`
-- 🟡 Planning / In Progress: `#FFB800`
-- 🔴 Cancelled / Overdue: `#FF4D4D`
-- ⚫ On Hold: `#808080`
-- 🔵 Testing: `#0066FF`
+#### Accent Colors
+| Purpose | Hex | Kullanım |
+|---------|-----|----------|
+| AccentRoyalBlue | `#5B8DEF` | Primary buttons |
+| AccentSkyBlue | `#7BA8F7` | Hover states |
+| SuccessGreen | `#22C55E` | Success messages |
+| WarningOrange | `#F59E0B` | Warnings |
+| DangerRed | `#EF4444` | Errors, delete |
 
-**Priority:**
-- ⚡ Critical: `#FF4D4D`
-- 🟡 High: `#FFB800`
-- 🟢 Medium: `#00D084`
-- ⚫ Low: `#808080`
+### Özel Mesaj Kutusu Sistemi (FrmMessage)
+
+Dark-themed özel mesaj kutusu:
+- **Success**: Yeşil accent bar
+- **Error**: Kırmızı accent bar
+- **Warning**: Turuncu accent bar
+- **Info**: Mavi accent bar
+
+```csharp
+// Kullanım
+FormStyleHelper.ShowSuccess("İşlem başarılı!");
+FormStyleHelper.ShowError("Hata oluştu!");
+FormStyleHelper.ShowQuestion("Silmek istediğinize emin misiniz?");
+```
+
+---
+
+## 🚀 Geliştirme Roadmap
+
+### ✅ Tamamlanan Phase'ler
+
+| Phase | Durum | Detay |
+|-------|-------|-------|
+| **Phase 1:** Login & Auth | ✅ | FrmLogin, FrmRegister, Session yönetimi |
+| **Phase 2:** Dashboard Layout | ✅ | FrmDashboard, Sidebar, Top bar |
+| **Phase 3:** Projects Content | ✅ | ProjectsContent, CRUD, Filters, Team seçimi |
+| **Phase 4:** Tasks Content | ✅ | TasksContent, Grid & Kanban, Drag-drop, Proje filtresi |
+| **Phase 5:** Team Management | ✅ | TeamsContent, Members, Invitations |
+| **Phase 6:** Reports & Analytics | ✅ | ReportsContent, Charts, PDF/Excel export |
+| **Phase 6.5:** Rol Sistemi | ✅ | Pending rol, FrmPendingWaitlist, yetki kontrolleri |
+| **Phase 6.6:** Audit Log | ✅ | AuditLogService, aktivite takibi |
+| **Phase 6.7:** UI İyileştirmeleri | ✅ | FrmMessage, ColorPalette, FormStyleHelper |
+
+### 🔄 Devam Eden Phase'ler
+
+| Phase | Durum | Kapsam |
+|-------|-------|--------|
+| **Phase 7:** Gantt Chart | 🔄 | CPM algoritması, kritik yol, timeline |
+| **Phase 8:** Settings & Notifications | 🔄 | Ayarlar, bildirim sistemi |
+| **Phase 9:** Testing & Refinement | 🔄 | Unit tests, bug fixes |
+| **Phase 10:** Documentation | 🔄 | UML diyagramları, raporlar |
 
 ---
 
@@ -320,148 +369,67 @@ Sonuç: 0-100 arası risk puanı
    dotnet ef database update --project src/ProjectTracker.Data --startup-project src/ProjectTracker.UI
    ```
 
-5. **Projeyi çalıştır:**
+5. **Seed data'yı yükle (opsiyonel):**
+   ```bash
+   # SeedDataScript/seed.sql dosyasını SQL Server'da çalıştır
+   ```
+
+6. **Projeyi çalıştır:**
    ```bash
    dotnet run --project src/ProjectTracker.UI
    ```
 
-6. **Varsayılan kullanıcı:**
-   - Username: `admin`
-   - Password: `admin123`
+7. **Varsayılan kullanıcılar:**
+   | Kullanıcı | Şifre | Rol |
+   |-----------|-------|-----|
+   | admin | admin123 | Admin |
+   | sarah | sarah123 | ProjectManager |
+   | mike | mike123 | Developer |
 
 ---
 
-## 👥 Kullanıcı Rolleri ve Yetkileri
+## 🧠 Akıllı Algoritmalar
 
-| Rol | Yetkiler | Kısıtlamalar |
-|-----|----------|--------------|
-| **Admin** | • Tüm yetkiler<br>• Kullanıcı yönetimi<br>• Sistem ayarları<br>• Audit log görüntüleme | - |
-| **Proje Yöneticisi** | • Proje CRUD<br>• Görev atama<br>• Takım yönetimi<br>• Raporlar | Kullanıcı ekleme/silme yapamaz |
-| **Takım Lideri** | • Görev yönetimi<br>• Kendi takımının raporları<br>• Yorum yazma | Proje oluşturamaz |
-| **Geliştirici** | • Atanan görevleri güncelleme<br>• Yorum yazma<br>• Kendi istatistikleri | Sadece kendi görevlerine erişim |
-| **İzleyici** | • Sadece görüntüleme | Hiçbir değişiklik yapamaz |
+### 1. Ağırlıklı Risk Skoru Hesaplama
 
----
+```
+RiskSkoru = (GörevSayısı × 0.3) + 
+            ((100 - TamamlanmaOranı) × 0.4) + 
+            ((1 / TakımBüyüklüğü) × 0.2) + 
+            (BütçeKullanımOranı × 0.3)
 
-## 📊 Özellikler Detayları
+Sonuç: 0-100 arası risk puanı
+• 0-40:   Düşük Risk (🟢)
+• 41-70:  Orta Risk (🟡)
+• 71-100: Yüksek Risk (🔴)
+```
 
-### Phase 4: Tasks Content (Tamamlandı ✅)
-- **Grid View:** Filtrelenebilir görev listesi ✅
-- **Kanban Board:** Drag & Drop destekli (Pending, In Progress, Completed, Blocked) ✅
-- **View Toggle:** Grid ve Kanban görünümleri arası geçiş ✅
-- **TaskDetailControl:** Görev ekleme/düzenleme formu ✅
-- **Filtering:** Proje ve durum bazlı filtreleme ✅
+### 2. Kritik Yol Analizi (CPM)
 
-### Phase 5: Team Management (Tamamlandı ✅)
-- **TeamsContent:** Team listesi, active team switching, search & filter ✅
-- **TeamDetailControl:** Team create/edit, statistics görüntüleme ✅
-- **TeamMembersContent:** Grid-based member management, role editing (inline) ✅
-- **InvitationsContent:** Email invitation system, resend/cancel ✅
-- **Navigation:** Teams → Detail → Members/Invitations akışı ✅
-- **Custom Drawing:** Colored initials badges (role-based) ✅
-
-### Phase 6: Reports & Analytics ⭐
-- **DevExpress Charts:** Pie, Line, Bar charts
-- **Export:** PDF ve Excel rapor çıktısı
-- **İstatistikler:** Completion rate, velocity, burndown
-
-### Phase 7: Gantt Chart & CPM ⭐⭐⭐
-- **Timeline View:** Görsel proje zaman çizelgesi
-- **Critical Path Method:** Kritik yol analizi algoritması
-- **Task Dependencies:** Görev bağımlılıkları (predecessor/successor)
-
-### Phase 8: Settings & Notifications
-- **Kullanıcı Ayarları:** Profil, şifre değiştirme, tercihler
-- **Bildirim Sistemi:** Gerçek zamanlı uyarılar
-- **Email Integration:** Otomatik email bildirimleri (opsiyonel)
-
----
-
-## 🧪 Test & Kalite
-
-### Unit Tests
-- Service layer testleri
-- Repository testleri
-- Validation testleri
-- Algorithm testleri (CPM, Risk calculation)
-
-### Manuel Test Checklist
-
-**Fonksiyonel:**
-- [x] Kullanıcı giriş/çıkış
-- [x] Proje CRUD işlemleri
-- [x] Görev CRUD işlemleri
-- [ ] Yetki kontrolleri
-- [x] Dashboard verileri
-- [ ] Gantt Chart görüntüleme
-- [ ] Bildirimler
-
-**UI/UX:**
-- [x] Formlar düzgün açılıyor
-- [x] Grid'ler veri gösteriyor
-- [x] Butonlar çalışıyor
-- [x] Dark theme tutarlı
-- [x] Drag & Drop çalışıyor (Kanban Board)
-
----
-
-## 📚 Dokümantasyon
-
-### Proje Dökümanları
-
-- **[KANBAN_VIEW_README.md](file:///d:/ProjectTracker/KANBAN_VIEW_README.md)** - Kanban Board implementasyon detayları
-- **[UI_DASHBOARD_PHASE3.md](file:///d:/ProjectTracker/UI_DASHBOARD_PHASE3.md)** - Phase 3: Projects Content
-- **[UI_DASHBOARD_PHASE4.md](file:///d:/ProjectTracker/UI_DASHBOARD_PHASE4.md)** - Phase 4: Tasks Content & Kanban
-- **[UI_DASHBOARD_PHASE5_README.md](file:///d:/ProjectTracker/UI_DASHBOARD_PHASE5_README.md)** - Phase 5: Team Management Overview
-- **[UI_DASHBOARD_PHASE5.1.md](file:///d:/ProjectTracker/UI_DASHBOARD_PHASE5.1.md)** - Teams List & Switcher
-- **[UI_DASHBOARD_PHASE5.2.md](file:///d:/ProjectTracker/UI_DASHBOARD_PHASE5.2.md)** - Team Creation & Settings
-- **[UI_DASHBOARD_PHASE5.3.md](file:///d:/ProjectTracker/UI_DASHBOARD_PHASE5.3.md)** - Invitation System
-- **[UI_DASHBOARD_PHASE5.4.md](file:///d:/ProjectTracker/UI_DASHBOARD_PHASE5.4.md)** - Members Management
-- **[CODING_STANDARDS.md](file:///d:/ProjectTracker/CODING_STANDARDS.md)** - Kod standartları ve convention'lar
-- **[TEKNOLOJI_KARARLARI.md](file:///d:/ProjectTracker/TEKNOLOJI_KARARLARI.md)** - Teknoloji stack ve kararlar
-
-### UML Diyagramları (Phase 10)
-
-- Use Case Diagram
-- Class Diagram
-- Sequence Diagram
-- Activity Diagram
-- Entity-Relationship Diagram (ERD)
+1. **Forward Pass:** En erken başlangıç/bitiş zamanı
+2. **Backward Pass:** En geç başlangıç/bitiş zamanı
+3. **Slack Time:** `Slack = En Geç - En Erken`
+4. **Kritik Görevler:** Slack = 0
 
 ---
 
 ## 🎓 Akademik Değer
 
-Bu proje aşağıdaki akademik gereksinimleri karşılamaktadır:
+| Gereksinim | Durum | Detay |
+|------------|-------|-------|
+| OOP Prensipleri | ✅ | Encapsulation, Inheritance, Polymorphism |
+| Design Patterns | ✅ | Repository, Unit of Work, DI, DTO |
+| Katmanlı Mimari | ✅ | 4 katmanlı yapı |
+| Akıllı Algoritma | ✅ | Risk Skoru, CPM |
+| Test & Validation | ✅ | FluentValidation, Unit Tests |
+| Dokümantasyon | ✅ | XML comments, UML, Raporlar |
 
-1. **✅ OOP Prensipleri**
-   - Encapsulation, Inheritance, Polymorphism
-   - SOLID principles
+---
 
-2. **✅ Design Patterns**
-   - Repository Pattern
-   - Unit of Work Pattern
-   - Dependency Injection
-   - DTO Pattern
+## 📚 Dokümantasyon
 
-3. **✅ Yazılım Mühendisliği Yöntemleri**
-   - Katmanlı Mimari
-   - Code-First yaklaşım
-   - Migration-based database
-
-4. **⭐ Akıllı Algoritma**
-   - Ağırlıklı Risk Skoru Hesaplama
-   - Critical Path Method (CPM)
-   - Graf teorisi uygulaması
-
-5. **✅ Test & Validation**
-   - Unit Tests
-   - FluentValidation
-
-6. **📝 Dokümantasyon**
-   - XML comments
-   - UML diyagramları
-   - Proje raporları
+- **[CODING_STANDARDS.md](CODING_STANDARDS.md)** - Kod standartları
+- **[TEKNOLOJI_KARARLARI.md](TEKNOLOJI_KARARLARI.md)** - Teknoloji kararları
 
 ---
 
@@ -474,39 +442,8 @@ Bu proje aşağıdaki akademik gereksinimleri karşılamaktadır:
 
 ---
 
-## 📄 Lisans
-
-Bu proje eğitim amaçlı geliştirilmiştir.
-
----
-
-## 🔗 Kaynaklar
-
-- [DevExpress Documentation](https://docs.devexpress.com/)
-- [Entity Framework Core](https://docs.microsoft.com/ef/core/)
-- [C# Coding Conventions](https://docs.microsoft.com/dotnet/csharp/fundamentals/coding-style/coding-conventions)
-- [AutoMapper](https://docs.automapper.org/)
-- [FluentValidation](https://docs.fluentvalidation.net/)
-
----
-
-## 💡 İpuçları
-
-> **"Perfect is the enemy of good!"**  
-> Önce MVP (Minimum Viable Product) özelliklerini tamamlayın, ardından ek özelliklere geçin.
-
-### Hızlı Başlangıç Önerileri
-
-1. **Phase 1-3'ü referans alın** - Zaten tamamlanmış örnekler var
-2. **Dokümantasyonu takip edin** - Her phase için detaylı guide mevcut
-3. **Git commit atın** - Her phase sonunda commit
-4. **Test edin** - Her özelliği ekledikten sonra manuel test
-5. **Code review yapın** - Kod kalitesine dikkat edin
-
----
-
-**📌 Güncel Durum:** Phase 5 (Team Management) tamamlandı - Phase 6'ya hazır 
-**📈 İlerleme:** 50% (5/10 phases tamamlandı)  
-**⏱️ Kalan Süre:** ~25-30 saat
+**📌 Güncel Durum:** Phase 6.7 tamamlandı  
+**📈 İlerleme:** ~70%  
+**📅 Son Güncelleme:** 2 Ocak 2026
 
 🚀 **Happy Coding!**

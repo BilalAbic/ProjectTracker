@@ -1,4 +1,6 @@
-﻿namespace ProjectTracker.UI.Forms.Dashboard
+﻿using ProjectTracker.UI.Helpers;
+
+namespace ProjectTracker.UI.Forms.Dashboard
 {
     partial class FrmDashboard
     {
@@ -50,6 +52,7 @@
             pnlActiveIndicator = new DevExpress.XtraEditors.PanelControl();
             pnlSidebarSeparator = new DevExpress.XtraEditors.PanelControl();
             pnlContent = new DevExpress.XtraEditors.PanelControl();
+            btnAnalytics = new DevExpress.XtraEditors.SimpleButton();
             ((System.ComponentModel.ISupportInitialize)pnlTopBar).BeginInit();
             pnlTopBar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pnlSearchContainer).BeginInit();
@@ -65,7 +68,7 @@
             // 
             // pnlTopBar
             // 
-            pnlTopBar.Appearance.BackColor = Color.FromArgb(21, 21, 21);
+            pnlTopBar.Appearance.BackColor = Color.FromArgb(36, 43, 61);
             pnlTopBar.Appearance.Options.UseBackColor = true;
             pnlTopBar.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
             pnlTopBar.Controls.Add(btnClose);
@@ -88,7 +91,7 @@
             btnClose.Appearance.BackColor = Color.Transparent;
             btnClose.Appearance.BorderColor = Color.Transparent;
             btnClose.Appearance.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            btnClose.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            btnClose.Appearance.ForeColor = Color.FromArgb(203, 213, 225);
             btnClose.Appearance.Options.UseBackColor = true;
             btnClose.Appearance.Options.UseBorderColor = true;
             btnClose.Appearance.Options.UseFont = true;
@@ -103,7 +106,7 @@
             // 
             lblUserArrow.Appearance.BackColor = Color.Transparent;
             lblUserArrow.Appearance.Font = new Font("Segoe UI", 6.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            lblUserArrow.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            lblUserArrow.Appearance.ForeColor = Color.FromArgb(203, 213, 225);
             lblUserArrow.Appearance.Options.UseBackColor = true;
             lblUserArrow.Appearance.Options.UseFont = true;
             lblUserArrow.Appearance.Options.UseForeColor = true;
@@ -120,7 +123,7 @@
             btnUser.Appearance.BackColor = Color.Transparent;
             btnUser.Appearance.BorderColor = Color.Transparent;
             btnUser.Appearance.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            btnUser.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            btnUser.Appearance.ForeColor = Color.FromArgb(203, 213, 225);
             btnUser.Appearance.Options.UseBackColor = true;
             btnUser.Appearance.Options.UseBorderColor = true;
             btnUser.Appearance.Options.UseFont = true;
@@ -134,7 +137,7 @@
             // 
             // lblNotificationBadge
             // 
-            lblNotificationBadge.Appearance.BackColor = Color.FromArgb(255, 77, 0);
+            lblNotificationBadge.Appearance.BackColor = Color.FromArgb(91, 141, 239);
             lblNotificationBadge.Appearance.Font = new Font("Segoe UI", 6.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblNotificationBadge.Appearance.Options.UseBackColor = true;
             lblNotificationBadge.Appearance.Options.UseFont = true;
@@ -153,7 +156,7 @@
             btnNotification.Appearance.BackColor = Color.Transparent;
             btnNotification.Appearance.BorderColor = Color.Transparent;
             btnNotification.Appearance.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            btnNotification.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            btnNotification.Appearance.ForeColor = Color.FromArgb(203, 213, 225);
             btnNotification.Appearance.Options.UseBackColor = true;
             btnNotification.Appearance.Options.UseBorderColor = true;
             btnNotification.Appearance.Options.UseFont = true;
@@ -167,7 +170,7 @@
             // 
             // pnlSearchContainer
             // 
-            pnlSearchContainer.Appearance.BackColor = Color.FromArgb(26, 26, 26);
+            pnlSearchContainer.Appearance.BackColor = Color.FromArgb(30, 42, 58);
             pnlSearchContainer.Appearance.Options.UseBackColor = true;
             pnlSearchContainer.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
             pnlSearchContainer.Controls.Add(txtSearch);
@@ -181,9 +184,9 @@
             // 
             txtSearch.Location = new Point(40, 4);
             txtSearch.Name = "txtSearch";
-            txtSearch.Properties.Appearance.BackColor = Color.FromArgb(26, 26, 26);
+            txtSearch.Properties.Appearance.BackColor = Color.FromArgb(30, 42, 58);
             txtSearch.Properties.Appearance.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            txtSearch.Properties.Appearance.ForeColor = Color.White;
+            txtSearch.Properties.Appearance.ForeColor = Color.FromArgb(248, 250, 252);
             txtSearch.Properties.Appearance.Options.UseBackColor = true;
             txtSearch.Properties.Appearance.Options.UseFont = true;
             txtSearch.Properties.Appearance.Options.UseForeColor = true;
@@ -196,7 +199,7 @@
             // lblSearchIcon
             // 
             lblSearchIcon.Appearance.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            lblSearchIcon.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            lblSearchIcon.Appearance.ForeColor = Color.FromArgb(203, 213, 225);
             lblSearchIcon.Appearance.Options.UseFont = true;
             lblSearchIcon.Appearance.Options.UseForeColor = true;
             lblSearchIcon.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
@@ -232,7 +235,7 @@
             // 
             // pnlTopBarSeparator
             // 
-            pnlTopBarSeparator.Appearance.BackColor = Color.FromArgb(42, 42, 42);
+            pnlTopBarSeparator.Appearance.BackColor = Color.FromArgb(51, 65, 85);
             pnlTopBarSeparator.Appearance.Options.UseBackColor = true;
             pnlTopBarSeparator.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
             pnlTopBarSeparator.Dock = DockStyle.Bottom;
@@ -243,9 +246,10 @@
             // 
             // pnlSidebar
             // 
-            pnlSidebar.Appearance.BackColor = Color.FromArgb(21, 21, 21);
+            pnlSidebar.Appearance.BackColor = Color.FromArgb(36, 43, 61);
             pnlSidebar.Appearance.Options.UseBackColor = true;
             pnlSidebar.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
+            pnlSidebar.Controls.Add(btnAnalytics);
             pnlSidebar.Controls.Add(btnSettings);
             pnlSidebar.Controls.Add(btnReports);
             pnlSidebar.Controls.Add(btnTeam);
@@ -264,7 +268,7 @@
             // 
             btnSettings.Appearance.BackColor = Color.Transparent;
             btnSettings.Appearance.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            btnSettings.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            btnSettings.Appearance.ForeColor = Color.FromArgb(203, 213, 225);
             btnSettings.Appearance.Options.UseBackColor = true;
             btnSettings.Appearance.Options.UseFont = true;
             btnSettings.Appearance.Options.UseForeColor = true;
@@ -279,7 +283,7 @@
             // 
             btnReports.Appearance.BackColor = Color.Transparent;
             btnReports.Appearance.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            btnReports.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            btnReports.Appearance.ForeColor = Color.FromArgb(203, 213, 225);
             btnReports.Appearance.Options.UseBackColor = true;
             btnReports.Appearance.Options.UseFont = true;
             btnReports.Appearance.Options.UseForeColor = true;
@@ -294,7 +298,7 @@
             // 
             btnTeam.Appearance.BackColor = Color.Transparent;
             btnTeam.Appearance.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            btnTeam.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            btnTeam.Appearance.ForeColor = Color.FromArgb(203, 213, 225);
             btnTeam.Appearance.Options.UseBackColor = true;
             btnTeam.Appearance.Options.UseFont = true;
             btnTeam.Appearance.Options.UseForeColor = true;
@@ -309,7 +313,7 @@
             // 
             btnTasks.Appearance.BackColor = Color.Transparent;
             btnTasks.Appearance.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            btnTasks.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            btnTasks.Appearance.ForeColor = Color.FromArgb(203, 213, 225);
             btnTasks.Appearance.Options.UseBackColor = true;
             btnTasks.Appearance.Options.UseFont = true;
             btnTasks.Appearance.Options.UseForeColor = true;
@@ -324,7 +328,7 @@
             // 
             btnProjects.Appearance.BackColor = Color.Transparent;
             btnProjects.Appearance.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            btnProjects.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            btnProjects.Appearance.ForeColor = Color.FromArgb(203, 213, 225);
             btnProjects.Appearance.Options.UseBackColor = true;
             btnProjects.Appearance.Options.UseFont = true;
             btnProjects.Appearance.Options.UseForeColor = true;
@@ -339,7 +343,7 @@
             // 
             btnDashboard.Appearance.BackColor = Color.Transparent;
             btnDashboard.Appearance.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            btnDashboard.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            btnDashboard.Appearance.ForeColor = Color.FromArgb(203, 213, 225);
             btnDashboard.Appearance.Options.UseBackColor = true;
             btnDashboard.Appearance.Options.UseFont = true;
             btnDashboard.Appearance.Options.UseForeColor = true;
@@ -353,7 +357,7 @@
             // 
             // pnlActiveIndicator
             // 
-            pnlActiveIndicator.Appearance.BackColor = Color.FromArgb(255, 77, 0);
+            pnlActiveIndicator.Appearance.BackColor = Color.FromArgb(91, 141, 239);
             pnlActiveIndicator.Appearance.Options.UseBackColor = true;
             pnlActiveIndicator.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
             pnlActiveIndicator.Location = new Point(0, 80);
@@ -363,7 +367,7 @@
             // 
             // pnlSidebarSeparator
             // 
-            pnlSidebarSeparator.Appearance.BackColor = Color.FromArgb(42, 42, 42);
+            pnlSidebarSeparator.Appearance.BackColor = Color.FromArgb(51, 65, 85);
             pnlSidebarSeparator.Appearance.Options.UseBackColor = true;
             pnlSidebarSeparator.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
             pnlSidebarSeparator.Dock = DockStyle.Right;
@@ -374,7 +378,7 @@
             // 
             // pnlContent
             // 
-            pnlContent.Appearance.BackColor = Color.FromArgb(11, 11, 11);
+            pnlContent.Appearance.BackColor = Color.FromArgb(26, 31, 38);
             pnlContent.Appearance.Options.UseBackColor = true;
             pnlContent.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
             pnlContent.Dock = DockStyle.Fill;
@@ -384,10 +388,26 @@
             pnlContent.Size = new Size(1224, 744);
             pnlContent.TabIndex = 2;
             // 
+            // btnAnalytics
+            // 
+            btnAnalytics.Appearance.BackColor = Color.Transparent;
+            btnAnalytics.Appearance.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            btnAnalytics.Appearance.ForeColor = Color.FromArgb(203, 213, 225);
+            btnAnalytics.Appearance.Options.UseBackColor = true;
+            btnAnalytics.Appearance.Options.UseFont = true;
+            btnAnalytics.Appearance.Options.UseForeColor = true;
+            btnAnalytics.ImageOptions.ImageToTextAlignment = DevExpress.XtraEditors.ImageAlignToText.LeftCenter;
+            btnAnalytics.Location = new Point(8, 330);
+            btnAnalytics.Name = "btnAnalytics";
+            btnAnalytics.Size = new Size(40, 40);
+            btnAnalytics.TabIndex = 8;
+            btnAnalytics.Text = "📈";
+            btnAnalytics.Click += new EventHandler(this.btnAnalytics_Click);
+            // 
             // FrmDashboard
             // 
-            Appearance.BackColor = Color.FromArgb(11, 11, 11);
-            Appearance.ForeColor = Color.White;
+            Appearance.BackColor = Color.FromArgb(26, 31, 38);
+            Appearance.ForeColor = Color.FromArgb(248, 250, 252);
             Appearance.Options.UseBackColor = true;
             Appearance.Options.UseFont = true;
             Appearance.Options.UseForeColor = true;
@@ -443,5 +463,6 @@
         private DevExpress.XtraEditors.SimpleButton btnTeam;
         private DevExpress.XtraEditors.SimpleButton btnTasks;
         private DevExpress.XtraEditors.SimpleButton btnProjects;
+        private DevExpress.XtraEditors.SimpleButton btnAnalytics;
     }
 }

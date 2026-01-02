@@ -1,4 +1,6 @@
-﻿namespace ProjectTracker.UI.Forms.Dashboard.Content
+﻿using ProjectTracker.UI.Helpers;
+
+namespace ProjectTracker.UI.Forms.Dashboard.Content
 {
     partial class TeamDetailControl
     {
@@ -55,7 +57,7 @@
             // 
             // pnlHeader
             // 
-            pnlHeader.Appearance.BackColor = Color.FromArgb(11, 11, 11);
+            pnlHeader.Appearance.BackColor = FormStyleHelper.FormBackground;
             pnlHeader.Appearance.Options.UseBackColor = true;
             pnlHeader.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
             pnlHeader.Controls.Add(btnBack);
@@ -68,13 +70,15 @@
             // 
             // btnBack
             // 
-            btnBack.Appearance.BackColor = Color.FromArgb(42, 42, 42);
+            btnBack.Appearance.BackColor = FormStyleHelper.ButtonSecondary;
+            btnBack.Appearance.BorderColor = FormStyleHelper.ButtonSecondary;
             btnBack.Appearance.Font = new Font("Segoe UI", 9F);
-            btnBack.Appearance.ForeColor = Color.FromArgb(255, 255, 255);
+            btnBack.Appearance.ForeColor = FormStyleHelper.TextWhite;
             btnBack.Appearance.Options.UseBackColor = true;
+            btnBack.Appearance.Options.UseBorderColor = true;
             btnBack.Appearance.Options.UseFont = true;
             btnBack.Appearance.Options.UseForeColor = true;
-            btnBack.Location = new Point(10, 25);
+            btnBack.Location = new Point(20, 25);
             btnBack.Name = "btnBack";
             btnBack.Size = new Size(80, 30);
             btnBack.TabIndex = 0;
@@ -84,189 +88,212 @@
             // lblTitle
             // 
             lblTitle.Appearance.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
-            lblTitle.Appearance.ForeColor = Color.FromArgb(255, 255, 255);
+            lblTitle.Appearance.ForeColor = FormStyleHelper.TextWhite;
             lblTitle.Appearance.Options.UseFont = true;
             lblTitle.Appearance.Options.UseForeColor = true;
-            lblTitle.Location = new Point(100, 25);
+            lblTitle.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
+            lblTitle.Location = new Point(115, 22);
             lblTitle.Name = "lblTitle";
-            lblTitle.Size = new Size(181, 32);
+            lblTitle.Size = new Size(300, 35);
             lblTitle.TabIndex = 1;
             lblTitle.Text = "🏢 Create Team";
             // 
-            // grpTeamInfo
+            // grpTeamInfo - Sol Panel
             // 
-            grpTeamInfo.Appearance.BackColor = Color.FromArgb(21, 21, 21);
+            grpTeamInfo.Appearance.BackColor = FormStyleHelper.FormBackground;
+            grpTeamInfo.Appearance.BorderColor = FormStyleHelper.InputBorder;
             grpTeamInfo.Appearance.Options.UseBackColor = true;
-            grpTeamInfo.AppearanceCaption.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            grpTeamInfo.AppearanceCaption.ForeColor = Color.FromArgb(255, 77, 0);
+            grpTeamInfo.Appearance.Options.UseBorderColor = true;
+            grpTeamInfo.AppearanceCaption.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            grpTeamInfo.AppearanceCaption.ForeColor = FormStyleHelper.AccentBlue;
             grpTeamInfo.AppearanceCaption.Options.UseFont = true;
             grpTeamInfo.AppearanceCaption.Options.UseForeColor = true;
+            grpTeamInfo.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple;
             grpTeamInfo.Controls.Add(lblTeamName);
             grpTeamInfo.Controls.Add(txtTeamName);
             grpTeamInfo.Controls.Add(lblDescription);
             grpTeamInfo.Controls.Add(txtDescription);
-            grpTeamInfo.Location = new Point(50, 100);
+            grpTeamInfo.Location = new Point(20, 100);
             grpTeamInfo.Name = "grpTeamInfo";
-            grpTeamInfo.Size = new Size(1000, 200);
+            grpTeamInfo.Size = new Size(520, 500);
             grpTeamInfo.TabIndex = 1;
             grpTeamInfo.Text = "TEAM INFORMATION";
             // 
             // lblTeamName
             // 
-            lblTeamName.Appearance.Font = new Font("Segoe UI", 9F);
-            lblTeamName.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            lblTeamName.Appearance.Font = new Font("Segoe UI", 9.75F);
+            lblTeamName.Appearance.ForeColor = FormStyleHelper.TextLabel;
             lblTeamName.Appearance.Options.UseFont = true;
             lblTeamName.Appearance.Options.UseForeColor = true;
-            lblTeamName.Location = new Point(20, 40);
+            lblTeamName.Location = new Point(20, 45);
             lblTeamName.Name = "lblTeamName";
-            lblTeamName.Size = new Size(73, 15);
+            lblTeamName.Size = new Size(88, 17);
             lblTeamName.TabIndex = 0;
             lblTeamName.Text = "Team Name *";
             // 
             // txtTeamName
             // 
-            txtTeamName.Location = new Point(20, 65);
+            txtTeamName.Location = new Point(20, 70);
             txtTeamName.Name = "txtTeamName";
-            txtTeamName.Properties.Appearance.BackColor = Color.FromArgb(26, 26, 26);
-            txtTeamName.Properties.Appearance.Font = new Font("Segoe UI", 9F);
-            txtTeamName.Properties.Appearance.ForeColor = Color.FromArgb(255, 255, 255);
+            txtTeamName.Properties.Appearance.BackColor = FormStyleHelper.InputBackground;
+            txtTeamName.Properties.Appearance.BorderColor = FormStyleHelper.InputBorder;
+            txtTeamName.Properties.Appearance.Font = new Font("Segoe UI", 10F);
+            txtTeamName.Properties.Appearance.ForeColor = FormStyleHelper.TextWhite;
             txtTeamName.Properties.Appearance.Options.UseBackColor = true;
+            txtTeamName.Properties.Appearance.Options.UseBorderColor = true;
             txtTeamName.Properties.Appearance.Options.UseFont = true;
             txtTeamName.Properties.Appearance.Options.UseForeColor = true;
+            txtTeamName.Properties.AutoHeight = false;
             txtTeamName.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple;
             txtTeamName.Properties.NullText = "Enter team name...";
-            txtTeamName.Size = new Size(960, 22);
+            txtTeamName.Size = new Size(480, 36);
             txtTeamName.TabIndex = 1;
             // 
             // lblDescription
             // 
-            lblDescription.Appearance.Font = new Font("Segoe UI", 9F);
-            lblDescription.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            lblDescription.Appearance.Font = new Font("Segoe UI", 9.75F);
+            lblDescription.Appearance.ForeColor = FormStyleHelper.TextLabel;
             lblDescription.Appearance.Options.UseFont = true;
             lblDescription.Appearance.Options.UseForeColor = true;
-            lblDescription.Location = new Point(20, 110);
+            lblDescription.Location = new Point(20, 125);
             lblDescription.Name = "lblDescription";
-            lblDescription.Size = new Size(60, 15);
+            lblDescription.Size = new Size(70, 17);
             lblDescription.TabIndex = 2;
             lblDescription.Text = "Description";
             // 
             // txtDescription
             // 
-            txtDescription.Location = new Point(20, 135);
+            txtDescription.Location = new Point(20, 150);
             txtDescription.Name = "txtDescription";
-            txtDescription.Properties.Appearance.BackColor = Color.FromArgb(26, 26, 26);
-            txtDescription.Properties.Appearance.Font = new Font("Segoe UI", 9F);
-            txtDescription.Properties.Appearance.ForeColor = Color.FromArgb(255, 255, 255);
+            txtDescription.Properties.Appearance.BackColor = FormStyleHelper.InputBackground;
+            txtDescription.Properties.Appearance.BorderColor = FormStyleHelper.InputBorder;
+            txtDescription.Properties.Appearance.Font = new Font("Segoe UI", 10F);
+            txtDescription.Properties.Appearance.ForeColor = FormStyleHelper.TextWhite;
             txtDescription.Properties.Appearance.Options.UseBackColor = true;
+            txtDescription.Properties.Appearance.Options.UseBorderColor = true;
             txtDescription.Properties.Appearance.Options.UseFont = true;
             txtDescription.Properties.Appearance.Options.UseForeColor = true;
             txtDescription.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple;
             txtDescription.Properties.NullText = "Enter team description...";
-            txtDescription.Size = new Size(960, 50);
+            txtDescription.Size = new Size(480, 320);
             txtDescription.TabIndex = 3;
             // 
-            // grpStatistics
+            // grpStatistics - Sağ Panel (Her zaman görünür)
             // 
-            grpStatistics.Appearance.BackColor = Color.FromArgb(21, 21, 21);
+            grpStatistics.Appearance.BackColor = FormStyleHelper.FormBackground;
+            grpStatistics.Appearance.BorderColor = FormStyleHelper.InputBorder;
             grpStatistics.Appearance.Options.UseBackColor = true;
-            grpStatistics.AppearanceCaption.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            grpStatistics.AppearanceCaption.ForeColor = Color.FromArgb(255, 77, 0);
+            grpStatistics.Appearance.Options.UseBorderColor = true;
+            grpStatistics.AppearanceCaption.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            grpStatistics.AppearanceCaption.ForeColor = FormStyleHelper.AccentBlue;
             grpStatistics.AppearanceCaption.Options.UseFont = true;
             grpStatistics.AppearanceCaption.Options.UseForeColor = true;
+            grpStatistics.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple;
             grpStatistics.Controls.Add(lblStats);
             grpStatistics.Controls.Add(btnViewMembers);
             grpStatistics.Controls.Add(btnViewInvitations);
-            grpStatistics.Location = new Point(50, 320);
+            grpStatistics.Location = new Point(560, 100);
             grpStatistics.Name = "grpStatistics";
-            grpStatistics.Size = new Size(1000, 150);
+            grpStatistics.Size = new Size(520, 500);
             grpStatistics.TabIndex = 2;
             grpStatistics.Text = "TEAM STATISTICS";
-            grpStatistics.Visible = false;
             // 
             // lblStats
             // 
-            lblStats.Appearance.Font = new Font("Segoe UI", 9F);
-            lblStats.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            lblStats.Appearance.Font = new Font("Segoe UI", 10F);
+            lblStats.Appearance.ForeColor = FormStyleHelper.TextLabel;
             lblStats.Appearance.Options.UseFont = true;
             lblStats.Appearance.Options.UseForeColor = true;
             lblStats.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
-            lblStats.Location = new Point(20, 40);
+            lblStats.Location = new Point(20, 45);
             lblStats.Name = "lblStats";
-            lblStats.Size = new Size(960, 90);
+            lblStats.Size = new Size(480, 120);
             lblStats.TabIndex = 0;
-            lblStats.Text = "📊 Team Overview:\n• Members: 0\n• Active Projects: 0\n• Created: N/A\n• Owner: N/A";
+            lblStats.Text = "📊 Team Overview:\r\n\r\n• Members: 0\r\n• Active Projects: 0\r\n• Created: N/A\r\n• Owner: N/A";
             // 
             // btnViewMembers
             // 
-            btnViewMembers.Appearance.BackColor = Color.FromArgb(42, 42, 42);
-            btnViewMembers.Appearance.Font = new Font("Segoe UI", 9F);
-            btnViewMembers.Appearance.ForeColor = Color.FromArgb(255, 255, 255);
+            btnViewMembers.Appearance.BackColor = FormStyleHelper.ButtonSecondary;
+            btnViewMembers.Appearance.BorderColor = FormStyleHelper.ButtonSecondary;
+            btnViewMembers.Appearance.Font = new Font("Segoe UI", 9.75F);
+            btnViewMembers.Appearance.ForeColor = FormStyleHelper.TextWhite;
             btnViewMembers.Appearance.Options.UseBackColor = true;
+            btnViewMembers.Appearance.Options.UseBorderColor = true;
             btnViewMembers.Appearance.Options.UseFont = true;
             btnViewMembers.Appearance.Options.UseForeColor = true;
-            btnViewMembers.Location = new Point(650, 40);
+            btnViewMembers.Enabled = false;
+            btnViewMembers.Location = new Point(20, 180);
             btnViewMembers.Name = "btnViewMembers";
-            btnViewMembers.Size = new Size(150, 32);
+            btnViewMembers.Size = new Size(230, 40);
             btnViewMembers.TabIndex = 1;
             btnViewMembers.Text = "👥 View Members";
             btnViewMembers.Click += btnViewMembers_Click;
             // 
             // btnViewInvitations
             // 
-            btnViewInvitations.Appearance.BackColor = Color.FromArgb(42, 42, 42);
-            btnViewInvitations.Appearance.Font = new Font("Segoe UI", 9F);
-            btnViewInvitations.Appearance.ForeColor = Color.FromArgb(255, 255, 255);
+            btnViewInvitations.Appearance.BackColor = FormStyleHelper.ButtonSecondary;
+            btnViewInvitations.Appearance.BorderColor = FormStyleHelper.ButtonSecondary;
+            btnViewInvitations.Appearance.Font = new Font("Segoe UI", 9.75F);
+            btnViewInvitations.Appearance.ForeColor = FormStyleHelper.TextWhite;
             btnViewInvitations.Appearance.Options.UseBackColor = true;
+            btnViewInvitations.Appearance.Options.UseBorderColor = true;
             btnViewInvitations.Appearance.Options.UseFont = true;
             btnViewInvitations.Appearance.Options.UseForeColor = true;
-            btnViewInvitations.Location = new Point(820, 40);
+            btnViewInvitations.Enabled = false;
+            btnViewInvitations.Location = new Point(270, 180);
             btnViewInvitations.Name = "btnViewInvitations";
-            btnViewInvitations.Size = new Size(160, 32);
+            btnViewInvitations.Size = new Size(230, 40);
             btnViewInvitations.TabIndex = 2;
             btnViewInvitations.Text = "📧 View Invitations";
             btnViewInvitations.Click += btnViewInvitations_Click;
             // 
             // btnCancel
             // 
-            btnCancel.Appearance.BackColor = Color.FromArgb(42, 42, 42);
-            btnCancel.Appearance.Font = new Font("Segoe UI", 9.75F, FontStyle.Bold);
-            btnCancel.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            btnCancel.Appearance.BackColor = FormStyleHelper.ButtonSecondary;
+            btnCancel.Appearance.BorderColor = FormStyleHelper.ButtonSecondary;
+            btnCancel.Appearance.Font = new Font("Segoe UI", 9.75F);
+            btnCancel.Appearance.ForeColor = FormStyleHelper.TextLabel;
             btnCancel.Appearance.Options.UseBackColor = true;
+            btnCancel.Appearance.Options.UseBorderColor = true;
             btnCancel.Appearance.Options.UseFont = true;
             btnCancel.Appearance.Options.UseForeColor = true;
-            btnCancel.Location = new Point(820, 660);
+            btnCancel.Location = new Point(820, 620);
             btnCancel.Name = "btnCancel";
-            btnCancel.Size = new Size(100, 40);
+            btnCancel.Size = new Size(120, 40);
             btnCancel.TabIndex = 3;
             btnCancel.Text = "Cancel";
             btnCancel.Click += btnCancel_Click;
             // 
             // btnSave
             // 
-            btnSave.Appearance.BackColor = Color.FromArgb(255, 77, 0);
+            btnSave.Appearance.BackColor = FormStyleHelper.ButtonPrimary;
+            btnSave.Appearance.BorderColor = FormStyleHelper.ButtonPrimary;
             btnSave.Appearance.Font = new Font("Segoe UI", 9.75F, FontStyle.Bold);
-            btnSave.Appearance.ForeColor = Color.FromArgb(255, 255, 255);
+            btnSave.Appearance.ForeColor = FormStyleHelper.TextWhite;
             btnSave.Appearance.Options.UseBackColor = true;
+            btnSave.Appearance.Options.UseBorderColor = true;
             btnSave.Appearance.Options.UseFont = true;
             btnSave.Appearance.Options.UseForeColor = true;
-            btnSave.Location = new Point(930, 660);
+            btnSave.Location = new Point(960, 620);
             btnSave.Name = "btnSave";
-            btnSave.Size = new Size(150, 40);
+            btnSave.Size = new Size(120, 40);
             btnSave.TabIndex = 4;
             btnSave.Text = "💾 Save Team";
             btnSave.Click += btnSave_Click;
             // 
             // btnDelete
             // 
-            btnDelete.Appearance.BackColor = Color.FromArgb(255, 77, 77);
+            btnDelete.Appearance.BackColor = FormStyleHelper.ButtonDanger;
+            btnDelete.Appearance.BorderColor = FormStyleHelper.ButtonDanger;
             btnDelete.Appearance.Font = new Font("Segoe UI", 9.75F, FontStyle.Bold);
-            btnDelete.Appearance.ForeColor = Color.FromArgb(255, 255, 255);
+            btnDelete.Appearance.ForeColor = FormStyleHelper.TextWhite;
             btnDelete.Appearance.Options.UseBackColor = true;
+            btnDelete.Appearance.Options.UseBorderColor = true;
             btnDelete.Appearance.Options.UseFont = true;
             btnDelete.Appearance.Options.UseForeColor = true;
-            btnDelete.Location = new Point(50, 660);
+            btnDelete.Location = new Point(20, 620);
             btnDelete.Name = "btnDelete";
-            btnDelete.Size = new Size(130, 40);
+            btnDelete.Size = new Size(140, 40);
             btnDelete.TabIndex = 5;
             btnDelete.Text = "🗑️ Delete Team";
             btnDelete.Visible = false;
@@ -274,21 +301,20 @@
             // 
             // TeamDetailControl
             // 
-            AutoScaleDimensions = new SizeF(6F, 13F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.FromArgb(11, 11, 11);
+            BackColor = FormStyleHelper.FormBackground;
             Controls.Add(btnDelete);
             Controls.Add(btnSave);
             Controls.Add(btnCancel);
             Controls.Add(grpStatistics);
             Controls.Add(grpTeamInfo);
             Controls.Add(pnlHeader);
-            Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            Font = new Font("Segoe UI", 9F);
             Name = "TeamDetailControl";
-            Size = new Size(1100, 730);
+            Size = new Size(1100, 680);
             ((System.ComponentModel.ISupportInitialize)pnlHeader).EndInit();
             pnlHeader.ResumeLayout(false);
-            pnlHeader.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)grpTeamInfo).EndInit();
             grpTeamInfo.ResumeLayout(false);
             grpTeamInfo.PerformLayout();

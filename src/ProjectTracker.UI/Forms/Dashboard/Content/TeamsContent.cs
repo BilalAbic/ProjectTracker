@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using ProjectTracker.Business.DTOs;
 using ProjectTracker.Business.Interfaces;
+using ProjectTracker.UI.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -58,6 +59,12 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
         /// </summary>
         private void SetupEventHandlers()
         {
+            // Developer için Create Team butonunu gizle
+            if (SessionManager.IsDeveloper)
+            {
+                btnCreateTeam.Visible = false;
+            }
+
             // Create Team button
             btnCreateTeam.Click += BtnCreateTeam_Click;
             
@@ -82,11 +89,11 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             // Create Team button
             btnCreateTeam.MouseEnter += (s, e) => 
             {
-                btnCreateTeam.Appearance.BackColor = Color.FromArgb(255, 100, 50);
+                btnCreateTeam.Appearance.BackColor = ColorPalette.AccentSkyBlue;
             };
-            btnCreateTeam.MouseLeave += (s, e) => 
+            btnCreateTeam.MouseLeave += (s, e) =>
             {
-                btnCreateTeam.Appearance.BackColor = Color.FromArgb(255, 77, 0);
+                btnCreateTeam.Appearance.BackColor = ColorPalette.AccentRoyalBlue;
             };
         }
         
@@ -103,8 +110,18 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             {
                 Cursor = Cursors.WaitCursor;
                 
-                // Load all teams for current user
-                _allTeams = (await _teamService.GetUserTeamsAsync()).ToList();
+                // ROL BAZLI FİLTRELEME
+                if (SessionManager.IsAdmin)
+                {
+                    // Admin: Tüm takımları göster
+                    _allTeams = (await _teamService.GetAllTeamsAsync()).ToList();
+                }
+                else
+                {
+                    // ProjectManager/Developer: Sadece üye oldukları takımlar
+                    _allTeams = (await _teamService.GetUserTeamsAsync()).ToList();
+                }
+                
                 _filteredTeams = _allTeams.ToList();
                 
                 // Load active team
@@ -123,11 +140,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             }
             catch (Exception ex)
             {
-                XtraMessageBox.Show(
-                    $"Error loading teams: {ex.Message}",
-                    "Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
+                FormStyleHelper.ShowError($"Error loading teams: {ex.Message}");
             }
             finally
             {
@@ -166,123 +179,161 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
         /// </summary>
         private PanelControl CreateTeamCard(TeamDto team)
         {
-            // Main card panel
+            // Card dimensions - 4 kart yan yana (container ~980px, 4 kart = 235px each)
+            const int cardWidth = 235;
+            const int cardHeight = 180;
+            
+            // Main card panel - açık arka plan
             var card = new PanelControl
             {
-                Width = 340,
-                Height = 220,
+                Width = cardWidth,
+                Height = cardHeight,
                 BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple,
-                Margin = new Padding(0, 0, 15, 15)
+                Margin = new Padding(5, 5, 5, 5)
             };
-            card.Appearance.BackColor = Color.FromArgb(21, 21, 21);
-            card.Appearance.BorderColor = Color.FromArgb(42, 42, 42);
+            card.Appearance.BackColor = Color.FromArgb(240, 243, 247); // Açık gri-beyaz
+            card.Appearance.BorderColor = Color.FromArgb(200, 210, 220);
+            card.Appearance.Options.UseBackColor = true;
+            card.Appearance.Options.UseBorderColor = true;
             
             // Team icon & name
             var lblName = new LabelControl
             {
                 Text = $"🏢 {team.TeamName}",
-                Location = new Point(15, 15),
+                Location = new Point(12, 10),
                 AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None,
-                Size = new Size(310, 28)
+                Size = new Size(cardWidth - 24, 22)
             };
-            lblName.Appearance.Font = new Font("Segoe UI", 12, FontStyle.Bold);
-            lblName.Appearance.ForeColor = Color.White;
+            lblName.Appearance.Font = new Font("Segoe UI", 10, FontStyle.Bold);
+            lblName.Appearance.ForeColor = Color.FromArgb(30, 40, 50); // Koyu siyah
+            lblName.Appearance.Options.UseFont = true;
+            lblName.Appearance.Options.UseForeColor = true;
             card.Controls.Add(lblName);
             
             // Separator line
             var separator = new PanelControl
             {
-                Location = new Point(15, 50),
-                Size = new Size(310, 1),
+                Location = new Point(12, 35),
+                Size = new Size(cardWidth - 24, 1),
                 BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder
             };
-            separator.Appearance.BackColor = Color.FromArgb(42, 42, 42);
+            separator.Appearance.BackColor = Color.FromArgb(180, 190, 200);
+            separator.Appearance.Options.UseBackColor = true;
             card.Controls.Add(separator);
             
             // Owner
             var lblOwner = new LabelControl
             {
                 Text = $"Owner: {team.OwnerName}",
-                Location = new Point(15, 60),
+                Location = new Point(12, 42),
                 AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None,
-                Size = new Size(310, 20)
+                Size = new Size(cardWidth - 24, 18)
             };
-            lblOwner.Appearance.Font = new Font("Segoe UI", 9);
-            lblOwner.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            lblOwner.Appearance.Font = new Font("Segoe UI", 8.5F);
+            lblOwner.Appearance.ForeColor = Color.FromArgb(80, 90, 100); // Koyu gri
+            lblOwner.Appearance.Options.UseFont = true;
+            lblOwner.Appearance.Options.UseForeColor = true;
             card.Controls.Add(lblOwner);
             
             // Members count
             var lblMembers = new LabelControl
             {
                 Text = $"👥 {team.MemberCount} members",
-                Location = new Point(15, 85),
+                Location = new Point(12, 62),
                 AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None,
-                Size = new Size(310, 20)
+                Size = new Size(cardWidth - 24, 18)
             };
-            lblMembers.Appearance.Font = new Font("Segoe UI", 9);
-            lblMembers.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            lblMembers.Appearance.Font = new Font("Segoe UI", 8.5F);
+            lblMembers.Appearance.ForeColor = Color.FromArgb(50, 60, 70); // Siyah
+            lblMembers.Appearance.Options.UseFont = true;
+            lblMembers.Appearance.Options.UseForeColor = true;
             card.Controls.Add(lblMembers);
             
             // Projects count
             var lblProjects = new LabelControl
             {
                 Text = $"📁 {team.ProjectCount} projects",
-                Location = new Point(15, 110),
+                Location = new Point(12, 82),
                 AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None,
-                Size = new Size(310, 20)
+                Size = new Size(cardWidth - 24, 18)
             };
-            lblProjects.Appearance.Font = new Font("Segoe UI", 9);
-            lblProjects.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            lblProjects.Appearance.Font = new Font("Segoe UI", 8.5F);
+            lblProjects.Appearance.ForeColor = Color.FromArgb(50, 60, 70); // Siyah
+            lblProjects.Appearance.Options.UseFont = true;
+            lblProjects.Appearance.Options.UseForeColor = true;
             card.Controls.Add(lblProjects);
             
             // Created date
             var lblCreated = new LabelControl
             {
                 Text = $"Created: {team.CreatedAt:dd MMM yyyy}",
-                Location = new Point(15, 135),
+                Location = new Point(12, 102),
                 AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None,
-                Size = new Size(310, 20)
+                Size = new Size(cardWidth - 24, 18)
             };
-            lblCreated.Appearance.Font = new Font("Segoe UI", 9);
-            lblCreated.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            lblCreated.Appearance.Font = new Font("Segoe UI", 8F);
+            lblCreated.Appearance.ForeColor = Color.FromArgb(100, 110, 120); // Gri
+            lblCreated.Appearance.Options.UseFont = true;
+            lblCreated.Appearance.Options.UseForeColor = true;
             card.Controls.Add(lblCreated);
             
-            // Settings button
+            // Button width calculation - 2 buton yan yana
+            int buttonWidth = (cardWidth - 34) / 2; // 34 = 12 + 10 + 12 (margins)
+            int buttonY = cardHeight - 40;
+            
+            // Settings button - Developer için gizle
             var btnSettings = new SimpleButton
             {
                 Text = "⚙️ Settings",
-                Location = new Point(15, 170),
-                Size = new Size(145, 32)
+                Location = new Point(12, buttonY),
+                Size = new Size(buttonWidth, 28),
+                Visible = !SessionManager.IsDeveloper
             };
-            btnSettings.Appearance.BackColor = Color.FromArgb(42, 42, 42);
-            btnSettings.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            btnSettings.Appearance.BackColor = Color.FromArgb(100, 116, 139); // Slate
+            btnSettings.Appearance.ForeColor = Color.White;
+            btnSettings.Appearance.Font = new Font("Segoe UI", 8F);
+            btnSettings.Appearance.Options.UseBackColor = true;
+            btnSettings.Appearance.Options.UseForeColor = true;
+            btnSettings.Appearance.Options.UseFont = true;
             btnSettings.Click += (s, e) => OpenTeamSettings(team.TeamId);
             card.Controls.Add(btnSettings);
             
-            // Switch button
-            var btnSwitch = new SimpleButton
+            // Invite button
+            bool canInvite = SessionManager.IsAdmin || team.OwnerId == SessionManager.CurrentUserId;
+            var btnInvite = new SimpleButton
             {
-                Text = team.TeamId == _currentActiveTeamId ? "✓ Active" : "Switch",
-                Location = new Point(170, 170),
-                Size = new Size(155, 32)
+                Text = "📧 Invite",
+                Location = new Point(12 + buttonWidth + 10, buttonY),
+                Size = new Size(buttonWidth, 28),
+                Visible = canInvite
             };
-            
-            if (team.TeamId == _currentActiveTeamId)
-            {
-                btnSwitch.Appearance.BackColor = Color.FromArgb(0, 208, 132); // Green
-                btnSwitch.Appearance.ForeColor = Color.White;
-                btnSwitch.Enabled = false;
-            }
-            else
-            {
-                btnSwitch.Appearance.BackColor = Color.FromArgb(255, 77, 0); // Orange
-                btnSwitch.Appearance.ForeColor = Color.White;
-                btnSwitch.Click += async (s, e) => await SwitchTeamAsync(team.TeamId);
-            }
-            
-            card.Controls.Add(btnSwitch);
+            btnInvite.Appearance.BackColor = ColorPalette.AccentRoyalBlue;
+            btnInvite.Appearance.ForeColor = Color.White;
+            btnInvite.Appearance.Font = new Font("Segoe UI", 8F);
+            btnInvite.Appearance.Options.UseBackColor = true;
+            btnInvite.Appearance.Options.UseForeColor = true;
+            btnInvite.Appearance.Options.UseFont = true;
+            btnInvite.Click += (s, e) => OpenInviteDialog(team.TeamId, team.TeamName);
+            card.Controls.Add(btnInvite);
             
             return card;
+        }
+        
+        /// <summary>
+        /// Open invite dialog for team
+        /// </summary>
+        private void OpenInviteDialog(int teamId, string teamName)
+        {
+            try
+            {
+                var invitationsContent = Program.ServiceProvider.GetRequiredService<InvitationsContent>();
+                invitationsContent.SetTeamContext(teamId, teamName);
+                ((FrmDashboard)this.ParentForm).LoadContent(invitationsContent);
+            }
+            catch (Exception ex)
+            {
+                FormStyleHelper.ShowError($"Error opening invitations: {ex.Message}");
+            }
         }
         
         #endregion
@@ -328,11 +379,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             }
             catch (Exception ex)
             {
-                XtraMessageBox.Show(
-                    $"Error opening team creation: {ex.Message}",
-                    "Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
+                FormStyleHelper.ShowError($"Error opening team creation: {ex.Message}");
             }
         }
         
@@ -355,16 +402,9 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
         /// <summary>
         /// Active team changed from dropdown
         /// </summary>
-        private async void LueActiveTeam_EditValueChanged(object sender, EventArgs e)
+        private void LueActiveTeam_EditValueChanged(object sender, EventArgs e)
         {
-            if (lueActiveTeam.EditValue != null)
-            {
-                int teamId = (int)lueActiveTeam.EditValue;
-                if (teamId != _currentActiveTeamId)
-                {
-                    await SwitchTeamAsync(teamId);
-                }
-            }
+            // Active team seçimi artık kullanılmıyor
         }
         
         /// <summary>
@@ -380,49 +420,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             }
             catch (Exception ex)
             {
-                XtraMessageBox.Show(
-                    $"Error opening team settings: {ex.Message}",
-                    "Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
-            }
-        }
-        
-        /// <summary>
-        /// Switch active team
-        /// </summary>
-        private async System.Threading.Tasks.Task SwitchTeamAsync(int teamId)
-        {
-            try
-            {
-                Cursor = Cursors.WaitCursor;
-                
-                await _teamService.SetActiveTeamAsync(teamId);
-                _currentActiveTeamId = teamId;
-                
-                // Re-render cards to update active state
-                RenderTeamCards();
-                
-                XtraMessageBox.Show(
-                    "Team switched successfully!",
-                    "Success",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
-                
-                // TODO: Reload dashboard with new team context
-                // ((FrmDashboard)this.ParentForm).ReloadDashboard();
-            }
-            catch (Exception ex)
-            {
-                XtraMessageBox.Show(
-                    $"Error switching team: {ex.Message}",
-                    "Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
-            }
-            finally
-            {
-                Cursor = Cursors.Default;
+                FormStyleHelper.ShowError($"Error opening team settings: {ex.Message}");
             }
         }
         

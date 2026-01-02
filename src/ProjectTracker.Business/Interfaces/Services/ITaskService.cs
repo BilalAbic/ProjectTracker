@@ -13,5 +13,15 @@ namespace ProjectTracker.Business.Interfaces
         Task<TaskDto> UpdateTaskAsync(int taskId, UpdateTaskDto dto);
         Task DeleteTaskAsync(int taskId);
         Task<Dictionary<ProjectTracker.Core.Enums.TaskStatus, int>> GetTaskCountByStatusAsync();
+
+        /// <summary>
+        /// Get tasks for specific projects
+        /// </summary>
+        Task<IEnumerable<TaskDto>> GetTasksByProjectsAsync(IEnumerable<int> projectIds);
+
+        /// <summary>
+        /// Get tasks for current user based on team membership
+        /// </summary>
+        Task<IEnumerable<TaskDto>> GetUserTasksAsync(int userId);
     }
 }

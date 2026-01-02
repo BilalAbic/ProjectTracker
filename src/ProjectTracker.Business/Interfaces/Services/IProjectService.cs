@@ -67,5 +67,15 @@ namespace ProjectTracker.Business.Interfaces
         /// Get projects count by status
         /// </summary>
         Task<Dictionary<ProjectStatus, int>> GetProjectCountByStatusAsync();
+
+        /// <summary>
+        /// Get projects for specific teams
+        /// </summary>
+        Task<IEnumerable<ProjectDto>> GetProjectsByTeamsAsync(IEnumerable<int> teamIds);
+
+        /// <summary>
+        /// Get projects for current user based on team membership
+        /// </summary>
+        Task<IEnumerable<ProjectDto>> GetUserProjectsAsync(int userId);
     }
 }

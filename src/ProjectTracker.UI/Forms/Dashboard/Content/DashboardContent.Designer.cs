@@ -1,4 +1,5 @@
-﻿
+﻿using ProjectTracker.UI.Helpers;
+
 namespace ProjectTracker.UI.Forms.Dashboard.Content
 {
     partial class DashboardContent
@@ -59,6 +60,20 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             lblRecentTitle = new DevExpress.XtraEditors.LabelControl();
             gridRecentProjects = new DevExpress.XtraGrid.GridControl();
             gridViewRecentProjects = new DevExpress.XtraGrid.Views.Grid.GridView();
+            colProjectName = new DevExpress.XtraGrid.Columns.GridColumn();
+            colStatus = new DevExpress.XtraGrid.Columns.GridColumn();
+            colProgress = new DevExpress.XtraGrid.Columns.GridColumn();
+            colManagerName = new DevExpress.XtraGrid.Columns.GridColumn();
+            colDueDate = new DevExpress.XtraGrid.Columns.GridColumn();
+            pnlActivitiesHeader = new DevExpress.XtraEditors.PanelControl();
+            lblActivitiesTitle = new DevExpress.XtraEditors.LabelControl();
+            gridRecentActivities = new DevExpress.XtraGrid.GridControl();
+            gridViewRecentActivities = new DevExpress.XtraGrid.Views.Grid.GridView();
+            colActivityIcon = new DevExpress.XtraGrid.Columns.GridColumn();
+            colActivityDescription = new DevExpress.XtraGrid.Columns.GridColumn();
+            colActivityTarget = new DevExpress.XtraGrid.Columns.GridColumn();
+            colActivityProject = new DevExpress.XtraGrid.Columns.GridColumn();
+            colActivityTime = new DevExpress.XtraGrid.Columns.GridColumn();
             ((System.ComponentModel.ISupportInitialize)pnlWelcomeHeader).BeginInit();
             pnlWelcomeHeader.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pnlKPIContainer).BeginInit();
@@ -76,11 +91,15 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             pnlRecentHeader.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)gridRecentProjects).BeginInit();
             ((System.ComponentModel.ISupportInitialize)gridViewRecentProjects).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pnlActivitiesHeader).BeginInit();
+            pnlActivitiesHeader.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)gridRecentActivities).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)gridViewRecentActivities).BeginInit();
             SuspendLayout();
             // 
             // pnlWelcomeHeader
             // 
-            pnlWelcomeHeader.Appearance.BackColor = Color.FromArgb(11, 11, 11);
+            pnlWelcomeHeader.Appearance.BackColor = Color.FromArgb(26, 31, 38);
             pnlWelcomeHeader.Appearance.Options.UseBackColor = true;
             pnlWelcomeHeader.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
             pnlWelcomeHeader.Controls.Add(btnNewProject);
@@ -94,9 +113,9 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             // 
             // btnNewProject
             // 
-            btnNewProject.Appearance.BackColor = Color.FromArgb(255, 77, 0);
+            btnNewProject.Appearance.BackColor = Color.FromArgb(91, 141, 239);
             btnNewProject.Appearance.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnNewProject.Appearance.ForeColor = Color.White;
+            btnNewProject.Appearance.ForeColor = Color.FromArgb(248, 250, 252);
             btnNewProject.Appearance.Options.UseBackColor = true;
             btnNewProject.Appearance.Options.UseFont = true;
             btnNewProject.Appearance.Options.UseForeColor = true;
@@ -134,7 +153,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             // 
             // pnlKPIContainer
             // 
-            pnlKPIContainer.Appearance.BackColor = Color.FromArgb(11, 11, 11);
+            pnlKPIContainer.Appearance.BackColor = Color.FromArgb(26, 31, 38);
             pnlKPIContainer.Appearance.Options.UseBackColor = true;
             pnlKPIContainer.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
             pnlKPIContainer.Controls.Add(pnlCardCompletion);
@@ -148,7 +167,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             // 
             // pnlCardCompletion
             // 
-            pnlCardCompletion.Appearance.BackColor = Color.FromArgb(21, 21, 21);
+            pnlCardCompletion.Appearance.BackColor = Color.FromArgb(36, 43, 61);
             pnlCardCompletion.Appearance.Options.UseBackColor = true;
             pnlCardCompletion.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
             pnlCardCompletion.Controls.Add(progressCompletion);
@@ -164,8 +183,8 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             // 
             progressCompletion.Location = new Point(16, 84);
             progressCompletion.Name = "progressCompletion";
-            progressCompletion.Properties.Appearance.BackColor = Color.FromArgb(42, 42, 42);
-            progressCompletion.Properties.Appearance.ForeColor = Color.FromArgb(255, 77, 0);
+            progressCompletion.Properties.Appearance.BackColor = Color.FromArgb(51, 65, 85);
+            progressCompletion.Properties.Appearance.ForeColor = Color.FromArgb(91, 141, 239);
             progressCompletion.Properties.PercentView = false;
             progressCompletion.Properties.Step = 1;
             progressCompletion.Size = new Size(248, 8);
@@ -174,7 +193,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             // lblCard4Label
             // 
             lblCard4Label.Appearance.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            lblCard4Label.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            lblCard4Label.Appearance.ForeColor = Color.FromArgb(203, 213, 225);
             lblCard4Label.Appearance.Options.UseFont = true;
             lblCard4Label.Appearance.Options.UseForeColor = true;
             lblCard4Label.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
@@ -198,7 +217,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             // lblCard4Icon
             // 
             lblCard4Icon.Appearance.Font = new Font("Segoe UI", 20.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            lblCard4Icon.Appearance.ForeColor = Color.FromArgb(255, 77, 0);
+            lblCard4Icon.Appearance.ForeColor = Color.FromArgb(91, 141, 239);
             lblCard4Icon.Appearance.Options.UseFont = true;
             lblCard4Icon.Appearance.Options.UseForeColor = true;
             lblCard4Icon.Location = new Point(16, 16);
@@ -209,7 +228,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             // 
             // pnlCardTeam
             // 
-            pnlCardTeam.Appearance.BackColor = Color.FromArgb(21, 21, 21);
+            pnlCardTeam.Appearance.BackColor = Color.FromArgb(36, 43, 61);
             pnlCardTeam.Appearance.Options.UseBackColor = true;
             pnlCardTeam.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
             pnlCardTeam.Controls.Add(lblCard3Trend);
@@ -224,7 +243,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             // lblCard3Trend
             // 
             lblCard3Trend.Appearance.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            lblCard3Trend.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            lblCard3Trend.Appearance.ForeColor = Color.FromArgb(203, 213, 225);
             lblCard3Trend.Appearance.Options.UseFont = true;
             lblCard3Trend.Appearance.Options.UseForeColor = true;
             lblCard3Trend.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
@@ -237,7 +256,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             // lblCard3Label
             // 
             lblCard3Label.Appearance.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            lblCard3Label.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            lblCard3Label.Appearance.ForeColor = Color.FromArgb(203, 213, 225);
             lblCard3Label.Appearance.Options.UseFont = true;
             lblCard3Label.Appearance.Options.UseForeColor = true;
             lblCard3Label.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
@@ -261,7 +280,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             // lblCard3Icon
             // 
             lblCard3Icon.Appearance.Font = new Font("Segoe UI", 20.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            lblCard3Icon.Appearance.ForeColor = Color.FromArgb(255, 77, 0);
+            lblCard3Icon.Appearance.ForeColor = Color.FromArgb(91, 141, 239);
             lblCard3Icon.Appearance.Options.UseFont = true;
             lblCard3Icon.Appearance.Options.UseForeColor = true;
             lblCard3Icon.Location = new Point(16, 16);
@@ -272,7 +291,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             // 
             // pnlCardTasks
             // 
-            pnlCardTasks.Appearance.BackColor = Color.FromArgb(21, 21, 21);
+            pnlCardTasks.Appearance.BackColor = Color.FromArgb(36, 43, 61);
             pnlCardTasks.Appearance.Options.UseBackColor = true;
             pnlCardTasks.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
             pnlCardTasks.Controls.Add(lblCard2Trend);
@@ -287,7 +306,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             // lblCard2Trend
             // 
             lblCard2Trend.Appearance.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            lblCard2Trend.Appearance.ForeColor = Color.FromArgb(0, 208, 132);
+            lblCard2Trend.Appearance.ForeColor = Color.FromArgb(16, 185, 129);
             lblCard2Trend.Appearance.Options.UseFont = true;
             lblCard2Trend.Appearance.Options.UseForeColor = true;
             lblCard2Trend.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
@@ -300,7 +319,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             // lblCard2Label
             // 
             lblCard2Label.Appearance.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            lblCard2Label.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            lblCard2Label.Appearance.ForeColor = Color.FromArgb(203, 213, 225);
             lblCard2Label.Appearance.Options.UseFont = true;
             lblCard2Label.Appearance.Options.UseForeColor = true;
             lblCard2Label.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
@@ -324,7 +343,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             // lblCard2Icon
             // 
             lblCard2Icon.Appearance.Font = new Font("Segoe UI", 20.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            lblCard2Icon.Appearance.ForeColor = Color.FromArgb(255, 77, 0);
+            lblCard2Icon.Appearance.ForeColor = Color.FromArgb(91, 141, 239);
             lblCard2Icon.Appearance.Options.UseFont = true;
             lblCard2Icon.Appearance.Options.UseForeColor = true;
             lblCard2Icon.Location = new Point(16, 16);
@@ -335,7 +354,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             // 
             // pnlCardProjects
             // 
-            pnlCardProjects.Appearance.BackColor = Color.FromArgb(21, 21, 21);
+            pnlCardProjects.Appearance.BackColor = Color.FromArgb(36, 43, 61);
             pnlCardProjects.Appearance.Options.UseBackColor = true;
             pnlCardProjects.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
             pnlCardProjects.Controls.Add(lblCard1Trend);
@@ -350,7 +369,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             // lblCard1Trend
             // 
             lblCard1Trend.Appearance.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            lblCard1Trend.Appearance.ForeColor = Color.FromArgb(0, 208, 132);
+            lblCard1Trend.Appearance.ForeColor = Color.FromArgb(16, 185, 129);
             lblCard1Trend.Appearance.Options.UseFont = true;
             lblCard1Trend.Appearance.Options.UseForeColor = true;
             lblCard1Trend.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
@@ -363,7 +382,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             // lblCard1Label
             // 
             lblCard1Label.Appearance.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            lblCard1Label.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            lblCard1Label.Appearance.ForeColor = Color.FromArgb(203, 213, 225);
             lblCard1Label.Appearance.Options.UseFont = true;
             lblCard1Label.Appearance.Options.UseForeColor = true;
             lblCard1Label.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
@@ -387,7 +406,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             // lblCard1Icon
             // 
             lblCard1Icon.Appearance.Font = new Font("Segoe UI", 20.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            lblCard1Icon.Appearance.ForeColor = Color.FromArgb(255, 77, 0);
+            lblCard1Icon.Appearance.ForeColor = Color.FromArgb(91, 141, 239);
             lblCard1Icon.Appearance.Options.UseFont = true;
             lblCard1Icon.Appearance.Options.UseForeColor = true;
             lblCard1Icon.Location = new Point(16, 16);
@@ -398,7 +417,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             // 
             // pnlRecentHeader
             // 
-            pnlRecentHeader.Appearance.BackColor = Color.FromArgb(11, 11, 11);
+            pnlRecentHeader.Appearance.BackColor = Color.FromArgb(26, 31, 38);
             pnlRecentHeader.Appearance.Options.UseBackColor = true;
             pnlRecentHeader.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
             pnlRecentHeader.Controls.Add(btnViewAllProjects);
@@ -411,8 +430,8 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             // btnViewAllProjects
             // 
             btnViewAllProjects.Appearance.BackColor = Color.Transparent;
-            btnViewAllProjects.Appearance.BorderColor = Color.FromArgb(42, 42, 42);
-            btnViewAllProjects.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            btnViewAllProjects.Appearance.BorderColor = Color.FromArgb(51, 65, 85);
+            btnViewAllProjects.Appearance.ForeColor = Color.FromArgb(203, 213, 225);
             btnViewAllProjects.Appearance.Options.UseBackColor = true;
             btnViewAllProjects.Appearance.Options.UseBorderColor = true;
             btnViewAllProjects.Appearance.Options.UseForeColor = true;
@@ -439,44 +458,49 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             gridRecentProjects.Location = new Point(0, 308);
             gridRecentProjects.MainView = gridViewRecentProjects;
             gridRecentProjects.Name = "gridRecentProjects";
-            gridRecentProjects.Size = new Size(1200, 300);
+            gridRecentProjects.Size = new Size(1200, 180);
             gridRecentProjects.TabIndex = 3;
             gridRecentProjects.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] { gridViewRecentProjects });
             // 
             // gridViewRecentProjects
             // 
-            gridViewRecentProjects.Appearance.Empty.BackColor = Color.FromArgb(21, 21, 21);
-            gridViewRecentProjects.Appearance.Empty.ForeColor = Color.FromArgb(161, 161, 161);
+            gridViewRecentProjects.Appearance.Empty.BackColor = Color.FromArgb(36, 43, 61);
+            gridViewRecentProjects.Appearance.Empty.ForeColor = Color.FromArgb(203, 213, 225);
             gridViewRecentProjects.Appearance.Empty.Options.UseBackColor = true;
             gridViewRecentProjects.Appearance.Empty.Options.UseForeColor = true;
-            gridViewRecentProjects.Appearance.EvenRow.BackColor = Color.FromArgb(21, 21, 21);
-            gridViewRecentProjects.Appearance.EvenRow.ForeColor = Color.White;
+            gridViewRecentProjects.Appearance.EvenRow.BackColor = Color.FromArgb(36, 43, 61);
+            gridViewRecentProjects.Appearance.EvenRow.ForeColor = Color.FromArgb(248, 250, 252);
             gridViewRecentProjects.Appearance.EvenRow.Options.UseBackColor = true;
             gridViewRecentProjects.Appearance.EvenRow.Options.UseForeColor = true;
-            gridViewRecentProjects.Appearance.FocusedRow.BackColor = Color.FromArgb(42, 42, 42);
-            gridViewRecentProjects.Appearance.FocusedRow.ForeColor = Color.White;
+            gridViewRecentProjects.Appearance.FocusedRow.BackColor = Color.FromArgb(51, 65, 85);
+            gridViewRecentProjects.Appearance.FocusedRow.ForeColor = Color.FromArgb(248, 250, 252);
             gridViewRecentProjects.Appearance.FocusedRow.Options.UseBackColor = true;
             gridViewRecentProjects.Appearance.FocusedRow.Options.UseForeColor = true;
-            gridViewRecentProjects.Appearance.HeaderPanel.BackColor = Color.FromArgb(11, 11, 11);
+            gridViewRecentProjects.Appearance.HeaderPanel.BackColor = Color.FromArgb(36, 43, 61);
             gridViewRecentProjects.Appearance.HeaderPanel.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            gridViewRecentProjects.Appearance.HeaderPanel.ForeColor = Color.FromArgb(161, 161, 161);
+            gridViewRecentProjects.Appearance.HeaderPanel.ForeColor = Color.Black;
             gridViewRecentProjects.Appearance.HeaderPanel.Options.UseBackColor = true;
             gridViewRecentProjects.Appearance.HeaderPanel.Options.UseFont = true;
             gridViewRecentProjects.Appearance.HeaderPanel.Options.UseForeColor = true;
-            gridViewRecentProjects.Appearance.HorzLine.BackColor = Color.FromArgb(42, 42, 42);
+            gridViewRecentProjects.Appearance.HorzLine.BackColor = Color.FromArgb(51, 65, 85);
             gridViewRecentProjects.Appearance.HorzLine.Options.UseBackColor = true;
-            gridViewRecentProjects.Appearance.Row.BackColor = Color.FromArgb(21, 21, 21);
-            gridViewRecentProjects.Appearance.Row.ForeColor = Color.White;
+            gridViewRecentProjects.Appearance.Row.BackColor = Color.FromArgb(36, 43, 61);
+            gridViewRecentProjects.Appearance.Row.ForeColor = Color.FromArgb(248, 250, 252);
             gridViewRecentProjects.Appearance.Row.Options.UseBackColor = true;
             gridViewRecentProjects.Appearance.Row.Options.UseForeColor = true;
-            gridViewRecentProjects.Appearance.SelectedRow.BackColor = Color.FromArgb(42, 42, 42);
-            gridViewRecentProjects.Appearance.SelectedRow.ForeColor = Color.White;
+            gridViewRecentProjects.Appearance.SelectedRow.BackColor = Color.FromArgb(51, 65, 85);
+            gridViewRecentProjects.Appearance.SelectedRow.ForeColor = Color.FromArgb(248, 250, 252);
             gridViewRecentProjects.Appearance.SelectedRow.Options.UseBackColor = true;
             gridViewRecentProjects.Appearance.SelectedRow.Options.UseForeColor = true;
-            gridViewRecentProjects.Appearance.VertLine.BackColor = Color.FromArgb(42, 42, 42);
+            gridViewRecentProjects.Appearance.VertLine.BackColor = Color.FromArgb(51, 65, 85);
             gridViewRecentProjects.Appearance.VertLine.Options.UseBackColor = true;
+            gridViewRecentProjects.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] { colProjectName, colStatus, colProgress, colManagerName, colDueDate });
             gridViewRecentProjects.GridControl = gridRecentProjects;
             gridViewRecentProjects.Name = "gridViewRecentProjects";
+            gridViewRecentProjects.OptionsBehavior.Editable = false;
+            gridViewRecentProjects.OptionsCustomization.AllowColumnMoving = false;
+            gridViewRecentProjects.OptionsCustomization.AllowFilter = false;
+            gridViewRecentProjects.OptionsCustomization.AllowSort = false;
             gridViewRecentProjects.OptionsSelection.EnableAppearanceFocusedCell = false;
             gridViewRecentProjects.OptionsView.ShowGroupPanel = false;
             gridViewRecentProjects.OptionsView.ShowHorizontalLines = DevExpress.Utils.DefaultBoolean.True;
@@ -484,18 +508,199 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             gridViewRecentProjects.OptionsView.ShowVerticalLines = DevExpress.Utils.DefaultBoolean.True;
             gridViewRecentProjects.DoubleClick += gridViewRecentProjects_DoubleClick;
             // 
+            // colProjectName
+            // 
+            colProjectName.AppearanceCell.ForeColor = Color.White;
+            colProjectName.AppearanceCell.Options.UseForeColor = true;
+            colProjectName.Caption = "Project Name";
+            colProjectName.FieldName = "Name";
+            colProjectName.Name = "colProjectName";
+            colProjectName.OptionsColumn.AllowEdit = false;
+            colProjectName.Visible = true;
+            colProjectName.VisibleIndex = 0;
+            colProjectName.Width = 300;
+            // 
+            // colStatus
+            // 
+            colStatus.Caption = "Status";
+            colStatus.FieldName = "Status";
+            colStatus.Name = "colStatus";
+            colStatus.OptionsColumn.AllowEdit = false;
+            colStatus.Visible = true;
+            colStatus.VisibleIndex = 1;
+            colStatus.Width = 150;
+            // 
+            // colProgress
+            // 
+            colProgress.Caption = "Progress";
+            colProgress.FieldName = "Progress";
+            colProgress.Name = "colProgress";
+            colProgress.OptionsColumn.AllowEdit = false;
+            colProgress.Visible = true;
+            colProgress.VisibleIndex = 2;
+            colProgress.Width = 150;
+            // 
+            // colManagerName
+            // 
+            colManagerName.Caption = "Manager";
+            colManagerName.FieldName = "ManagerName";
+            colManagerName.Name = "colManagerName";
+            colManagerName.OptionsColumn.AllowEdit = false;
+            colManagerName.Visible = true;
+            colManagerName.VisibleIndex = 3;
+            colManagerName.Width = 200;
+            // 
+            // colDueDate
+            // 
+            colDueDate.Caption = "Due Date";
+            colDueDate.DisplayFormat.FormatString = "dd MMM yyyy";
+            colDueDate.DisplayFormat.FormatType = DevExpress.Utils.FormatType.DateTime;
+            colDueDate.FieldName = "DueDate";
+            colDueDate.Name = "colDueDate";
+            colDueDate.OptionsColumn.AllowEdit = false;
+            colDueDate.Visible = true;
+            colDueDate.VisibleIndex = 4;
+            colDueDate.Width = 150;
+            // 
+            // pnlActivitiesHeader
+            // 
+            pnlActivitiesHeader.Appearance.BackColor = Color.FromArgb(26, 31, 38);
+            pnlActivitiesHeader.Appearance.Options.UseBackColor = true;
+            pnlActivitiesHeader.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
+            pnlActivitiesHeader.Controls.Add(lblActivitiesTitle);
+            pnlActivitiesHeader.Location = new Point(0, 500);
+            pnlActivitiesHeader.Name = "pnlActivitiesHeader";
+            pnlActivitiesHeader.Size = new Size(1200, 40);
+            pnlActivitiesHeader.TabIndex = 4;
+            // 
+            // lblActivitiesTitle
+            // 
+            lblActivitiesTitle.Appearance.Font = new Font("Segoe UI", 14.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblActivitiesTitle.Appearance.Options.UseFont = true;
+            lblActivitiesTitle.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
+            lblActivitiesTitle.Location = new Point(0, 8);
+            lblActivitiesTitle.Name = "lblActivitiesTitle";
+            lblActivitiesTitle.Size = new Size(300, 24);
+            lblActivitiesTitle.TabIndex = 0;
+            lblActivitiesTitle.Text = "📋 Recent Activities";
+            // 
+            // gridRecentActivities
+            // 
+            gridRecentActivities.Location = new Point(0, 548);
+            gridRecentActivities.MainView = gridViewRecentActivities;
+            gridRecentActivities.Name = "gridRecentActivities";
+            gridRecentActivities.Size = new Size(1200, 180);
+            gridRecentActivities.TabIndex = 5;
+            gridRecentActivities.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] { gridViewRecentActivities });
+            // 
+            // gridViewRecentActivities
+            // 
+            gridViewRecentActivities.Appearance.Empty.BackColor = Color.FromArgb(36, 43, 61);
+            gridViewRecentActivities.Appearance.Empty.ForeColor = Color.FromArgb(203, 213, 225);
+            gridViewRecentActivities.Appearance.Empty.Options.UseBackColor = true;
+            gridViewRecentActivities.Appearance.Empty.Options.UseForeColor = true;
+            gridViewRecentActivities.Appearance.EvenRow.BackColor = Color.FromArgb(36, 43, 61);
+            gridViewRecentActivities.Appearance.EvenRow.ForeColor = Color.FromArgb(248, 250, 252);
+            gridViewRecentActivities.Appearance.EvenRow.Options.UseBackColor = true;
+            gridViewRecentActivities.Appearance.EvenRow.Options.UseForeColor = true;
+            gridViewRecentActivities.Appearance.FocusedRow.BackColor = Color.FromArgb(51, 65, 85);
+            gridViewRecentActivities.Appearance.FocusedRow.ForeColor = Color.FromArgb(248, 250, 252);
+            gridViewRecentActivities.Appearance.FocusedRow.Options.UseBackColor = true;
+            gridViewRecentActivities.Appearance.FocusedRow.Options.UseForeColor = true;
+            gridViewRecentActivities.Appearance.HeaderPanel.BackColor = Color.FromArgb(36, 43, 61);
+            gridViewRecentActivities.Appearance.HeaderPanel.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            gridViewRecentActivities.Appearance.HeaderPanel.ForeColor = Color.Black;
+            gridViewRecentActivities.Appearance.HeaderPanel.Options.UseBackColor = true;
+            gridViewRecentActivities.Appearance.HeaderPanel.Options.UseFont = true;
+            gridViewRecentActivities.Appearance.HeaderPanel.Options.UseForeColor = true;
+            gridViewRecentActivities.Appearance.HorzLine.BackColor = Color.FromArgb(51, 65, 85);
+            gridViewRecentActivities.Appearance.HorzLine.Options.UseBackColor = true;
+            gridViewRecentActivities.Appearance.Row.BackColor = Color.FromArgb(36, 43, 61);
+            gridViewRecentActivities.Appearance.Row.ForeColor = Color.FromArgb(248, 250, 252);
+            gridViewRecentActivities.Appearance.Row.Options.UseBackColor = true;
+            gridViewRecentActivities.Appearance.Row.Options.UseForeColor = true;
+            gridViewRecentActivities.Appearance.SelectedRow.BackColor = Color.FromArgb(51, 65, 85);
+            gridViewRecentActivities.Appearance.SelectedRow.ForeColor = Color.FromArgb(248, 250, 252);
+            gridViewRecentActivities.Appearance.SelectedRow.Options.UseBackColor = true;
+            gridViewRecentActivities.Appearance.SelectedRow.Options.UseForeColor = true;
+            gridViewRecentActivities.Appearance.VertLine.BackColor = Color.FromArgb(51, 65, 85);
+            gridViewRecentActivities.Appearance.VertLine.Options.UseBackColor = true;
+            gridViewRecentActivities.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] { colActivityIcon, colActivityDescription, colActivityTarget, colActivityProject, colActivityTime });
+            gridViewRecentActivities.GridControl = gridRecentActivities;
+            gridViewRecentActivities.Name = "gridViewRecentActivities";
+            gridViewRecentActivities.OptionsBehavior.Editable = false;
+            gridViewRecentActivities.OptionsCustomization.AllowColumnMoving = false;
+            gridViewRecentActivities.OptionsCustomization.AllowFilter = false;
+            gridViewRecentActivities.OptionsCustomization.AllowSort = false;
+            gridViewRecentActivities.OptionsSelection.EnableAppearanceFocusedCell = false;
+            gridViewRecentActivities.OptionsView.ShowGroupPanel = false;
+            gridViewRecentActivities.OptionsView.ShowHorizontalLines = DevExpress.Utils.DefaultBoolean.True;
+            gridViewRecentActivities.OptionsView.ShowIndicator = false;
+            gridViewRecentActivities.OptionsView.ShowVerticalLines = DevExpress.Utils.DefaultBoolean.True;
+            // 
+            // colActivityIcon
+            // 
+            colActivityIcon.FieldName = "Icon";
+            colActivityIcon.Name = "colActivityIcon";
+            colActivityIcon.OptionsColumn.AllowEdit = false;
+            colActivityIcon.Visible = true;
+            colActivityIcon.VisibleIndex = 0;
+            colActivityIcon.Width = 40;
+            // 
+            // colActivityDescription
+            // 
+            colActivityDescription.Caption = "Activity";
+            colActivityDescription.FieldName = "Description";
+            colActivityDescription.Name = "colActivityDescription";
+            colActivityDescription.OptionsColumn.AllowEdit = false;
+            colActivityDescription.Visible = true;
+            colActivityDescription.VisibleIndex = 1;
+            colActivityDescription.Width = 350;
+            // 
+            // colActivityTarget
+            // 
+            colActivityTarget.Caption = "Target";
+            colActivityTarget.FieldName = "Target";
+            colActivityTarget.Name = "colActivityTarget";
+            colActivityTarget.OptionsColumn.AllowEdit = false;
+            colActivityTarget.Visible = true;
+            colActivityTarget.VisibleIndex = 2;
+            colActivityTarget.Width = 200;
+            // 
+            // colActivityProject
+            // 
+            colActivityProject.Caption = "Project";
+            colActivityProject.FieldName = "Project";
+            colActivityProject.Name = "colActivityProject";
+            colActivityProject.OptionsColumn.AllowEdit = false;
+            colActivityProject.Visible = true;
+            colActivityProject.VisibleIndex = 3;
+            colActivityProject.Width = 150;
+            // 
+            // colActivityTime
+            // 
+            colActivityTime.Caption = "Time";
+            colActivityTime.FieldName = "Time";
+            colActivityTime.Name = "colActivityTime";
+            colActivityTime.OptionsColumn.AllowEdit = false;
+            colActivityTime.Visible = true;
+            colActivityTime.VisibleIndex = 4;
+            colActivityTime.Width = 100;
+            // 
             // DashboardContent
             // 
             AutoScaleDimensions = new SizeF(8F, 19F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.FromArgb(11, 11, 11);
+            BackColor = Color.FromArgb(26, 31, 38);
+            Controls.Add(gridRecentActivities);
+            Controls.Add(pnlActivitiesHeader);
             Controls.Add(gridRecentProjects);
             Controls.Add(pnlRecentHeader);
             Controls.Add(pnlKPIContainer);
             Controls.Add(pnlWelcomeHeader);
-            ForeColor = Color.White;
+            ForeColor = Color.FromArgb(248, 250, 252);
             Name = "DashboardContent";
-            Size = new Size(1200, 700);
+            Size = new Size(1200, 750);
             ((System.ComponentModel.ISupportInitialize)pnlWelcomeHeader).EndInit();
             pnlWelcomeHeader.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)pnlKPIContainer).EndInit();
@@ -517,6 +722,10 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             pnlRecentHeader.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)gridRecentProjects).EndInit();
             ((System.ComponentModel.ISupportInitialize)gridViewRecentProjects).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pnlActivitiesHeader).EndInit();
+            pnlActivitiesHeader.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)gridRecentActivities).EndInit();
+            ((System.ComponentModel.ISupportInitialize)gridViewRecentActivities).EndInit();
             ResumeLayout(false);
         }
 
@@ -552,5 +761,23 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
         private DevExpress.XtraEditors.SimpleButton btnViewAllProjects;
         private DevExpress.XtraGrid.GridControl gridRecentProjects;
         private DevExpress.XtraGrid.Views.Grid.GridView gridViewRecentProjects;
+        private DevExpress.XtraEditors.PanelControl pnlActivitiesHeader;
+        private DevExpress.XtraEditors.LabelControl lblActivitiesTitle;
+        private DevExpress.XtraGrid.GridControl gridRecentActivities;
+        private DevExpress.XtraGrid.Views.Grid.GridView gridViewRecentActivities;
+        
+        // Grid Columns for Recent Projects
+        private DevExpress.XtraGrid.Columns.GridColumn colProjectName;
+        private DevExpress.XtraGrid.Columns.GridColumn colStatus;
+        private DevExpress.XtraGrid.Columns.GridColumn colProgress;
+        private DevExpress.XtraGrid.Columns.GridColumn colManagerName;
+        private DevExpress.XtraGrid.Columns.GridColumn colDueDate;
+        
+        // Grid Columns for Recent Activities
+        private DevExpress.XtraGrid.Columns.GridColumn colActivityIcon;
+        private DevExpress.XtraGrid.Columns.GridColumn colActivityDescription;
+        private DevExpress.XtraGrid.Columns.GridColumn colActivityTarget;
+        private DevExpress.XtraGrid.Columns.GridColumn colActivityProject;
+        private DevExpress.XtraGrid.Columns.GridColumn colActivityTime;
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace ProjectTracker.UI.Forms.Dashboard.Content
+﻿using ProjectTracker.UI.Helpers;
+
+namespace ProjectTracker.UI.Forms.Dashboard.Content
 {
     partial class InvitationsContent
     {
@@ -52,7 +54,7 @@
             // 
             // pnlHeader
             // 
-            pnlHeader.Appearance.BackColor = Color.FromArgb(11, 11, 11);
+            pnlHeader.Appearance.BackColor = Color.FromArgb(26, 31, 38);
             pnlHeader.Appearance.Options.UseBackColor = true;
             pnlHeader.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
             pnlHeader.Controls.Add(lblTitle);
@@ -66,7 +68,7 @@
             // lblTitle
             // 
             lblTitle.Appearance.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
-            lblTitle.Appearance.ForeColor = Color.FromArgb(255, 255, 255);
+            lblTitle.Appearance.ForeColor = Color.FromArgb(248, 250, 252);
             lblTitle.Appearance.Options.UseFont = true;
             lblTitle.Appearance.Options.UseForeColor = true;
             lblTitle.Location = new Point(0, 10);
@@ -77,7 +79,7 @@
             // 
             // btnSendInvitation
             // 
-            btnSendInvitation.Appearance.BackColor = Color.FromArgb(255, 77, 0);
+            btnSendInvitation.Appearance.BackColor = Color.FromArgb(91, 141, 239);
             btnSendInvitation.Appearance.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             btnSendInvitation.Appearance.ForeColor = Color.FromArgb(255, 255, 255);
             btnSendInvitation.Appearance.Options.UseBackColor = true;
@@ -91,28 +93,30 @@
             // 
             // pnlSendForm
             // 
-            pnlSendForm.Appearance.BackColor = Color.FromArgb(21, 21, 21);
+            pnlSendForm.Appearance.BackColor = Color.FromArgb(36, 43, 61);
+            pnlSendForm.Appearance.BorderColor = Color.FromArgb(51, 65, 85);
             pnlSendForm.Appearance.Options.UseBackColor = true;
+            pnlSendForm.Appearance.Options.UseBorderColor = true;
             pnlSendForm.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple;
             pnlSendForm.Controls.Add(lblEmail);
             pnlSendForm.Controls.Add(txtEmail);
             pnlSendForm.Controls.Add(lblRole);
             pnlSendForm.Controls.Add(cmbRole);
             pnlSendForm.Controls.Add(btnSend);
-            pnlSendForm.Location = new Point(50, 100);
+            pnlSendForm.Location = new Point(0, 100);
             pnlSendForm.Name = "pnlSendForm";
-            pnlSendForm.Size = new Size(1000, 120);
+            pnlSendForm.Size = new Size(1100, 120);
             pnlSendForm.TabIndex = 1;
             // 
             // lblEmail
             // 
-            lblEmail.Appearance.Font = new Font("Segoe UI", 9F);
-            lblEmail.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            lblEmail.Appearance.Font = new Font("Segoe UI", 9.75F);
+            lblEmail.Appearance.ForeColor = Color.FromArgb(203, 213, 225);
             lblEmail.Appearance.Options.UseFont = true;
             lblEmail.Appearance.Options.UseForeColor = true;
             lblEmail.Location = new Point(20, 20);
             lblEmail.Name = "lblEmail";
-            lblEmail.Size = new Size(82, 15);
+            lblEmail.Size = new Size(92, 17);
             lblEmail.TabIndex = 0;
             lblEmail.Text = "Email Address *";
             // 
@@ -120,26 +124,29 @@
             // 
             txtEmail.Location = new Point(20, 45);
             txtEmail.Name = "txtEmail";
-            txtEmail.Properties.Appearance.BackColor = Color.FromArgb(26, 26, 26);
-            txtEmail.Properties.Appearance.Font = new Font("Segoe UI", 9F);
-            txtEmail.Properties.Appearance.ForeColor = Color.FromArgb(255, 255, 255);
+            txtEmail.Properties.Appearance.BackColor = Color.FromArgb(30, 42, 58);
+            txtEmail.Properties.Appearance.BorderColor = Color.FromArgb(51, 65, 85);
+            txtEmail.Properties.Appearance.Font = new Font("Segoe UI", 10F);
+            txtEmail.Properties.Appearance.ForeColor = Color.FromArgb(248, 250, 252);
             txtEmail.Properties.Appearance.Options.UseBackColor = true;
+            txtEmail.Properties.Appearance.Options.UseBorderColor = true;
             txtEmail.Properties.Appearance.Options.UseFont = true;
             txtEmail.Properties.Appearance.Options.UseForeColor = true;
+            txtEmail.Properties.AutoHeight = false;
             txtEmail.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple;
             txtEmail.Properties.NullText = "user@example.com";
-            txtEmail.Size = new Size(450, 22);
+            txtEmail.Size = new Size(450, 36);
             txtEmail.TabIndex = 1;
             // 
             // lblRole
             // 
-            lblRole.Appearance.Font = new Font("Segoe UI", 9F);
-            lblRole.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            lblRole.Appearance.Font = new Font("Segoe UI", 9.75F);
+            lblRole.Appearance.ForeColor = Color.FromArgb(203, 213, 225);
             lblRole.Appearance.Options.UseFont = true;
             lblRole.Appearance.Options.UseForeColor = true;
             lblRole.Location = new Point(490, 20);
             lblRole.Name = "lblRole";
-            lblRole.Size = new Size(31, 15);
+            lblRole.Size = new Size(35, 17);
             lblRole.TabIndex = 2;
             lblRole.Text = "Role *";
             // 
@@ -147,22 +154,25 @@
             // 
             cmbRole.Location = new Point(490, 45);
             cmbRole.Name = "cmbRole";
-            cmbRole.Properties.Appearance.BackColor = Color.FromArgb(26, 26, 26);
-            cmbRole.Properties.Appearance.Font = new Font("Segoe UI", 9F);
-            cmbRole.Properties.Appearance.ForeColor = Color.FromArgb(255, 255, 255);
+            cmbRole.Properties.Appearance.BackColor = Color.FromArgb(30, 42, 58);
+            cmbRole.Properties.Appearance.BorderColor = Color.FromArgb(51, 65, 85);
+            cmbRole.Properties.Appearance.Font = new Font("Segoe UI", 10F);
+            cmbRole.Properties.Appearance.ForeColor = Color.FromArgb(248, 250, 252);
             cmbRole.Properties.Appearance.Options.UseBackColor = true;
+            cmbRole.Properties.Appearance.Options.UseBorderColor = true;
             cmbRole.Properties.Appearance.Options.UseFont = true;
             cmbRole.Properties.Appearance.Options.UseForeColor = true;
+            cmbRole.Properties.AutoHeight = false;
             cmbRole.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple;
             cmbRole.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo) });
             cmbRole.Properties.Items.AddRange(new object[] { "Admin", "Project Manager", "Developer", "Observer" });
             cmbRole.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
-            cmbRole.Size = new Size(300, 22);
+            cmbRole.Size = new Size(300, 36);
             cmbRole.TabIndex = 3;
             // 
             // btnSend
             // 
-            btnSend.Appearance.BackColor = Color.FromArgb(255, 77, 0);
+            btnSend.Appearance.BackColor = Color.FromArgb(91, 141, 239);
             btnSend.Appearance.Font = new Font("Segoe UI", 9.75F, FontStyle.Bold);
             btnSend.Appearance.ForeColor = Color.FromArgb(255, 255, 255);
             btnSend.Appearance.Options.UseBackColor = true;
@@ -176,7 +186,7 @@
             // 
             // pnlInvitationsList
             // 
-            pnlInvitationsList.Appearance.BackColor = Color.FromArgb(11, 11, 11);
+            pnlInvitationsList.Appearance.BackColor = Color.FromArgb(26, 31, 38);
             pnlInvitationsList.Appearance.Options.UseBackColor = true;
             pnlInvitationsList.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
             pnlInvitationsList.Controls.Add(flowInvitations);
@@ -187,22 +197,21 @@
             // 
             // flowInvitations
             // 
-            flowInvitations.BackColor = Color.FromArgb(11, 11, 11);
-            flowInvitations.Dock = DockStyle.Fill;
+            flowInvitations.BackColor = Color.FromArgb(26, 31, 38);
             flowInvitations.FlowDirection = FlowDirection.TopDown;
-            flowInvitations.Location = new Point(0, 0);
+            flowInvitations.Location = new Point(-50, 0);
             flowInvitations.Name = "flowInvitations";
-            flowInvitations.Size = new Size(1000, 420);
+            flowInvitations.Size = new Size(1100, 420);
             flowInvitations.TabIndex = 0;
             flowInvitations.WrapContents = false;
             // 
             // lblRecordCount
             // 
             lblRecordCount.Appearance.Font = new Font("Segoe UI", 9F);
-            lblRecordCount.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            lblRecordCount.Appearance.ForeColor = Color.FromArgb(203, 213, 225);
             lblRecordCount.Appearance.Options.UseFont = true;
             lblRecordCount.Appearance.Options.UseForeColor = true;
-            lblRecordCount.Location = new Point(50, 670);
+            lblRecordCount.Location = new Point(0, 670);
             lblRecordCount.Name = "lblRecordCount";
             lblRecordCount.Size = new Size(160, 15);
             lblRecordCount.TabIndex = 3;
@@ -212,7 +221,7 @@
             // 
             AutoScaleDimensions = new SizeF(6F, 13F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.FromArgb(11, 11, 11);
+            BackColor = Color.FromArgb(26, 31, 38);
             Controls.Add(lblRecordCount);
             Controls.Add(pnlInvitationsList);
             Controls.Add(pnlSendForm);

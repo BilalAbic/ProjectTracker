@@ -1,10 +1,10 @@
 ﻿using DevExpress.XtraEditors;
-using DevExpress.XtraEditors.Repository;
 using DevExpress.XtraGrid.Views.Grid;
 using DevExpress.XtraGrid.Views.Grid.ViewInfo;
 using ProjectTracker.Business.DTOs;
 using ProjectTracker.Business.Interfaces;
 using ProjectTracker.Core.Enums;
+using ProjectTracker.UI.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -22,14 +22,9 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
         #region Fields
 
         private readonly IProjectService _projectService;
+        private readonly ITeamService _teamService;
         private List<ProjectDto> _allProjects;
         private List<ProjectDto> _filteredProjects;
-
-        // Repository item for progress bar
-        private RepositoryItemProgressBar _progressBarRepository;
-
-        // Repository item for action buttons
-        private RepositoryItemButtonEdit _actionButtonsRepository;
 
         #endregion
 
@@ -40,17 +35,19 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
         /// Initializes a new instance of the ProjectsContent class
         /// </summary>
         /// <param name="projectService">Project service instance</param>
-        public ProjectsContent(IProjectService projectService)
+        /// <param name="teamService">Team service instance</param>
+        public ProjectsContent(IProjectService projectService, ITeamService teamService)
         {
             InitializeComponent();
             _projectService = projectService;
+            _teamService = teamService;
 
             // Initialize
             SetupGrid();
             SetupEventHandlers();
 
-            // Load data
-            _ = LoadProjectsAsync();
+            // Load data when control is loaded
+            this.Load += async (s, e) => await LoadProjectsAsync();
         }
 
         /// <summary>
@@ -75,44 +72,9 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             var gridView = grdProjects.MainView as GridView;
             if (gridView == null) return;
 
-            // Setup Progress Bar repository
-            _progressBarRepository = new RepositoryItemProgressBar
-            {
-                Minimum = 0,
-                Maximum = 100,
-                ShowTitle = true,
-                PercentView = true
-            };
-            _progressBarRepository.Appearance.BackColor = Color.FromArgb(42, 42, 42);
-            _progressBarRepository.Appearance.ForeColor = Color.FromArgb(255, 77, 0);
-
-            // Assign to CompletionPercentage column
-            var progressColumn = gridView.Columns["CompletionPercentage"];
-            if (progressColumn != null)
-            {
-                progressColumn.ColumnEdit = _progressBarRepository;
-            }
-
-            // Setup Action Buttons repository
-            _actionButtonsRepository = new RepositoryItemButtonEdit
-            {
-                TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.HideTextEditor
-            };
-            _actionButtonsRepository.Buttons.Clear();
-            _actionButtonsRepository.Buttons.Add(new DevExpress.XtraEditors.Controls.EditorButton(
-                DevExpress.XtraEditors.Controls.ButtonPredefines.Glyph)
-            { Caption = "✏️", Width = 30 });
-            _actionButtonsRepository.Buttons.Add(new DevExpress.XtraEditors.Controls.EditorButton(
-                DevExpress.XtraEditors.Controls.ButtonPredefines.Glyph)
-            { Caption = "🗑️", Width = 30 });
-            _actionButtonsRepository.ButtonClick += ActionButtonsRepository_ButtonClick;
-
-            // Assign to Actions column
-            var actionsColumn = gridView.Columns["Actions"];
-            if (actionsColumn != null)
-            {
-                actionsColumn.ColumnEdit = _actionButtonsRepository;
-            }
+            // Repository items are now defined in Designer.cs
+            // Just assign the event handler for action buttons
+            repositoryItemButtonEdit.ButtonClick += ActionButtonsRepository_ButtonClick;
 
             // Custom draw for Status column
             gridView.CustomDrawCell += gridView1_CustomDrawCell;
@@ -126,6 +88,12 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
         /// </summary>
         private void SetupEventHandlers()
         {
+            // Developer için New Project butonunu gizle
+            if (SessionManager.IsDeveloper)
+            {
+                btnNewProject.Visible = false;
+            }
+
             // New Project button
             btnNewProject.Click += btnNewProject_Click;
 
@@ -154,31 +122,31 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             // New Project button
             btnNewProject.MouseEnter += (s, e) =>
             {
-                btnNewProject.Appearance.BackColor = Color.FromArgb(255, 100, 50);
+                btnNewProject.Appearance.BackColor = ColorPalette.AccentSkyBlue;
             };
             btnNewProject.MouseLeave += (s, e) =>
             {
-                btnNewProject.Appearance.BackColor = Color.FromArgb(255, 77, 0);
+                btnNewProject.Appearance.BackColor = ColorPalette.AccentRoyalBlue;
             };
 
             // Clear filters button
             btnClearFilters.MouseEnter += (s, e) =>
             {
-                btnClearFilters.Appearance.ForeColor = Color.FromArgb(255, 255, 255);
+                btnClearFilters.Appearance.ForeColor = ColorPalette.TextPrimary;
             };
             btnClearFilters.MouseLeave += (s, e) =>
             {
-                btnClearFilters.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+                btnClearFilters.Appearance.ForeColor = ColorPalette.TextSecondary;
             };
 
             // Refresh button
             btnRefresh.MouseEnter += (s, e) =>
             {
-                btnRefresh.Appearance.ForeColor = Color.FromArgb(255, 255, 255);
+                btnRefresh.Appearance.ForeColor = ColorPalette.TextPrimary;
             };
             btnRefresh.MouseLeave += (s, e) =>
             {
-                btnRefresh.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+                btnRefresh.Appearance.ForeColor = ColorPalette.TextSecondary;
             };
         }
 
@@ -196,20 +164,26 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
                 // Show loading
                 Cursor = Cursors.WaitCursor;
 
-                // Get projects
-                var projects = await _projectService.GetAllAsync();
-                _allProjects = projects.ToList();
+                // ROL BAZLI FİLTRELEME
+                if (SessionManager.IsAdmin)
+                {
+                    // Admin: Tüm projeleri göster
+                    var projects = await _projectService.GetAllAsync();
+                    _allProjects = projects.ToList();
+                }
+                else
+                {
+                    // ProjectManager/Developer: Sadece üye oldukları takımlara ait projeler
+                    var projects = await _projectService.GetUserProjectsAsync(SessionManager.CurrentUserId);
+                    _allProjects = projects.ToList();
+                }
 
                 // Apply filters
                 ApplyFilters();
             }
             catch (Exception ex)
             {
-                XtraMessageBox.Show(
-                    $"Error loading projects: {ex.Message}",
-                    "Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
+                FormStyleHelper.ShowError($"Error loading projects: {ex.Message}");
             }
             finally
             {
@@ -349,7 +323,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             if (project == null) return;
 
             // Check which button was clicked
-            int buttonIndex = _actionButtonsRepository.Buttons.IndexOf(e.Button);
+            int buttonIndex = repositoryItemButtonEdit.Buttons.IndexOf(e.Button);
 
             if (buttonIndex == 0) // Edit
             {
@@ -383,7 +357,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             Color badgeColor = GetStatusColor(project.Status);
 
             // Draw background
-            using (var brush = new SolidBrush(Color.FromArgb(21, 21, 21)))
+            using (var brush = new SolidBrush(ColorPalette.BackgroundSlateDark))
             {
                 e.Graphics.FillRectangle(brush, e.Bounds);
             }
@@ -454,7 +428,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
         /// <param name="project">Project to edit, or null for new project</param>
         private void OpenProjectDetail(ProjectDto? project)
         {
-            var detailControl = new ProjectDetailControl(_projectService, project);
+            var detailControl = new ProjectDetailControl(_projectService, _teamService, project);
 
             detailControl.ProjectSaved += async (s, e) =>
             {
@@ -470,35 +444,36 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
         /// </summary>
         private async void DeleteProject(ProjectDto project)
         {
-            // Confirm deletion
-            var result = XtraMessageBox.Show(
-                $"Are you sure you want to delete project '{project.ProjectName}'?\n\nThis action cannot be undone.",
-                "Confirm Delete",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Warning);
+            // YETKİ KONTROLÜ
+            if (SessionManager.IsDeveloper)
+            {
+                FormStyleHelper.ShowWarning("You don't have permission to delete projects.");
+                return;
+            }
+            
+            // ProjectManager sadece kendi oluşturduğu projeleri silebilir
+            if (SessionManager.IsProjectManager && project.CreatedByUserId != SessionManager.CurrentUserId)
+            {
+                FormStyleHelper.ShowWarning("You can only delete projects you created.");
+                return;
+            }
 
-            if (result != DialogResult.Yes) return;
+            // Confirm deletion
+            if (!FormStyleHelper.ShowQuestion($"Are you sure you want to delete project '{project.ProjectName}'?\n\nThis action cannot be undone."))
+                return;
 
             try
             {
                 await _projectService.DeleteProjectAsync(project.ProjectId);
 
-                XtraMessageBox.Show(
-                    "Project deleted successfully.",
-                    "Success",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
+                FormStyleHelper.ShowSuccess("Project deleted successfully.");
 
                 // Reload
                 await LoadProjectsAsync();
             }
             catch (Exception ex)
             {
-                XtraMessageBox.Show(
-                    $"Error deleting project: {ex.Message}",
-                    "Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
+                FormStyleHelper.ShowError($"Error deleting project: {ex.Message}");
             }
         }
 

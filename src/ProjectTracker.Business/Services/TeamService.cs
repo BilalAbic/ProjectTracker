@@ -18,13 +18,57 @@ namespace ProjectTracker.Business.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        private int _currentUserId; // TODO: Replace with actual authentication service
+        private readonly ICurrentUserService _currentUserService;
+        private readonly IAuditLogService _auditLogService;
 
-        public TeamService(IUnitOfWork unitOfWork, IMapper mapper)
+        public TeamService(
+            IUnitOfWork unitOfWork, 
+            IMapper mapper, 
+            ICurrentUserService currentUserService,
+            IAuditLogService auditLogService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
-            _currentUserId = 1; // TODO: Get from authentication context
+            _currentUserService = currentUserService;
+            _auditLogService = auditLogService;
+        }
+        
+        /// <summary>
+        /// Get current user ID from session
+        /// </summary>
+        private int CurrentUserId => _currentUserService.CurrentUserId;
+
+        /// <summary>
+        /// Get all teams in the system (Admin only)
+        /// </summary>
+        public async Task<IEnumerable<TeamDto>> GetAllTeamsAsync()
+        {
+            var teams = await _unitOfWork.Teams.FindAsync(t => t.IsActive);
+
+            var teamDtos = new List<TeamDto>();
+            foreach (var team in teams)
+            {
+                var owner = await _unitOfWork.Users.GetByIdAsync(team.OwnerId);
+                var memberCount = await _unitOfWork.TeamMembers
+                    .CountAsync(tm => tm.TeamId == team.TeamId && tm.IsActive);
+                var projectCount = await _unitOfWork.Projects
+                    .CountAsync(p => p.TeamId == team.TeamId);
+
+                teamDtos.Add(new TeamDto
+                {
+                    TeamId = team.TeamId,
+                    TeamName = team.TeamName,
+                    Description = team.Description,
+                    OwnerId = team.OwnerId,
+                    OwnerName = owner?.FullName ?? "Unknown",
+                    MemberCount = memberCount,
+                    ProjectCount = projectCount,
+                    IsActive = team.IsActive,
+                    CreatedAt = team.CreatedAt
+                });
+            }
+
+            return teamDtos;
         }
 
         /// <summary>
@@ -34,7 +78,7 @@ namespace ProjectTracker.Business.Services
         {
             // Get teams where user is owner or member
             var userTeams = await _unitOfWork.TeamMembers
-                .FindAsync(tm => tm.UserId == _currentUserId && tm.IsActive);
+                .FindAsync(tm => tm.UserId == CurrentUserId && tm.IsActive);
 
             var teamIds = userTeams.Select(tm => tm.TeamId).ToList();
 
@@ -117,7 +161,7 @@ namespace ProjectTracker.Business.Services
             {
                 TeamName = createDto.TeamName,
                 Description = createDto.Description,
-                OwnerId = _currentUserId,
+                OwnerId = CurrentUserId,
                 IsActive = true,
                 CreatedAt = DateTime.Now
             };
@@ -129,7 +173,7 @@ namespace ProjectTracker.Business.Services
             var ownerMember = new ProjectTracker.Core.Entities.TeamMember
             {
                 TeamId = team.TeamId,
-                UserId = _currentUserId,
+                UserId = CurrentUserId,
                 Role = TeamRole.Owner,
                 JoinedAt = DateTime.Now,
                 IsActive = true
@@ -137,6 +181,22 @@ namespace ProjectTracker.Business.Services
 
             await _unitOfWork.TeamMembers.AddAsync(ownerMember);
             await _unitOfWork.SaveChangesAsync();
+
+            // Log activity (fire-and-forget)
+            var teamId = team.TeamId;
+            _ = System.Threading.Tasks.Task.Run(async () =>
+            {
+                try
+                {
+                    await _auditLogService.LogActivityAsync(
+                        ActivityType.TeamCreated,
+                        "Teams",
+                        teamId,
+                        CurrentUserId,
+                        teamId: teamId);
+                }
+                catch { /* Ignore */ }
+            });
 
             return await GetTeamByIdAsync(team.TeamId) ?? new TeamDto { TeamId = team.TeamId, TeamName = team.TeamName };
         }
@@ -153,7 +213,7 @@ namespace ProjectTracker.Business.Services
             // Check if user has permission (owner or admin)
             var member = await _unitOfWork.TeamMembers
                 .FirstOrDefaultAsync(tm => tm.TeamId == updateDto.TeamId 
-                    && tm.UserId == _currentUserId 
+                    && tm.UserId == CurrentUserId 
                     && tm.IsActive);
 
             if (member == null || (member.Role != TeamRole.Owner && member.Role != TeamRole.Admin))
@@ -165,6 +225,22 @@ namespace ProjectTracker.Business.Services
 
             _unitOfWork.Teams.Update(team);
             await _unitOfWork.SaveChangesAsync();
+
+            // Log activity (fire-and-forget)
+            var teamId = team.TeamId;
+            _ = System.Threading.Tasks.Task.Run(async () =>
+            {
+                try
+                {
+                    await _auditLogService.LogActivityAsync(
+                        ActivityType.TeamUpdated,
+                        "Teams",
+                        teamId,
+                        CurrentUserId,
+                        teamId: teamId);
+                }
+                catch { /* Ignore */ }
+            });
 
             return await GetTeamByIdAsync(team.TeamId) ?? new TeamDto { TeamId = team.TeamId, TeamName = team.TeamName };
         }
@@ -179,7 +255,7 @@ namespace ProjectTracker.Business.Services
                 return false;
 
             // Only owner can delete team
-            if (team.OwnerId != _currentUserId)
+            if (team.OwnerId != CurrentUserId)
                 throw new UnauthorizedAccessException("Only team owner can delete the team");
 
             team.IsActive = false;
@@ -187,6 +263,21 @@ namespace ProjectTracker.Business.Services
 
             _unitOfWork.Teams.Update(team);
             await _unitOfWork.SaveChangesAsync();
+
+            // Log activity (fire-and-forget)
+            _ = System.Threading.Tasks.Task.Run(async () =>
+            {
+                try
+                {
+                    await _auditLogService.LogActivityAsync(
+                        ActivityType.TeamDeleted,
+                        "Teams",
+                        teamId,
+                        CurrentUserId,
+                        teamId: teamId);
+                }
+                catch { /* Ignore */ }
+            });
 
             return true;
         }
@@ -199,7 +290,7 @@ namespace ProjectTracker.Business.Services
             // Verify user is member of this team
             var member = await _unitOfWork.TeamMembers
                 .FirstOrDefaultAsync(tm => tm.TeamId == teamId 
-                    && tm.UserId == _currentUserId 
+                    && tm.UserId == CurrentUserId 
                     && tm.IsActive);
 
             if (member == null)
@@ -253,7 +344,7 @@ namespace ProjectTracker.Business.Services
             // Check if current user has permission (owner or admin)
             var currentUserMember = await _unitOfWork.TeamMembers
                 .FirstOrDefaultAsync(tm => tm.TeamId == member.TeamId 
-                    && tm.UserId == _currentUserId 
+                    && tm.UserId == CurrentUserId 
                     && tm.IsActive);
 
             if (currentUserMember == null || (currentUserMember.Role != TeamRole.Owner && currentUserMember.Role != TeamRole.Admin))
@@ -263,9 +354,28 @@ namespace ProjectTracker.Business.Services
             if (member.Role == TeamRole.Owner)
                 throw new InvalidOperationException("Cannot change owner role");
 
+            var oldRole = member.Role;
+            var teamId = member.TeamId;
             member.Role = newRole;
             _unitOfWork.TeamMembers.Update(member);
             await _unitOfWork.SaveChangesAsync();
+
+            // Log activity (fire-and-forget)
+            _ = System.Threading.Tasks.Task.Run(async () =>
+            {
+                try
+                {
+                    await _auditLogService.LogActivityAsync(
+                        ActivityType.MemberRoleChanged,
+                        "Teams",
+                        teamId,
+                        CurrentUserId,
+                        oldValues: oldRole.ToString(),
+                        newValues: newRole.ToString(),
+                        teamId: teamId);
+                }
+                catch { /* Ignore */ }
+            });
 
             return true;
         }
@@ -282,7 +392,7 @@ namespace ProjectTracker.Business.Services
             // Check if current user has permission (owner or admin)
             var currentUserMember = await _unitOfWork.TeamMembers
                 .FirstOrDefaultAsync(tm => tm.TeamId == member.TeamId 
-                    && tm.UserId == _currentUserId 
+                    && tm.UserId == CurrentUserId 
                     && tm.IsActive);
 
             if (currentUserMember == null || (currentUserMember.Role != TeamRole.Owner && currentUserMember.Role != TeamRole.Admin))
@@ -292,9 +402,25 @@ namespace ProjectTracker.Business.Services
             if (member.Role == TeamRole.Owner)
                 throw new InvalidOperationException("Cannot remove team owner");
 
+            var teamId = member.TeamId;
             member.IsActive = false;
             _unitOfWork.TeamMembers.Update(member);
             await _unitOfWork.SaveChangesAsync();
+
+            // Log activity (fire-and-forget)
+            _ = System.Threading.Tasks.Task.Run(async () =>
+            {
+                try
+                {
+                    await _auditLogService.LogActivityAsync(
+                        ActivityType.MemberRemoved,
+                        "Teams",
+                        teamId,
+                        CurrentUserId,
+                        teamId: teamId);
+                }
+                catch { /* Ignore */ }
+            });
 
             return true;
         }

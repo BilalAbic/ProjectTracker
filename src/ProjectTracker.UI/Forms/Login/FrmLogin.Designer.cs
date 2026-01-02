@@ -1,4 +1,6 @@
-﻿namespace ProjectTracker.UI.Forms.Login
+﻿using ProjectTracker.UI.Helpers;
+
+namespace ProjectTracker.UI.Forms.Login
 {
     partial class FrmLogin
     {
@@ -70,16 +72,16 @@
             // lblTitle
             // 
             lblTitle.Appearance.BackColor = Color.Transparent;
-            lblTitle.Appearance.Font = new Font("Segoe UI", 18F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblTitle.Appearance.ForeColor = Color.FromArgb(255, 77, 0);
+            lblTitle.Appearance.Font = new Font("Segoe UI", 21.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblTitle.Appearance.ForeColor = Color.FromArgb(91, 141, 239);
             lblTitle.Appearance.Options.UseBackColor = true;
             lblTitle.Appearance.Options.UseFont = true;
             lblTitle.Appearance.Options.UseForeColor = true;
             lblTitle.Appearance.Options.UseTextOptions = true;
             lblTitle.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
-            lblTitle.Location = new Point(520, 80);
+            lblTitle.Location = new Point(430, 80);
             lblTitle.Name = "lblTitle";
-            lblTitle.Size = new Size(91, 32);
+            lblTitle.Size = new Size(109, 40);
             lblTitle.TabIndex = 1;
             lblTitle.Text = "SIGN IN";
             // 
@@ -87,7 +89,7 @@
             // 
             lblUsername.Appearance.BackColor = Color.Transparent;
             lblUsername.Appearance.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            lblUsername.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            lblUsername.Appearance.ForeColor = Color.FromArgb(203, 213, 225);
             lblUsername.Appearance.Options.UseBackColor = true;
             lblUsername.Appearance.Options.UseFont = true;
             lblUsername.Appearance.Options.UseForeColor = true;
@@ -102,22 +104,21 @@
             // 
             txtUsername.Location = new Point(430, 170);
             txtUsername.Name = "txtUsername";
-            txtUsername.Properties.Appearance.BackColor = Color.FromArgb(21, 21, 21);
-            txtUsername.Properties.Appearance.BorderColor = Color.FromArgb(42, 42, 42);
+            txtUsername.Properties.Appearance.BackColor = Color.FromArgb(36, 43, 61);
+            txtUsername.Properties.Appearance.BorderColor = Color.FromArgb(51, 65, 85);
             txtUsername.Properties.Appearance.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            txtUsername.Properties.Appearance.ForeColor = Color.White;
+            txtUsername.Properties.Appearance.ForeColor = Color.FromArgb(248, 250, 252);
             txtUsername.Properties.Appearance.Options.UseBackColor = true;
             txtUsername.Properties.Appearance.Options.UseBorderColor = true;
             txtUsername.Properties.Appearance.Options.UseFont = true;
             txtUsername.Properties.Appearance.Options.UseForeColor = true;
-            txtUsername.Properties.AppearanceFocused.BackColor = Color.FromArgb(25, 25, 25);
+            txtUsername.Properties.AppearanceFocused.BackColor = Color.FromArgb(30, 42, 58);
             txtUsername.Properties.AppearanceFocused.Options.UseBackColor = true;
-            txtUsername.Properties.AppearanceReadOnly.ForeColor = Color.FromArgb(96, 96, 96);
+            txtUsername.Properties.AppearanceReadOnly.ForeColor = Color.FromArgb(100, 116, 139);
             txtUsername.Properties.AppearanceReadOnly.Options.UseForeColor = true;
             txtUsername.Properties.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple;
             txtUsername.Properties.NullText = "Enter username...";
             txtUsername.Properties.NullValuePrompt = "Enter username...";
-            txtUsername.Properties.NullValuePromptShowForEmptyValue = true;
             txtUsername.Size = new Size(330, 22);
             txtUsername.TabIndex = 3;
             // 
@@ -125,7 +126,7 @@
             // 
             lblPassword.Appearance.BackColor = Color.Transparent;
             lblPassword.Appearance.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            lblPassword.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            lblPassword.Appearance.ForeColor = Color.FromArgb(203, 213, 225);
             lblPassword.Appearance.Options.UseBackColor = true;
             lblPassword.Appearance.Options.UseFont = true;
             lblPassword.Appearance.Options.UseForeColor = true;
@@ -140,10 +141,10 @@
             // 
             txtPassword.Location = new Point(430, 240);
             txtPassword.Name = "txtPassword";
-            txtPassword.Properties.Appearance.BackColor = Color.FromArgb(21, 21, 21);
-            txtPassword.Properties.Appearance.BorderColor = Color.FromArgb(42, 42, 42);
+            txtPassword.Properties.Appearance.BackColor = Color.FromArgb(36, 43, 61);
+            txtPassword.Properties.Appearance.BorderColor = Color.FromArgb(51, 65, 85);
             txtPassword.Properties.Appearance.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            txtPassword.Properties.Appearance.ForeColor = Color.White;
+            txtPassword.Properties.Appearance.ForeColor = Color.FromArgb(248, 250, 252);
             txtPassword.Properties.Appearance.Options.UseBackColor = true;
             txtPassword.Properties.Appearance.Options.UseBorderColor = true;
             txtPassword.Properties.Appearance.Options.UseFont = true;
@@ -156,9 +157,9 @@
             // 
             // btnLogin
             // 
-            btnLogin.Appearance.BackColor = Color.FromArgb(255, 77, 0);
+            btnLogin.Appearance.BackColor = Color.FromArgb(91, 141, 239);
             btnLogin.Appearance.Font = new Font("Segoe UI", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnLogin.Appearance.ForeColor = Color.White;
+            btnLogin.Appearance.ForeColor = Color.FromArgb(248, 250, 252);
             btnLogin.Appearance.Options.UseBackColor = true;
             btnLogin.Appearance.Options.UseFont = true;
             btnLogin.Appearance.Options.UseForeColor = true;
@@ -171,10 +172,10 @@
             // 
             // btnCancel
             // 
-            btnCancel.Appearance.BackColor = Color.FromArgb(21, 21, 21);
-            btnCancel.Appearance.BorderColor = Color.FromArgb(0, 102, 255);
+            btnCancel.Appearance.BackColor = Color.FromArgb(36, 43, 61);
+            btnCancel.Appearance.BorderColor = Color.FromArgb(138, 186, 252);
             btnCancel.Appearance.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            btnCancel.Appearance.ForeColor = Color.FromArgb(0, 102, 255);
+            btnCancel.Appearance.ForeColor = Color.FromArgb(138, 186, 252);
             btnCancel.Appearance.Options.UseBackColor = true;
             btnCancel.Appearance.Options.UseBorderColor = true;
             btnCancel.Appearance.Options.UseFont = true;
@@ -188,10 +189,10 @@
             // 
             // btnClose
             // 
-            btnClose.Appearance.BackColor = Color.FromArgb(31, 31, 31);
-            btnClose.Appearance.BorderColor = Color.FromArgb(255, 77, 0);
+            btnClose.Appearance.BackColor = Color.FromArgb(30, 42, 58);
+            btnClose.Appearance.BorderColor = Color.FromArgb(239, 68, 68);
             btnClose.Appearance.Font = new Font("Segoe UI", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnClose.Appearance.ForeColor = Color.White;
+            btnClose.Appearance.ForeColor = Color.FromArgb(203, 213, 225);
             btnClose.Appearance.Options.UseBackColor = true;
             btnClose.Appearance.Options.UseBorderColor = true;
             btnClose.Appearance.Options.UseFont = true;
@@ -206,7 +207,7 @@
             // lblRegisterLink
             // 
             lblRegisterLink.Appearance.Font = new Font("Segoe UI", 9F);
-            lblRegisterLink.Appearance.ForeColor = Color.FromArgb(0, 102, 255);
+            lblRegisterLink.Appearance.ForeColor = Color.FromArgb(138, 186, 252);
             lblRegisterLink.Appearance.Options.UseFont = true;
             lblRegisterLink.Appearance.Options.UseForeColor = true;
             lblRegisterLink.Cursor = Cursors.Hand;
@@ -219,8 +220,8 @@
             // 
             // FrmLogin
             // 
-            Appearance.BackColor = Color.FromArgb(11, 11, 11);
-            Appearance.ForeColor = Color.White;
+            Appearance.BackColor = Color.FromArgb(26, 31, 38);
+            Appearance.ForeColor = Color.FromArgb(248, 250, 252);
             Appearance.Options.UseBackColor = true;
             Appearance.Options.UseForeColor = true;
             AutoScaleDimensions = new SizeF(6F, 13F);

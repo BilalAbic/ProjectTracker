@@ -12,6 +12,8 @@ using FluentValidation;
 using System;
 using System.IO;
 using System.Windows.Forms;
+using DevExpress.Utils.MVVM.Services;
+
 
 namespace ProjectTracker.UI
 {
@@ -78,17 +80,27 @@ namespace ProjectTracker.UI
             // ============================================
             // SERVICES
             // ============================================
+            services.AddSingleton<ICurrentUserService, Helpers.CurrentUserService>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IProjectService, ProjectService>();
             services.AddTransient<ITaskService, TaskService>();
             services.AddTransient<ITeamService, TeamService>();
             services.AddTransient<IInvitationService, InvitationService>();
+            services.AddTransient<IReportService, ProjectTracker.Business.Services.ReportService>(); 
+            services.AddTransient<IAdvancedReportService, AdvancedReportService>();
+            services.AddTransient<IAuditLogService, AuditLogService>(); 
+
+            // ============================================
+            // BACKGROUND SERVICES 
+            // ============================================
+            services.AddHostedService<Business.BackgroundServices.SnapshotBackgroundService>();
 
             // ============================================
             // FORMS
             // ============================================
             services.AddTransient<Forms.Login.FrmLogin>();
             services.AddTransient<Forms.Login.FrmRegister>();
+            services.AddTransient<Forms.Login.FrmPendingWaitlist>();
             services.AddTransient<Forms.Dashboard.FrmDashboard>();
             services.AddTransient<Forms.Dashboard.Content.DashboardContent>();
             services.AddTransient<Forms.Dashboard.Content.ProjectsContent>();
@@ -98,6 +110,7 @@ namespace ProjectTracker.UI
             services.AddTransient<Forms.Dashboard.Content.TeamDetailControl>();
             services.AddTransient<Forms.Dashboard.Content.InvitationsContent>();
             services.AddTransient<Forms.Dashboard.Content.TeamMembersContent>();
+            services.AddTransient<Forms.Dashboard.Content.ReportsContent>();  
         }
     }
 }

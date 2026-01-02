@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using FluentValidation;
 using ProjectTracker.Business.DTOs;
 using ProjectTracker.Business.Interfaces;
@@ -16,15 +16,21 @@ namespace ProjectTracker.Business.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IValidator<ProjectDto> _projectValidator;
+        private readonly IAuditLogService _auditLogService;
+        private readonly ICurrentUserService _currentUserService;
 
         public ProjectService(
             IUnitOfWork unitOfWork,
             IMapper mapper,
-            IValidator<ProjectDto> projectValidator)
+            IValidator<ProjectDto> projectValidator,
+            IAuditLogService auditLogService,
+            ICurrentUserService currentUserService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _projectValidator = projectValidator;
+            _auditLogService = auditLogService;
+            _currentUserService = currentUserService;
         }
 
         /// <summary>
@@ -88,6 +94,21 @@ namespace ProjectTracker.Business.Services
             await _unitOfWork.Projects.AddAsync(project);
             await _unitOfWork.SaveChangesAsync();
 
+            // Log activity (fire-and-forget)
+            _ = System.Threading.Tasks.Task.Run(async () =>
+            {
+                try
+                {
+                    await _auditLogService.LogActivityAsync(
+                        ActivityType.ProjectCreated,
+                        "Projects",
+                        project.ProjectId,
+                        _currentUserService.CurrentUserId,
+                        teamId: project.TeamId);
+                }
+                catch { /* Ignore */ }
+            });
+
             // Return DTO
             return _mapper.Map<ProjectDto>(project);
         }
@@ -110,6 +131,8 @@ namespace ProjectTracker.Business.Services
                 throw new InvalidOperationException("Project not found");
             }
 
+            var oldStatus = project.Status;
+
             // Update properties
             project.ProjectName = projectDto.ProjectName;
             project.Description = projectDto.Description;
@@ -121,6 +144,27 @@ namespace ProjectTracker.Business.Services
 
             _unitOfWork.Projects.Update(project);
             await _unitOfWork.SaveChangesAsync();
+
+            // Log activity (fire-and-forget)
+            var activityType = oldStatus != projectDto.Status.ToString()
+                ? (projectDto.Status == ProjectStatus.Completed ? ActivityType.ProjectCompleted : ActivityType.ProjectStatusChanged)
+                : ActivityType.ProjectUpdated;
+
+            _ = System.Threading.Tasks.Task.Run(async () =>
+            {
+                try
+                {
+                    await _auditLogService.LogActivityAsync(
+                        activityType,
+                        "Projects",
+                        project.ProjectId,
+                        _currentUserService.CurrentUserId,
+                        oldValues: oldStatus,
+                        newValues: project.Status,
+                        teamId: project.TeamId);
+                }
+                catch { /* Ignore */ }
+            });
 
             return _mapper.Map<ProjectDto>(project);
         }
@@ -134,8 +178,25 @@ namespace ProjectTracker.Business.Services
             if (project == null)
                 return false;
 
+            var teamId = project.TeamId;
+
             _unitOfWork.Projects.Remove(project);
             await _unitOfWork.SaveChangesAsync();
+
+            // Log activity (fire-and-forget)
+            _ = System.Threading.Tasks.Task.Run(async () =>
+            {
+                try
+                {
+                    await _auditLogService.LogActivityAsync(
+                        ActivityType.ProjectDeleted,
+                        "Projects",
+                        projectId,
+                        _currentUserService.CurrentUserId,
+                        teamId: teamId);
+                }
+                catch { /* Ignore */ }
+            });
 
             return true;
         }
@@ -233,12 +294,28 @@ namespace ProjectTracker.Business.Services
                 Priority = dto.Priority,
                 Budget = dto.Budget,
                 CreatedByUserId = dto.CreatedByUserId,
+                TeamId = dto.TeamId,
                 CreatedAt = DateTime.Now,
                 CompletionPercentage = 0
             };
 
             await _unitOfWork.Projects.AddAsync(project);
             await _unitOfWork.SaveChangesAsync();
+
+            // Log activity (fire-and-forget to avoid DbContext concurrency issues)
+            _ = System.Threading.Tasks.Task.Run(async () =>
+            {
+                try
+                {
+                    await _auditLogService.LogActivityAsync(
+                        ActivityType.ProjectCreated,
+                        "Projects",
+                        project.ProjectId,
+                        _currentUserService.CurrentUserId,
+                        teamId: project.TeamId);
+                }
+                catch { /* Ignore audit log errors */ }
+            });
 
             return _mapper.Map<ProjectDto>(project);
         }
@@ -254,6 +331,8 @@ namespace ProjectTracker.Business.Services
                 throw new InvalidOperationException($"Project with ID {projectId} not found.");
             }
 
+            var oldStatus = project.Status;
+
             // Update properties
             project.ProjectName = dto.ProjectName;
             project.Description = dto.Description;
@@ -262,10 +341,32 @@ namespace ProjectTracker.Business.Services
             project.Status = dto.Status.ToString();
             project.Priority = dto.Priority;
             project.Budget = dto.Budget;
+            project.TeamId = dto.TeamId;
             project.UpdatedAt = DateTime.Now;
 
             _unitOfWork.Projects.Update(project);
             await _unitOfWork.SaveChangesAsync();
+
+            // Log activity (fire-and-forget to avoid DbContext concurrency issues)
+            var activityType = oldStatus != dto.Status.ToString()
+                ? (dto.Status == ProjectStatus.Completed ? ActivityType.ProjectCompleted : ActivityType.ProjectStatusChanged)
+                : ActivityType.ProjectUpdated;
+
+            _ = System.Threading.Tasks.Task.Run(async () =>
+            {
+                try
+                {
+                    await _auditLogService.LogActivityAsync(
+                        activityType,
+                        "Projects",
+                        project.ProjectId,
+                        _currentUserService.CurrentUserId,
+                        oldValues: oldStatus,
+                        newValues: project.Status,
+                        teamId: project.TeamId);
+                }
+                catch { /* Ignore audit log errors */ }
+            });
 
             return _mapper.Map<ProjectDto>(project);
         }
@@ -285,6 +386,31 @@ namespace ProjectTracker.Business.Services
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Get projects for specific teams
+        /// </summary>
+        public async Task<IEnumerable<ProjectDto>> GetProjectsByTeamsAsync(IEnumerable<int> teamIds)
+        {
+            var teamIdList = teamIds.ToList();
+            var projects = await _unitOfWork.Projects.FindAsync(p => teamIdList.Contains(p.TeamId));
+            return _mapper.Map<IEnumerable<ProjectDto>>(projects);
+        }
+
+        /// <summary>
+        /// Get projects for current user based on team membership
+        /// </summary>
+        public async Task<IEnumerable<ProjectDto>> GetUserProjectsAsync(int userId)
+        {
+            // 1. Get user's team memberships
+            var userTeams = await _unitOfWork.TeamMembers
+                .FindAsync(tm => tm.UserId == userId && tm.IsActive);
+            var teamIds = userTeams.Select(tm => tm.TeamId).ToList();
+
+            // 2. Get projects belonging to those teams
+            var projects = await _unitOfWork.Projects.FindAsync(p => teamIds.Contains(p.TeamId));
+            return _mapper.Map<IEnumerable<ProjectDto>>(projects);
         }
     }
 }

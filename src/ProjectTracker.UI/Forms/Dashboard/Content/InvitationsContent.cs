@@ -1,6 +1,7 @@
 ﻿using DevExpress.XtraEditors;
 using ProjectTracker.Business.DTOs;
 using ProjectTracker.Business.Interfaces;
+using ProjectTracker.UI.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -20,6 +21,8 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
         private readonly IInvitationService _invitationService;
         private readonly ITeamService _teamService;
         private List<TeamInvitationDto>? _invitations;
+        private int? _selectedTeamId;
+        private string? _selectedTeamName;
         
         #endregion
         
@@ -32,13 +35,26 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             _teamService = teamService;
             
             LoadRoles();
-            LoadInvitationsAsync();
             SetupEventHandlers();
         }
         
         public InvitationsContent()
         {
             InitializeComponent();
+        }
+        
+        #endregion
+        
+        #region Public Methods
+        
+        /// <summary>
+        /// Set team context for invitations
+        /// </summary>
+        public void SetTeamContext(int teamId, string teamName)
+        {
+            _selectedTeamId = teamId;
+            _selectedTeamName = teamName;
+            LoadInvitationsForTeamAsync(teamId);
         }
         
         #endregion
@@ -64,27 +80,54 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
         
         #region Data Loading
         
+        private async void LoadInvitationsForTeamAsync(int teamId)
+        {
+            try
+            {
+                Cursor = Cursors.WaitCursor;
+                
+                _invitations = (await _invitationService.GetTeamInvitationsAsync(teamId)).ToList();
+                RenderInvitations();
+            }
+            catch (Exception ex)
+            {
+                FormStyleHelper.ShowError($"Error loading invitations: {ex.Message}");
+            }
+            finally
+            {
+                Cursor = Cursors.Default;
+            }
+        }
+        
         private async void LoadInvitationsAsync()
         {
             try
             {
                 Cursor = Cursors.WaitCursor;
                 
-                var activeTeam = await _teamService.GetActiveTeamAsync();
-                if (activeTeam == null)
+                if (_selectedTeamId.HasValue)
                 {
-                    XtraMessageBox.Show("No active team selected", "Error",
-                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
+                    _invitations = (await _invitationService.GetTeamInvitationsAsync(_selectedTeamId.Value)).ToList();
+                }
+                else
+                {
+                    var activeTeam = await _teamService.GetActiveTeamAsync();
+                    if (activeTeam == null)
+                    {
+                        FormStyleHelper.ShowWarning("No active team selected");
+                        return;
+                    }
+                    
+                    _selectedTeamId = activeTeam.TeamId;
+                    _selectedTeamName = activeTeam.TeamName;
+                    _invitations = (await _invitationService.GetTeamInvitationsAsync(activeTeam.TeamId)).ToList();
                 }
                 
-                _invitations = (await _invitationService.GetTeamInvitationsAsync(activeTeam.TeamId)).ToList();
                 RenderInvitations();
             }
             catch (Exception ex)
             {
-                XtraMessageBox.Show($"Error loading invitations: {ex.Message}", "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                FormStyleHelper.ShowError($"Error loading invitations: {ex.Message}");
             }
             finally
             {
@@ -128,8 +171,8 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
                 BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple,
                 Margin = new Padding(0, 0, 0, 15)
             };
-            card.Appearance.BackColor = Color.FromArgb(21, 21, 21);
-            card.Appearance.BorderColor = Color.FromArgb(42, 42, 42);
+            card.Appearance.BackColor = ColorPalette.BackgroundSlateDark;
+            card.Appearance.BorderColor = ColorPalette.BorderSlate;
             
             // Email
             var lblEmail = new LabelControl
@@ -151,7 +194,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
                 AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None,
                 Size = new Size(950, 20)
             };
-            lblRole.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            lblRole.Appearance.ForeColor = ColorPalette.TextSecondary;
             card.Controls.Add(lblRole);
             
             // Sent & Expiry
@@ -167,7 +210,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
                 AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None,
                 Size = new Size(950, 20)
             };
-            lblTime.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            lblTime.Appearance.ForeColor = ColorPalette.TextSecondary;
             card.Controls.Add(lblTime);
             
             // Status badge
@@ -191,7 +234,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
                 AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None,
                 Size = new Size(300, 20)
             };
-            lblInvitedBy.Appearance.ForeColor = Color.FromArgb(161, 161, 161);
+            lblInvitedBy.Appearance.ForeColor = ColorPalette.TextSecondary;
             card.Controls.Add(lblInvitedBy);
             
             // Action buttons
@@ -206,7 +249,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
                     Location = new Point(buttonX, 90),
                     Size = new Size(120, 28)
                 };
-                btnCopy.Appearance.BackColor = Color.FromArgb(42, 42, 42);
+                btnCopy.Appearance.BackColor = ColorPalette.BorderSlate;
                 btnCopy.Click += (s, e) => CopyInvitationLink(invitation.Token);
                 card.Controls.Add(btnCopy);
                 buttonX += 130;
@@ -219,7 +262,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
                 Location = new Point(buttonX, 90),
                 Size = new Size(100, 28)
             };
-            btnResend.Appearance.BackColor = Color.FromArgb(255, 77, 0);
+            btnResend.Appearance.BackColor = ColorPalette.AccentRoyalBlue;
             btnResend.Click += async (s, e) => await ResendInvitation(invitation.InvitationId);
             card.Controls.Add(btnResend);
             buttonX += 110;
@@ -231,7 +274,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
                 Location = new Point(buttonX, 90),
                 Size = new Size(100, 28)
             };
-            btnCancel.Appearance.BackColor = Color.FromArgb(255, 77, 77);
+            btnCancel.Appearance.BackColor = ColorPalette.DangerRed;
             btnCancel.Click += async (s, e) => await CancelInvitation(invitation.InvitationId);
             card.Controls.Add(btnCancel);
             
@@ -241,14 +284,14 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
         private (string text, Color color) GetStatusDisplay(TeamInvitationDto invitation)
         {
             if (invitation.IsExpired)
-                return ("⏱️ Expired", Color.FromArgb(161, 161, 161));
+                return ("⏱️ Expired", ColorPalette.TextSecondary);
             
             return invitation.Status switch
             {
-                Core.Enums.InvitationStatus.Pending => ("🟡 Pending", Color.FromArgb(255, 184, 0)),
-                Core.Enums.InvitationStatus.Accepted => ("✅ Accepted", Color.FromArgb(0, 208, 132)),
-                Core.Enums.InvitationStatus.Declined => ("❌ Declined", Color.FromArgb(255, 77, 77)),
-                _ => ("❓ Unknown", Color.Gray)
+                Core.Enums.InvitationStatus.Pending => ("🟡 Pending", ColorPalette.WarningAmber),
+                Core.Enums.InvitationStatus.Accepted => ("✅ Accepted", ColorPalette.SuccessGreen),
+                Core.Enums.InvitationStatus.Declined => ("❌ Declined", ColorPalette.DangerRed),
+                _ => ("❓ Unknown", ColorPalette.TextSecondary)
             };
         }
         
@@ -265,33 +308,39 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             {
                 Cursor = Cursors.WaitCursor;
                 
-                var activeTeam = await _teamService.GetActiveTeamAsync();
-                if (activeTeam == null)
+                int teamId;
+                if (_selectedTeamId.HasValue)
                 {
-                    XtraMessageBox.Show("No active team selected", "Error",
-                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
+                    teamId = _selectedTeamId.Value;
+                }
+                else
+                {
+                    var activeTeam = await _teamService.GetActiveTeamAsync();
+                    if (activeTeam == null)
+                    {
+                        FormStyleHelper.ShowWarning("No active team selected");
+                        return;
+                    }
+                    teamId = activeTeam.TeamId;
                 }
                 
                 var invitationDto = new TeamInvitationDto
                 {
-                    TeamId = activeTeam.TeamId,
+                    TeamId = teamId,
                     Email = txtEmail.Text.Trim(),
                     ProposedRole = (Core.Enums.TeamRole)Enum.Parse(typeof(Core.Enums.TeamRole), cmbRole.Text.Replace(" ", ""))
                 };
                 
                 await _invitationService.SendInvitationAsync(invitationDto);
                 
-                XtraMessageBox.Show($"Invitation sent to {invitationDto.Email}!", "Success",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                FormStyleHelper.ShowSuccess($"Invitation sent to {invitationDto.Email}!");
                 
                 txtEmail.Text = string.Empty;
                 LoadInvitationsAsync();
             }
             catch (Exception ex)
             {
-                XtraMessageBox.Show($"Error sending invitation: {ex.Message}", "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                FormStyleHelper.ShowError($"Error sending invitation: {ex.Message}");
             }
             finally
             {
@@ -303,8 +352,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
         {
             var link = $"https://yourapp.com/accept-invitation?token={token}";
             Clipboard.SetText(link);
-            XtraMessageBox.Show("Invitation link copied to clipboard!", "Success",
-                MessageBoxButtons.OK, MessageBoxIcon.Information);
+            FormStyleHelper.ShowSuccess("Invitation link copied to clipboard!");
         }
         
         private async Task ResendInvitation(int invitationId)
@@ -312,35 +360,28 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             try
             {
                 await _invitationService.ResendInvitationAsync(invitationId);
-                XtraMessageBox.Show("Invitation resent successfully!", "Success",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                FormStyleHelper.ShowSuccess("Invitation resent successfully!");
                 LoadInvitationsAsync();
             }
             catch (Exception ex)
             {
-                XtraMessageBox.Show($"Error resending invitation: {ex.Message}", "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                FormStyleHelper.ShowError($"Error resending invitation: {ex.Message}");
             }
         }
         
         private async Task CancelInvitation(int invitationId)
         {
-            var result = XtraMessageBox.Show("Cancel this invitation?", "Confirm",
-                MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            
-            if (result == DialogResult.Yes)
+            if (FormStyleHelper.ShowQuestion("Cancel this invitation?"))
             {
                 try
                 {
                     await _invitationService.CancelInvitationAsync(invitationId);
-                    XtraMessageBox.Show("Invitation cancelled", "Success",
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    FormStyleHelper.ShowSuccess("Invitation cancelled");
                     LoadInvitationsAsync();
                 }
                 catch (Exception ex)
                 {
-                    XtraMessageBox.Show($"Error: {ex.Message}", "Error",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    FormStyleHelper.ShowError($"Error: {ex.Message}");
                 }
             }
         }
@@ -349,15 +390,13 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
         {
             if (string.IsNullOrWhiteSpace(txtEmail.Text))
             {
-                XtraMessageBox.Show("Email is required", "Validation",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                FormStyleHelper.ShowWarning("Email is required");
                 return false;
             }
             
             if (!txtEmail.Text.Contains("@"))
             {
-                XtraMessageBox.Show("Invalid email format", "Validation",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                FormStyleHelper.ShowWarning("Invalid email format");
                 return false;
             }
             

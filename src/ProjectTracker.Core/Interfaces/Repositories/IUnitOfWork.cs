@@ -72,6 +72,16 @@ namespace ProjectTracker.Core.Interfaces
         /// </summary>
         IRepository<TeamInvitation> TeamInvitations { get; }
 
+        /// <summary>
+        /// Time Entries repository (Phase 7 - Advanced Analytics)
+        /// </summary>
+        IRepository<TimeEntry> TimeEntries { get; }
+
+        /// <summary>
+        /// Project Snapshots repository (Phase 7 - Advanced Analytics)
+        /// </summary>
+        IRepository<ProjectSnapshot> ProjectSnapshots { get; }
+
         // ============================================
         // TRANSACTION OPERATIONS
         // ============================================

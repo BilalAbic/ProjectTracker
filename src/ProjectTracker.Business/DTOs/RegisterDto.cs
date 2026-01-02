@@ -10,6 +10,17 @@ namespace ProjectTracker.Business.DTOs
         public string Email { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
         public string ConfirmPassword { get; set; } = string.Empty;
-        public int RoleId { get; set; } = 3; // Default: Developer (RoleId=3)
+        
+        /// <summary>
+        /// Invitation token (if registering via invitation)
+        /// If null/empty, user will be assigned Pending role
+        /// </summary>
+        public string? InvitationToken { get; set; }
+        
+        /// <summary>
+        /// Role ID - will be determined by service based on invitation
+        /// Default: 4 (Pending) if no invitation token
+        /// </summary>
+        public int RoleId { get; set; } = 4; // Default: Pending
     }
 }
