@@ -15,7 +15,10 @@ namespace ProjectTracker.Business.Mappings
             // USER MAPPINGS
             // ============================================
             CreateMap<User, UserDto>()
-                .ForMember(dest => dest.RoleName, opt => opt.MapFrom(src => src.Role.RoleName));
+                .ForMember(dest => dest.RoleName, opt => opt.MapFrom(src => src.Role.RoleName))
+                .ForMember(dest => dest.Department, opt => opt.MapFrom(src => src.Department))
+                .ForMember(dest => dest.GitHubUsername, opt => opt.MapFrom(src => src.GitHubUsername))
+                .ForMember(dest => dest.GitHubAvatarUrl, opt => opt.MapFrom(src => src.GitHubAvatarUrl));
 
             CreateMap<UserDto, User>()
                 .ForMember(dest => dest.Role, opt => opt.Ignore())
@@ -23,7 +26,8 @@ namespace ProjectTracker.Business.Mappings
                 .ForMember(dest => dest.AssignedTasks, opt => opt.Ignore())
                 .ForMember(dest => dest.TeamMemberships, opt => opt.Ignore())
                 .ForMember(dest => dest.Notifications, opt => opt.Ignore())
-                .ForMember(dest => dest.TaskComments, opt => opt.Ignore());
+                .ForMember(dest => dest.TaskComments, opt => opt.Ignore())
+                .ForMember(dest => dest.GitHubTokens, opt => opt.Ignore());
 
             // ============================================
             // PROJECT MAPPINGS

@@ -91,6 +91,14 @@ namespace ProjectTracker.UI
             services.AddTransient<IAuditLogService, AuditLogService>(); 
 
             // ============================================
+            // GITHUB INTEGRATION SERVICES
+            // ============================================
+            services.AddTransient<ITokenPoolService, TokenPoolService>();
+            services.AddTransient<ITaskMatchingService, TaskMatchingService>();
+            services.AddTransient<IGitHubSyncService, GitHubSyncService>();
+            services.AddTransient<IGitHubAnalyticsService, GitHubAnalyticsService>();
+
+            // ============================================
             // BACKGROUND SERVICES 
             // ============================================
             services.AddHostedService<Business.BackgroundServices.SnapshotBackgroundService>();
@@ -110,7 +118,9 @@ namespace ProjectTracker.UI
             services.AddTransient<Forms.Dashboard.Content.TeamDetailControl>();
             services.AddTransient<Forms.Dashboard.Content.InvitationsContent>();
             services.AddTransient<Forms.Dashboard.Content.TeamMembersContent>();
-            services.AddTransient<Forms.Dashboard.Content.ReportsContent>();  
+            services.AddTransient<Forms.Dashboard.Content.ReportsContent>();
+            services.AddTransient<Forms.Dashboard.Content.UserSettingsContent>();
+            services.AddTransient<Forms.Dashboard.Content.GitHubContent>();
         }
     }
 }

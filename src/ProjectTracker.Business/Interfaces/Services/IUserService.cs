@@ -61,5 +61,10 @@ namespace ProjectTracker.Business.Interfaces
         /// Get all roles
         /// </summary>
         Task<IEnumerable<RoleDto>> GetAllRolesAsync();
+
+        /// <summary>
+        /// Update user profile (settings page)
+        /// </summary>
+        Task<UserDto> UpdateUserProfileAsync(int userId, UpdateUserDto dto);
     }
 }

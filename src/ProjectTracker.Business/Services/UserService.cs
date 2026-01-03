@@ -333,5 +333,28 @@ namespace ProjectTracker.Business.Services
             var roles = await _unitOfWork.Roles.GetAllAsync();
             return _mapper.Map<IEnumerable<RoleDto>>(roles);
         }
+
+        /// <summary>
+        /// Update user profile from settings page
+        /// </summary>
+        public async Task<UserDto> UpdateUserProfileAsync(int userId, UpdateUserDto dto)
+        {
+            var user = await _unitOfWork.Users.GetByIdAsync(userId);
+            if (user == null)
+            {
+                throw new InvalidOperationException("User not found");
+            }
+
+            // Update profile fields
+            user.FullName = dto.FullName;
+            user.Email = dto.Email;
+            user.Department = dto.Department;
+            user.GitHubUsername = dto.GitHubUsername;
+
+            _unitOfWork.Users.Update(user);
+            await _unitOfWork.SaveChangesAsync();
+
+            return _mapper.Map<UserDto>(user);
+        }
     }
 }

@@ -21,6 +21,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
 
         private readonly IProjectService _projectService;
         private readonly ITeamService _teamService;
+        private readonly ITaskService? _taskService;
         private ProjectDto? _currentProject;
         private bool _isEditMode;
         private List<TeamDto> _userTeams = new();
@@ -41,11 +42,12 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
         /// <summary>
         /// Initializes a new instance of the ProjectDetailControl class
         /// </summary>
-        public ProjectDetailControl(IProjectService projectService, ITeamService teamService, ProjectDto? project = null)
+        public ProjectDetailControl(IProjectService projectService, ITeamService teamService, ProjectDto? project = null, ITaskService? taskService = null)
         {
             InitializeComponent();
             _projectService = projectService;
             _teamService = teamService;
+            _taskService = taskService;
             _currentProject = project;
             _isEditMode = project != null;
 
@@ -62,9 +64,17 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
 
             SetupEventHandlers();
             SetupForm();
+            SetupLayoutView();
             
             // Load teams after form is loaded
-            this.Load += async (s, e) => await LoadTeamsAsync();
+            this.Load += async (s, e) => 
+            {
+                await LoadTeamsAsync();
+                if (_isEditMode && _currentProject != null)
+                {
+                    await LoadProjectTasksAsync(_currentProject.ProjectId);
+                }
+            };
         }
 
         /// <summary>
@@ -170,6 +180,167 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
 
             btnSave.MouseEnter += (s, e) => btnSave.Appearance.BackColor = ColorPalette.AccentSkyBlue;
             btnSave.MouseLeave += (s, e) => btnSave.Appearance.BackColor = ColorPalette.AccentRoyalBlue;
+        }
+
+        /// <summary>
+        /// Setup LayoutView for task cards with custom drawing
+        /// </summary>
+        private void SetupLayoutView()
+        {
+            // No longer using LayoutView, using FlowLayoutPanel instead
+        }
+
+        /// <summary>
+        /// Load tasks for the current project
+        /// </summary>
+        private async System.Threading.Tasks.Task LoadProjectTasksAsync(int projectId)
+        {
+            if (_taskService == null)
+            {
+                pnlProjectTasks.Visible = false;
+                return;
+            }
+
+            try
+            {
+                var tasks = await _taskService.GetTasksByProjectsAsync(new[] { projectId });
+                var taskList = tasks?.ToList() ?? new List<TaskDto>();
+
+                pnlTasksList.Controls.Clear();
+
+                if (taskList.Count == 0)
+                {
+                    lblNoTasks.Visible = true;
+                    pnlTasksList.Visible = false;
+                    lblTasksSummary.Text = "No tasks in this project";
+                }
+                else
+                {
+                    lblNoTasks.Visible = false;
+                    pnlTasksList.Visible = true;
+
+                    foreach (var task in taskList.Take(15)) // Max 15 tasks
+                    {
+                        var card = CreateTaskCard(task);
+                        pnlTasksList.Controls.Add(card);
+                    }
+
+                    // Summary
+                    var completed = taskList.Count(t => t.Status == "Done");
+                    var inProgress = taskList.Count(t => t.Status == "InProgress");
+                    lblTasksSummary.Text = $"{taskList.Count} tasks ({completed} done, {inProgress} in progress)";
+                }
+
+                pnlProjectTasks.Visible = true;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error loading tasks: {ex.Message}");
+                pnlProjectTasks.Visible = false;
+            }
+        }
+
+        /// <summary>
+        /// Create a visual card for a task
+        /// </summary>
+        private Panel CreateTaskCard(TaskDto task)
+        {
+            var card = new Panel
+            {
+                Width = 405,
+                Height = 85,
+                BackColor = Color.FromArgb(30, 42, 58),
+                Margin = new Padding(0, 0, 0, 8),
+                Padding = new Padding(12)
+            };
+
+            // Task name
+            var lblName = new Label
+            {
+                Text = task.TaskName?.Length > 35 ? task.TaskName.Substring(0, 35) + "..." : task.TaskName,
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                ForeColor = Color.FromArgb(248, 250, 252),
+                Location = new Point(12, 10),
+                AutoSize = true
+            };
+
+            // Status badge
+            var statusColor = GetStatusColor(task.Status ?? "");
+            var lblStatus = new Label
+            {
+                Text = task.Status ?? "Unknown",
+                Font = new Font("Segoe UI", 8F, FontStyle.Bold),
+                ForeColor = statusColor,
+                BackColor = Color.FromArgb(30, statusColor),
+                Location = new Point(12, 35),
+                AutoSize = true,
+                Padding = new Padding(6, 2, 6, 2)
+            };
+
+            // Priority
+            var priorityColor = GetPriorityColor(task.Priority ?? "");
+            var lblPriority = new Label
+            {
+                Text = task.Priority ?? "",
+                Font = new Font("Segoe UI", 8F),
+                ForeColor = priorityColor,
+                Location = new Point(100, 37),
+                AutoSize = true
+            };
+
+            // Assignee
+            var lblAssignee = new Label
+            {
+                Text = task.AssignedToUserName ?? "Unassigned",
+                Font = new Font("Segoe UI", 8F),
+                ForeColor = Color.FromArgb(100, 116, 139),
+                Location = new Point(12, 60),
+                AutoSize = true
+            };
+
+            // Due date
+            var dueText = task.DueDate.HasValue ? task.DueDate.Value.ToString("dd MMM") : "-";
+            var lblDue = new Label
+            {
+                Text = dueText,
+                Font = new Font("Segoe UI", 8F),
+                ForeColor = Color.FromArgb(100, 116, 139),
+                Location = new Point(350, 60),
+                AutoSize = true
+            };
+
+            card.Controls.AddRange(new Control[] { lblName, lblStatus, lblPriority, lblAssignee, lblDue });
+
+            // Hover effect
+            card.MouseEnter += (s, e) => card.BackColor = Color.FromArgb(40, 52, 68);
+            card.MouseLeave += (s, e) => card.BackColor = Color.FromArgb(30, 42, 58);
+
+            return card;
+        }
+
+        private Color GetStatusColor(string status)
+        {
+            return status switch
+            {
+                "ToDo" => Color.FromArgb(100, 116, 139),
+                "InProgress" => Color.FromArgb(59, 130, 246),
+                "InReview" => Color.FromArgb(168, 85, 247),
+                "Done" => Color.FromArgb(34, 197, 94),
+                "Blocked" => Color.FromArgb(239, 68, 68),
+                _ => Color.FromArgb(100, 116, 139)
+            };
+        }
+
+        private Color GetPriorityColor(string priority)
+        {
+            return priority switch
+            {
+                "Critical" => Color.FromArgb(239, 68, 68),
+                "High" => Color.FromArgb(249, 115, 22),
+                "Medium" => Color.FromArgb(234, 179, 8),
+                "Low" => Color.FromArgb(34, 197, 94),
+                _ => Color.FromArgb(100, 116, 139)
+            };
         }
 
         #endregion
@@ -290,7 +461,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             var parentForm = this.FindForm() as FrmDashboard;
             if (parentForm != null)
             {
-                var projectsContent = new ProjectsContent(_projectService, _teamService);
+                var projectsContent = new ProjectsContent(_projectService, _teamService, _taskService);
                 parentForm.LoadContent(projectsContent);
             }
         }

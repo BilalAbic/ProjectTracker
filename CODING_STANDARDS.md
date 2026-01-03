@@ -2,7 +2,7 @@
 
 Bu dokümanda ProjectTracker projesi için kullanılan kod standartları belirtilmiştir.
 
-**Son Güncelleme:** 2 Ocak 2026
+**Son Güncelleme:** 3 Ocak 2026
 
 ---
 
@@ -212,6 +212,8 @@ public partial class ProjectsContent : UserControl       // Liste içeriği
 public partial class ProjectDetailControl : UserControl  // Detay/Edit formu
 public partial class TasksContent : UserControl          // Liste + Kanban
 public partial class ReportsContent : UserControl        // Raporlar
+public partial class GitHubContent : UserControl         // GitHub Analytics
+public partial class UserSettingsContent : UserControl   // Kullanıcı ayarları
 
 ❌ YANLIŞ:
 public partial class FrmProjectsContent : UserControl    // UserControl'de Frm kullanma
@@ -238,6 +240,9 @@ public partial class ucProjects : UserControl            // Anlaşılmaz kısalt
 | SpinEdit | spin | `spinBudget` |
 | LabelControl | lbl | `lblTitle`, `lblSubtitle` |
 | PanelControl | pnl | `pnlHeader`, `pnlFilters` |
+| FlowLayoutPanel | pnl | `pnlTasksList`, `pnlCommitsList` |
+| ChartControl | chart | `chartCommitTrend` |
+| LayoutView | layoutView | `layoutViewTasks` |
 
 ### Örnek Form Yapısı
 
@@ -263,6 +268,74 @@ public partial class ProjectDetailControl : UserControl
         this.Load += async (s, e) => await LoadTeamsAsync();
     }
 }
+```
+
+---
+
+## 🎴 GÖRSEL KART OLUŞTURMA (FlowLayoutPanel)
+
+### Neden FlowLayoutPanel?
+
+DevExpress LayoutView yerine FlowLayoutPanel kullanılması önerilir çünkü:
+- Daha iyi dark theme desteği
+- Tam kontrol üzerinde özelleştirme
+- Hover efektleri kolayca eklenebilir
+- Renk ve stil tutarlılığı
+
+### Standart Kart Yapısı
+
+```csharp
+private Panel CreateTaskCard(TaskDto task)
+{
+    var card = new Panel
+    {
+        Width = 405,
+        Height = 85,
+        BackColor = Color.FromArgb(30, 42, 58),  // BackgroundSlateMedium
+        Margin = new Padding(0, 0, 0, 8),
+        Padding = new Padding(12)
+    };
+
+    // Başlık
+    var lblName = new Label
+    {
+        Text = task.TaskName,
+        Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+        ForeColor = Color.FromArgb(248, 250, 252),  // TextPrimary
+        Location = new Point(12, 10),
+        AutoSize = true
+    };
+
+    // Status badge
+    var statusColor = GetStatusColor(task.Status);
+    var lblStatus = new Label
+    {
+        Text = task.Status,
+        Font = new Font("Segoe UI", 8F, FontStyle.Bold),
+        ForeColor = statusColor,
+        BackColor = Color.FromArgb(30, statusColor),
+        Location = new Point(12, 35),
+        AutoSize = true,
+        Padding = new Padding(6, 2, 6, 2)
+    };
+
+    card.Controls.AddRange(new Control[] { lblName, lblStatus });
+
+    // Hover efekti
+    card.MouseEnter += (s, e) => card.BackColor = Color.FromArgb(40, 52, 68);
+    card.MouseLeave += (s, e) => card.BackColor = Color.FromArgb(30, 42, 58);
+
+    return card;
+}
+```
+
+### FlowLayoutPanel Ayarları
+
+```csharp
+pnlTasksList.AutoScroll = true;
+pnlTasksList.BackColor = Color.FromArgb(36, 43, 61);
+pnlTasksList.FlowDirection = FlowDirection.TopDown;
+pnlTasksList.WrapContents = false;
 ```
 
 ---
@@ -318,6 +391,27 @@ _ = System.Threading.Tasks.Task.Run(async () =>
 // ❌ YANLIŞ - Direkt await
 await _unitOfWork.SaveChangesAsync();
 await _auditLogService.LogActivityAsync(...); // DbContext hatası verebilir!
+```
+
+### GitHub Service Kullanımı
+
+```csharp
+// ✅ DOĞRU - Optional dependency injection
+public ProjectDetailControl(
+    IProjectService projectService, 
+    ITeamService teamService, 
+    ProjectDto? project = null, 
+    ITaskService? taskService = null)  // Optional
+{
+    _taskService = taskService;
+    // ...
+}
+
+// Null check ile kullanım
+if (_taskService != null)
+{
+    var tasks = await _taskService.GetTasksByProjectsAsync(new[] { projectId });
+}
 ```
 
 ---
@@ -498,6 +592,8 @@ public int CreatedByUserId { get; set; } // Users tablosuna FK
 - [ ] Audit log fire-and-forget yapılıyor mu?
 - [ ] DevExpress kontroller doğru prefix ile mi?
 - [ ] XML comments var mı?
+- [ ] FlowLayoutPanel kartlarında hover efekti var mı?
+- [ ] Optional dependency'ler null check yapılıyor mu?
 
 ---
 
