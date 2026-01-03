@@ -34,6 +34,12 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             btnBack = new DevExpress.XtraEditors.SimpleButton();
             lblTitle = new DevExpress.XtraEditors.LabelControl();
             pnlFormContainer = new DevExpress.XtraEditors.PanelControl();
+            // Related Commits Panel
+            pnlRelatedCommits = new DevExpress.XtraEditors.PanelControl();
+            lblRelatedCommitsTitle = new DevExpress.XtraEditors.LabelControl();
+            pnlCommitsList = new FlowLayoutPanel();
+            lblCommitsSummary = new DevExpress.XtraEditors.LabelControl();
+            lblNoCommits = new DevExpress.XtraEditors.LabelControl();
             btnCancel = new DevExpress.XtraEditors.SimpleButton();
             btnSave = new DevExpress.XtraEditors.SimpleButton();
             cmbPriority = new DevExpress.XtraEditors.ComboBoxEdit();
@@ -56,6 +62,8 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             pnlHeader.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pnlFormContainer).BeginInit();
             pnlFormContainer.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pnlRelatedCommits).BeginInit();
+            pnlRelatedCommits.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)cmbPriority.Properties).BeginInit();
             ((System.ComponentModel.ISupportInitialize)cmbStatus.Properties).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dateDue.Properties).BeginInit();
@@ -168,7 +176,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             btnSave.Name = "btnSave";
             btnSave.Size = new Size(150, 40);
             btnSave.TabIndex = 16;
-            btnSave.Text = "💾 Save Task";
+            btnSave.Text = "Save Task";
             // 
             // cmbPriority
             // 
@@ -421,11 +429,86 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             lblTaskName.TabIndex = 0;
             lblTaskName.Text = "Task Name *";
             // 
+            // pnlRelatedCommits - Right side panel for commits
+            // 
+            pnlRelatedCommits.Appearance.BackColor = Color.FromArgb(36, 43, 61);
+            pnlRelatedCommits.Appearance.Options.UseBackColor = true;
+            pnlRelatedCommits.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
+            pnlRelatedCommits.Controls.Add(pnlCommitsList);
+            pnlRelatedCommits.Controls.Add(lblCommitsSummary);
+            pnlRelatedCommits.Controls.Add(lblNoCommits);
+            pnlRelatedCommits.Controls.Add(lblRelatedCommitsTitle);
+            pnlRelatedCommits.Location = new Point(680, 100);
+            pnlRelatedCommits.Name = "pnlRelatedCommits";
+            pnlRelatedCommits.Padding = new Padding(15);
+            pnlRelatedCommits.Size = new Size(400, 600);
+            pnlRelatedCommits.TabIndex = 2;
+            pnlRelatedCommits.Visible = false;
+            // 
+            // lblRelatedCommitsTitle
+            // 
+            lblRelatedCommitsTitle.Appearance.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            lblRelatedCommitsTitle.Appearance.ForeColor = Color.FromArgb(248, 250, 252);
+            lblRelatedCommitsTitle.Appearance.Options.UseFont = true;
+            lblRelatedCommitsTitle.Appearance.Options.UseForeColor = true;
+            lblRelatedCommitsTitle.Dock = DockStyle.Top;
+            lblRelatedCommitsTitle.Location = new Point(15, 15);
+            lblRelatedCommitsTitle.Name = "lblRelatedCommitsTitle";
+            lblRelatedCommitsTitle.Padding = new Padding(0, 0, 0, 10);
+            lblRelatedCommitsTitle.Size = new Size(130, 31);
+            lblRelatedCommitsTitle.TabIndex = 0;
+            lblRelatedCommitsTitle.Text = "Related Commits";
+            // 
+            // pnlCommitsList - FlowLayout for commit cards
+            // 
+            pnlCommitsList.AutoScroll = true;
+            pnlCommitsList.BackColor = Color.FromArgb(36, 43, 61);
+            pnlCommitsList.Dock = DockStyle.Fill;
+            pnlCommitsList.FlowDirection = FlowDirection.TopDown;
+            pnlCommitsList.Location = new Point(15, 46);
+            pnlCommitsList.Name = "pnlCommitsList";
+            pnlCommitsList.Padding = new Padding(0, 5, 0, 0);
+            pnlCommitsList.Size = new Size(370, 490);
+            pnlCommitsList.TabIndex = 1;
+            pnlCommitsList.WrapContents = false;
+            // 
+            // lblCommitsSummary
+            // 
+            lblCommitsSummary.Appearance.Font = new Font("Segoe UI", 9F);
+            lblCommitsSummary.Appearance.ForeColor = Color.FromArgb(100, 116, 139);
+            lblCommitsSummary.Appearance.Options.UseFont = true;
+            lblCommitsSummary.Appearance.Options.UseForeColor = true;
+            lblCommitsSummary.Dock = DockStyle.Bottom;
+            lblCommitsSummary.Location = new Point(15, 554);
+            lblCommitsSummary.Name = "lblCommitsSummary";
+            lblCommitsSummary.Padding = new Padding(0, 10, 0, 0);
+            lblCommitsSummary.Size = new Size(150, 31);
+            lblCommitsSummary.TabIndex = 2;
+            lblCommitsSummary.Text = "Total: 0 commits, +0 / -0 lines";
+            // 
+            // lblNoCommits
+            // 
+            lblNoCommits.Anchor = AnchorStyles.None;
+            lblNoCommits.Appearance.Font = new Font("Segoe UI", 10F);
+            lblNoCommits.Appearance.ForeColor = Color.FromArgb(100, 116, 139);
+            lblNoCommits.Appearance.Options.UseFont = true;
+            lblNoCommits.Appearance.Options.UseForeColor = true;
+            lblNoCommits.Appearance.Options.UseTextOptions = true;
+            lblNoCommits.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            lblNoCommits.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
+            lblNoCommits.Location = new Point(50, 250);
+            lblNoCommits.Name = "lblNoCommits";
+            lblNoCommits.Size = new Size(300, 50);
+            lblNoCommits.TabIndex = 3;
+            lblNoCommits.Text = "No commits linked to this task yet";
+            lblNoCommits.Visible = false;
+            // 
             // TaskDetailControl
             // 
             AutoScaleDimensions = new SizeF(8F, 19F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(26, 31, 38);
+            Controls.Add(pnlRelatedCommits);
             Controls.Add(pnlFormContainer);
             Controls.Add(pnlHeader);
             Name = "TaskDetailControl";
@@ -435,6 +518,9 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             ((System.ComponentModel.ISupportInitialize)pnlFormContainer).EndInit();
             pnlFormContainer.ResumeLayout(false);
             pnlFormContainer.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pnlRelatedCommits).EndInit();
+            pnlRelatedCommits.ResumeLayout(false);
+            pnlRelatedCommits.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)cmbPriority.Properties).EndInit();
             ((System.ComponentModel.ISupportInitialize)cmbStatus.Properties).EndInit();
             ((System.ComponentModel.ISupportInitialize)dateDue.Properties.CalendarTimeProperties).EndInit();
@@ -472,5 +558,12 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
         private DevExpress.XtraEditors.ComboBoxEdit cmbPriority;
         private DevExpress.XtraEditors.SimpleButton btnCancel;
         private DevExpress.XtraEditors.SimpleButton btnSave;
+        
+        // Related Commits Panel
+        private DevExpress.XtraEditors.PanelControl pnlRelatedCommits;
+        private DevExpress.XtraEditors.LabelControl lblRelatedCommitsTitle;
+        private FlowLayoutPanel pnlCommitsList;
+        private DevExpress.XtraEditors.LabelControl lblCommitsSummary;
+        private DevExpress.XtraEditors.LabelControl lblNoCommits;
     }
 }

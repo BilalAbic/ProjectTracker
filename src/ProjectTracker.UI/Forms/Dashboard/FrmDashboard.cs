@@ -328,15 +328,13 @@ namespace ProjectTracker.UI.Forms.Dashboard
         }
 
         /// <summary>
-        /// Advanced Analytics button click (Phase 7.4)
+        /// GitHub Analytics button click
         /// </summary>
         private void btnAnalytics_Click(object sender, EventArgs e)
         {
-            // TODO: Implement AdvancedAnalyticsContent
-            FormStyleHelper.ShowInfo("📊 Advanced Analytics - Coming soon!");
-            // var analyticsContent = _serviceProvider.GetRequiredService<Content.AdvancedAnalyticsContent>();
-            // LoadContent(analyticsContent);
-            // UpdateSidebarSelection(btnAnalytics);
+            var gitHubContent = _serviceProvider.GetRequiredService<Content.GitHubContent>();
+            LoadContent(gitHubContent);
+            UpdateSidebarSelection(btnAnalytics);
         }
 
         /// <summary>
@@ -344,7 +342,8 @@ namespace ProjectTracker.UI.Forms.Dashboard
         /// </summary>
         private void btnSettings_Click(object sender, EventArgs e)
         {
-            FormStyleHelper.ShowInfo("⚙ Settings - Coming soon!");
+            var settingsContent = _serviceProvider.GetRequiredService<Content.UserSettingsContent>();
+            LoadContent(settingsContent);
             UpdateSidebarSelection(btnSettings);
         }
 

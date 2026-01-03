@@ -63,6 +63,7 @@ Bu dokümanda ProjectTracker projesi için alınan teknoloji kararları ve proje
 | **Microsoft.Extensions.Configuration** | 8.0 | Configuration management |
 | **iTextSharp** | 5.5.13.3 | PDF export |
 | **BouncyCastle** | 1.8.9 | PDF şifreleme desteği |
+| **Octokit** | 13.0.1 | GitHub API client |
 
 ---
 
@@ -75,15 +76,15 @@ Bu dokümanda ProjectTracker projesi için alınan teknoloji kararları ve proje
 │            PRESENTATION LAYER (UI)                      │
 │        Windows Forms + DevExpress Controls              │
 │  • Forms: FrmLogin, FrmDashboard, FrmPendingWaitlist   │
-│  • UserControls: 10 Content/Detail kontrolü             │
+│  • UserControls: 12 Content/Detail kontrolü             │
 │  • Helpers: ColorPalette, FormStyleHelper, Session      │
 └─────────────────────────────────────────────────────────┘
                           ↓
 ┌─────────────────────────────────────────────────────────┐
 │            BUSINESS LAYER                               │
 │        Services + DTOs + Validation + Algorithms        │
-│  • 8 Service (Project, Task, Team, User, Report, etc.) │
-│  • 16+ DTO (Create/Update/View varyantları)            │
+│  • 12 Service (Project, Task, Team, GitHub, etc.)       │
+│  • 20+ DTO (Create/Update/View varyantları)            │
 │  • AuditLogService, AdvancedReportService              │
 └─────────────────────────────────────────────────────────┘
                           ↓
@@ -91,14 +92,14 @@ Bu dokümanda ProjectTracker projesi için alınan teknoloji kararları ve proje
 │            DATA ACCESS LAYER                            │
 │        Repository Pattern + Unit of Work + EF Core      │
 │  • Generic Repository<T>                                │
-│  • UnitOfWork (14 Repository)                          │
-│  • 4+ Migration                                         │
+│  • UnitOfWork (18 Repository)                          │
+│  • 5+ Migration                                         │
 └─────────────────────────────────────────────────────────┘
                           ↓
 ┌─────────────────────────────────────────────────────────┐
 │            CORE LAYER (Domain)                          │
 │        Entities + Enums + Interfaces                    │
-│  • 14 Entity sınıfı                                    │
+│  • 18 Entity sınıfı                                    │
 │  • 7 Enum tanımı                                       │
 │  • Repository & UoW Interfaces                         │
 └─────────────────────────────────────────────────────────┘
@@ -132,7 +133,7 @@ ProjectTracker/
 │
 ├── src/
 │   ├── ProjectTracker.Core/              [Domain Layer]
-│   │   ├── Entities/                     [14 Entity sınıfı]
+│   │   ├── Entities/                     [18 Entity sınıfı]
 │   │   │   ├── User.cs                   - Kullanıcı entity
 │   │   │   ├── Role.cs                   - Rol entity
 │   │   │   ├── Project.cs                - Proje entity (TeamId FK)
@@ -146,7 +147,11 @@ ProjectTracker/
 │   │   │   ├── TaskComment.cs            - Görev yorumları
 │   │   │   ├── ProjectTeamMember.cs      - Proje-Kullanıcı ilişkisi
 │   │   │   ├── ProjectRisk.cs            - Risk kayıtları
-│   │   │   └── Notification.cs           - Bildirimler
+│   │   │   ├── Notification.cs           - Bildirimler
+│   │   │   ├── GitHubToken.cs            - GitHub API token havuzu
+│   │   │   ├── GitRepository.cs          - Bağlı GitHub repository'leri
+│   │   │   ├── GitCommit.cs              - Commit geçmişi
+│   │   │   └── GitFileChange.cs          - Dosya değişiklikleri
 │   │   ├── Enums/                        [7 Enum tanımı]
 │   │   │   ├── ProjectStatus.cs          - NotStarted, Active, OnHold, Completed, Cancelled
 │   │   │   ├── TaskStatus.cs             - Todo, InProgress, Review, Done
@@ -173,7 +178,7 @@ ProjectTracker/
 │   │   └── Migrations/                   [EF Core Migrations]
 │   │
 │   ├── ProjectTracker.Business/          [Business Logic Layer]
-│   │   ├── Services/                     [8 Service]
+│   │   ├── Services/                     [12 Service]
 │   │   │   ├── ProjectService.cs         - Proje CRUD + iş mantığı
 │   │   │   ├── TaskService.cs            - Görev CRUD + iş mantığı
 │   │   │   ├── TeamService.cs            - Takım yönetimi
@@ -181,8 +186,12 @@ ProjectTracker/
 │   │   │   ├── InvitationService.cs      - Davet sistemi
 │   │   │   ├── AuditLogService.cs        - Aktivite loglama
 │   │   │   ├── ReportService.cs          - Temel raporlar
-│   │   │   └── AdvancedReportService.cs  - Gelişmiş analitik
-│   │   ├── DTOs/                         [16+ DTO]
+│   │   │   ├── AdvancedReportService.cs  - Gelişmiş analitik
+│   │   │   ├── TokenPoolService.cs       - GitHub token havuzu yönetimi
+│   │   │   ├── TaskMatchingService.cs    - Commit-Task eşleştirme algoritması
+│   │   │   ├── GitHubSyncService.cs      - Repository senkronizasyonu
+│   │   │   └── GitHubAnalyticsService.cs - GitHub istatistikleri
+│   │   ├── DTOs/                         [20+ DTO]
 │   │   │   ├── ProjectDto.cs, CreateProjectDto.cs, UpdateProjectDto.cs
 │   │   │   ├── TaskDto.cs, CreateTaskDto.cs, UpdateTaskDto.cs
 │   │   │   ├── TeamDto.cs, TeamMemberDto.cs, TeamInvitationDto.cs
@@ -217,17 +226,19 @@ ProjectTracker/
 │       │   │   └── FrmPendingWaitlist.cs - Pending rol bekleme ekranı
 │       │   └── Dashboard/
 │       │       ├── FrmDashboard.cs       - Ana dashboard (sidebar + content)
-│       │       └── Content/              [10 UserControl]
+│       │       └── Content/              [12 UserControl]
 │       │           ├── DashboardContent.cs      - KPI'lar, grafikler
 │       │           ├── ProjectsContent.cs       - Proje listesi
-│       │           ├── ProjectDetailControl.cs  - Proje detay/edit
+│       │           ├── ProjectDetailControl.cs  - Proje detay/edit + Task paneli
 │       │           ├── TasksContent.cs          - Görev listesi + Kanban
-│       │           ├── TaskDetailControl.cs     - Görev detay/edit
+│       │           ├── TaskDetailControl.cs     - Görev detay/edit + Commit paneli
 │       │           ├── TeamsContent.cs          - Takım listesi
 │       │           ├── TeamDetailControl.cs     - Takım detay/edit
 │       │           ├── TeamMembersContent.cs    - Takım üyeleri
 │       │           ├── InvitationsContent.cs    - Davetler
-│       │           └── ReportsContent.cs        - Raporlar
+│       │           ├── ReportsContent.cs        - Raporlar
+│       │           ├── GitHubContent.cs         - GitHub Analytics ekranı
+│       │           └── UserSettingsContent.cs   - Kullanıcı ayarları
 │       ├── Helpers/
 │       │   ├── ColorPalette.cs           - Renk yönetimi (Modern Slate Blue)
 │       │   ├── FormStyleHelper.cs        - Mesaj kutuları, stil yardımcıları
@@ -240,6 +251,15 @@ ProjectTracker/
 │   └── ProjectTracker.Tests/             [Unit Tests]
 │       ├── Services/                     - Service testleri
 │       └── Validators/                   - Validation testleri
+│
+├── GitHubAnalyzerTest/                   [GitHub API Test Projesi]
+│   ├── Services/
+│   │   ├── TokenPoolService.cs           - Token havuzu test
+│   │   ├── TaskMatchingService.cs        - Eşleştirme algoritması test
+│   │   └── GitHubSyncService.cs          - Senkronizasyon test
+│   ├── Models/
+│   │   └── GitHubModels.cs               - Test modelleri
+│   └── Program.cs                        - Test runner
 │
 ├── docs/
 │   ├── UML/                              [UML Diyagramları]
@@ -265,7 +285,7 @@ ProjectTracker/
 | **RDBMS** | SQL Server 2019+ |
 | **ORM** | Entity Framework Core 8.0 |
 | **Yaklaşım** | Code-First |
-| **Tablo Sayısı** | 14 |
+| **Tablo Sayısı** | 18 |
 
 ### Entity İlişkileri
 
@@ -291,7 +311,7 @@ ProjectTracker/
     └─────────────────────────────────────┘
 ```
 
-### Tablolar (14 Tablo)
+### Tablolar (18 Tablo)
 
 | # | Tablo | Açıklama | Önemli Kolonlar |
 |---|-------|----------|-----------------|
@@ -309,6 +329,10 @@ ProjectTracker/
 | 12 | **TimeEntries** | Zaman takibi | TimeEntryId, TaskId, UserId, Hours |
 | 13 | **AuditLogs** | Aktivite logları | AuditLogId, ActivityType, EntityName, EntityId, UserId |
 | 14 | **Notifications** | Bildirimler | NotificationId, UserId, Message, IsRead |
+| 15 | **GitHubTokens** | GitHub API token havuzu | GitHubTokenId, UserId, Token, RateLimitRemaining |
+| 16 | **GitRepositories** | Bağlı GitHub repo'ları | GitRepositoryId, ProjectId, RepoUrl, RepoOwner, RepoName |
+| 17 | **GitCommits** | Commit geçmişi | GitCommitId, GitRepositoryId, Sha, Message, AuthorName, LinkedTaskId |
+| 18 | **GitFileChanges** | Dosya değişiklikleri | GitFileChangeId, GitCommitId, FileName, Additions, Deletions |
 
 ### İsimlendirme Kuralları
 
@@ -399,7 +423,37 @@ RiskSkoru = (GörevSayısı × 0.3) +
 - Hangi görevlerin kesinlikle zamanında bitmesi gerektiği
 - Gantt Chart'ta kritik görevleri kırmızı renkte gösterme
 
-### 3. Akıllı Öneri Sistemi (Planlanan)
+### 3. Task-Commit Eşleştirme Algoritması (GitHub Entegrasyonu)
+
+**Amaç:** GitHub commit'lerini otomatik olarak ilgili task'lara bağlamak
+
+**Formül:**
+```
+EşleşmeSkoru = (TaskAdıBenzerliği × 0.4) + 
+               (AnahtarKelimeEşleşmesi × 0.3) + 
+               (TaskIDEşleşmesi × 0.3)
+```
+
+**Algoritma Adımları:**
+1. **Task ID Pattern Arama:** Commit mesajında #123, TASK-123, [123] gibi pattern'ler aranır
+2. **Kelime Benzerliği:** Task adındaki kelimeler commit mesajında aranır
+3. **Levenshtein Distance:** Task adı ile commit mesajı arasındaki benzerlik hesaplanır
+4. **Skor Hesaplama:** Tüm faktörler ağırlıklı olarak toplanır
+5. **Eşik Kontrolü:** Skor > 0.3 ise eşleşme kabul edilir
+
+**Örnek:**
+```
+Task: "Login Bug Fix"
+Commit: "Fixed login validation bug #42"
+
+TaskIDEşleşmesi: 0.0 (ID eşleşmedi)
+AnahtarKelimeEşleşmesi: 0.67 ("login", "bug", "fix" kelimelerinden 2'si eşleşti)
+TaskAdıBenzerliği: 0.45 (Levenshtein distance)
+
+Toplam Skor: (0.45 × 0.4) + (0.67 × 0.3) + (0.0 × 0.3) = 0.38 ✅ Eşleşme!
+```
+
+### 4. Akıllı Öneri Sistemi (Planlanan)
 
 **Amaç:** Kullanıcıya proaktif öneriler sunmak
 
@@ -431,6 +485,7 @@ RiskSkoru = (GörevSayısı × 0.3) +
 <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
 <PackageReference Include="FluentValidation" Version="12.1.1" />
 <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
+<PackageReference Include="Octokit" Version="13.0.1" />
 ```
 
 ### UI Projesi
@@ -635,15 +690,16 @@ var isAdmin = SessionManager.Instance.IsAdmin;
 | Phase 6.5 | 1 gün | ✅ | Rol Sistemi (Pending rol, FrmPendingWaitlist) |
 | Phase 6.6 | 1 gün | ✅ | Audit Log (AuditLogService, aktivite takibi) |
 | Phase 6.7 | 1 gün | ✅ | UI İyileştirmeleri (FrmMessage, ColorPalette) |
+| Phase 7 | 2 gün | ✅ | GitHub Entegrasyonu (Repository bağlama, commit analizi, task eşleştirme) |
 
 ### Devam Eden Phase'ler
 
 | Phase | Tahmini Süre | Durum | Kapsam |
 |-------|--------------|-------|--------|
-| Phase 7 | 2 gün | 🔄 | Gantt Chart (CPM algoritması, kritik yol, timeline) |
-| Phase 8 | 2 gün | 🔄 | Settings & Notifications (Ayarlar, bildirim sistemi) |
-| Phase 9 | 2 gün | 🔄 | Testing & Refinement (Unit tests, bug fixes) |
-| Phase 10 | 2 gün | 🔄 | Documentation (UML diyagramları, raporlar) |
+| Phase 8 | 2 gün | 🔄 | Gantt Chart (CPM algoritması, kritik yol, timeline) |
+| Phase 9 | 2 gün | 🔄 | Settings & Notifications (Ayarlar, bildirim sistemi) |
+| Phase 10 | 2 gün | 🔄 | Testing & Refinement (Unit tests, bug fixes) |
+| Phase 11 | 2 gün | 🔄 | Documentation (UML diyagramları, raporlar) |
 
 ### Genel Zaman Çizelgesi
 
@@ -809,6 +865,6 @@ Hafta 2: Özellikler ve Tamamlama
 
 ---
 
-**📌 Güncel Durum:** Phase 6.7 tamamlandı  
-**📈 İlerleme:** ~70%  
-**📅 Son Güncelleme:** 2 Ocak 2026
+**📌 Güncel Durum:** Phase 7 (GitHub Entegrasyonu) tamamlandı  
+**📈 İlerleme:** ~75%  
+**📅 Son Güncelleme:** 3 Ocak 2026

@@ -8,6 +8,7 @@ using ProjectTracker.UI.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TaskStatus = ProjectTracker.Core.Enums.TaskStatus;
@@ -18,15 +19,16 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
     {
         private readonly ITaskService _taskService;
         private readonly IProjectService _projectService;
-        // private readonly IUserService _userService; // Will be added when User service is implemented
+        private readonly IGitHubAnalyticsService? _analyticsService;
 
         private int? _editingTaskId = null; // Edit mode indicator
 
-        public TaskDetailControl(ITaskService taskService, IProjectService projectService)
+        public TaskDetailControl(ITaskService taskService, IProjectService projectService, IGitHubAnalyticsService? analyticsService = null)
         {
             InitializeComponent();
             _taskService = taskService;
             _projectService = projectService;
+            _analyticsService = analyticsService;
 
             // Fill ComboBox Enums
             cmbStatus.Properties.Items.AddRange(Enum.GetValues(typeof(TaskStatus)));
@@ -101,7 +103,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             {
                 _editingTaskId = taskId;
                 lblTitle.Text = "Edit Task";
-                btnSave.Text = "💾 Update Task";
+                btnSave.Text = "Update Task";
 
                 var task = await _taskService.GetTaskByIdAsync(taskId);
 
@@ -118,11 +120,169 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
                     
                 if (Enum.TryParse<Priority>(task.Priority, out var taskPriority))
                     cmbPriority.SelectedItem = taskPriority;
+
+                // Load related commits panel
+                await LoadRelatedCommitsAsync(taskId);
             }
             catch (Exception ex)
             {
                 FormStyleHelper.ShowError($"Error loading task: {ex.Message}");
             }
+        }
+
+        /// <summary>
+        /// Load commits linked to this task
+        /// </summary>
+        private async System.Threading.Tasks.Task LoadRelatedCommitsAsync(int taskId)
+        {
+            if (_analyticsService == null)
+            {
+                pnlRelatedCommits.Visible = false;
+                return;
+            }
+
+            try
+            {
+                var commits = await _analyticsService.GetCommitsByTaskAsync(taskId);
+                var commitList = commits?.ToList() ?? new List<GitCommitDto>();
+
+                pnlCommitsList.Controls.Clear();
+
+                if (commitList.Count == 0)
+                {
+                    lblNoCommits.Visible = true;
+                    lblCommitsSummary.Text = "No commits linked";
+                }
+                else
+                {
+                    lblNoCommits.Visible = false;
+
+                    int totalAdditions = 0;
+                    int totalDeletions = 0;
+
+                    foreach (var commit in commitList.Take(20)) // Max 20 commits
+                    {
+                        var card = CreateCommitCard(commit);
+                        pnlCommitsList.Controls.Add(card);
+                        totalAdditions += commit.Additions;
+                        totalDeletions += commit.Deletions;
+                    }
+
+                    lblCommitsSummary.Text = $"Total: {commitList.Count} commits, +{totalAdditions} / -{totalDeletions} lines";
+                }
+
+                pnlRelatedCommits.Visible = true;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error loading commits: {ex.Message}");
+                pnlRelatedCommits.Visible = false;
+            }
+        }
+
+        /// <summary>
+        /// Create a visual card for a commit
+        /// </summary>
+        private Panel CreateCommitCard(GitCommitDto commit)
+        {
+            var card = new Panel
+            {
+                Width = 350,
+                Height = 70,
+                BackColor = Color.FromArgb(30, 42, 58),
+                Margin = new Padding(0, 0, 0, 8),
+                Padding = new Padding(10)
+            };
+
+            // SHA label (short hash)
+            var lblSha = new Label
+            {
+                Text = $"[{commit.ShortSha}]",
+                Font = new Font("Consolas", 9F, FontStyle.Bold),
+                ForeColor = Color.FromArgb(91, 141, 239),
+                Location = new Point(10, 8),
+                AutoSize = true
+            };
+
+            // Message label
+            var message = commit.Message?.Length > 40 
+                ? commit.Message.Substring(0, 40) + "..." 
+                : commit.Message ?? "No message";
+            var lblMessage = new Label
+            {
+                Text = message,
+                Font = new Font("Segoe UI", 9F),
+                ForeColor = Color.FromArgb(248, 250, 252),
+                Location = new Point(85, 8),
+                Size = new Size(255, 20),
+                AutoEllipsis = true
+            };
+
+            // Author and date
+            var timeAgo = GetTimeAgo(commit.CommitDate);
+            var lblAuthor = new Label
+            {
+                Text = $"{commit.AuthorName ?? "Unknown"} - {timeAgo}",
+                Font = new Font("Segoe UI", 8F),
+                ForeColor = Color.FromArgb(100, 116, 139),
+                Location = new Point(10, 30),
+                AutoSize = true
+            };
+
+            // Lines changed
+            var lblLines = new Label
+            {
+                Text = $"+{commit.Additions} / -{commit.Deletions}",
+                Font = new Font("Segoe UI", 8F),
+                ForeColor = Color.FromArgb(100, 116, 139),
+                Location = new Point(10, 48),
+                AutoSize = true
+            };
+
+            // Color indicator for additions/deletions
+            var addColor = commit.Additions > 0 ? Color.FromArgb(34, 197, 94) : Color.FromArgb(100, 116, 139);
+            var delColor = commit.Deletions > 0 ? Color.FromArgb(239, 68, 68) : Color.FromArgb(100, 116, 139);
+
+            var lblAdd = new Label
+            {
+                Text = $"+{commit.Additions}",
+                Font = new Font("Segoe UI", 8F, FontStyle.Bold),
+                ForeColor = addColor,
+                Location = new Point(280, 48),
+                AutoSize = true
+            };
+
+            var lblDel = new Label
+            {
+                Text = $"-{commit.Deletions}",
+                Font = new Font("Segoe UI", 8F, FontStyle.Bold),
+                ForeColor = delColor,
+                Location = new Point(315, 48),
+                AutoSize = true
+            };
+
+            card.Controls.AddRange(new Control[] { lblSha, lblMessage, lblAuthor, lblAdd, lblDel });
+
+            // Hover effect
+            card.MouseEnter += (s, e) => card.BackColor = Color.FromArgb(40, 52, 68);
+            card.MouseLeave += (s, e) => card.BackColor = Color.FromArgb(30, 42, 58);
+
+            return card;
+        }
+
+        /// <summary>
+        /// Get human-readable time ago string
+        /// </summary>
+        private string GetTimeAgo(DateTime date)
+        {
+            var span = DateTime.UtcNow - date;
+
+            if (span.TotalMinutes < 1) return "just now";
+            if (span.TotalMinutes < 60) return $"{(int)span.TotalMinutes}m ago";
+            if (span.TotalHours < 24) return $"{(int)span.TotalHours}h ago";
+            if (span.TotalDays < 7) return $"{(int)span.TotalDays}d ago";
+            if (span.TotalDays < 30) return $"{(int)(span.TotalDays / 7)}w ago";
+            return date.ToString("MMM dd");
         }
 
         private async void BtnSave_Click(object sender, EventArgs e)

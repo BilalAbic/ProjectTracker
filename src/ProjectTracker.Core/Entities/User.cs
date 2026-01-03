@@ -56,6 +56,24 @@
         /// </summary>
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
+        // ═══════════════════════════════════════════════════════════════
+        // GitHub Integration Fields
+        // ═══════════════════════════════════════════════════════════════
+
+        /// <summary>
+        /// GitHub username for commit matching
+        /// </summary>
+        public string? GitHubUsername { get; set; }
+
+        /// <summary>
+        /// GitHub avatar URL (cached)
+        /// </summary>
+        public string? GitHubAvatarUrl { get; set; }
+
+        // ═══════════════════════════════════════════════════════════════
+        // Navigation Properties
+        // ═══════════════════════════════════════════════════════════════
+
         /// <summary>
         /// Navigation property - User's role
         /// </summary>
@@ -105,5 +123,10 @@
         /// Navigation property - Time entries logged by this user
         /// </summary>
         public virtual ICollection<TimeEntry> TimeEntries { get; set; } = new List<TimeEntry>();
+
+        /// <summary>
+        /// Navigation property - GitHub tokens owned by this user
+        /// </summary>
+        public virtual ICollection<GitHubToken> GitHubTokens { get; set; } = new List<GitHubToken>();
     }
 }

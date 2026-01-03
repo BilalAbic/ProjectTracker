@@ -82,6 +82,26 @@ namespace ProjectTracker.Core.Interfaces
         /// </summary>
         IRepository<ProjectSnapshot> ProjectSnapshots { get; }
 
+        /// <summary>
+        /// GitHub Tokens repository (GitHub Integration)
+        /// </summary>
+        IGitHubTokenRepository GitHubTokens { get; }
+
+        /// <summary>
+        /// Git Repositories repository (GitHub Integration)
+        /// </summary>
+        IGitRepositoryRepository GitRepositories { get; }
+
+        /// <summary>
+        /// Git Commits repository (GitHub Integration)
+        /// </summary>
+        IGitCommitRepository GitCommits { get; }
+
+        /// <summary>
+        /// Git File Changes repository (GitHub Integration)
+        /// </summary>
+        IGitFileChangeRepository GitFileChanges { get; }
+
         // ============================================
         // TRANSACTION OPERATIONS
         // ============================================

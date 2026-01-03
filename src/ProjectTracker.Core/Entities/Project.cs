@@ -87,6 +87,20 @@
         /// </summary>
         public DateTime? UpdatedAt { get; set; }
 
+        // ═══════════════════════════════════════════════════════════════
+        // GitHub Integration Fields
+        // ═══════════════════════════════════════════════════════════════
+
+        /// <summary>
+        /// GitHub repository URL (optional)
+        /// Example: https://github.com/BilalAbic/ProjectTracker
+        /// </summary>
+        public string? GitHubRepoUrl { get; set; }
+
+        // ═══════════════════════════════════════════════════════════════
+        // Navigation Properties
+        // ═══════════════════════════════════════════════════════════════
+
         /// <summary>
         /// Navigation property - User who created this project
         /// </summary>
@@ -116,5 +130,10 @@
         /// Navigation property - Daily snapshots for trend analysis
         /// </summary>
         public virtual ICollection<ProjectSnapshot> Snapshots { get; set; } = new List<ProjectSnapshot>();
+
+        /// <summary>
+        /// Navigation property - Linked GitHub repository
+        /// </summary>
+        public virtual GitRepository? GitRepository { get; set; }
     }
 }

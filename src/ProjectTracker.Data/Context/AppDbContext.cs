@@ -89,6 +89,26 @@ namespace ProjectTracker.Data.Context
         /// </summary>
         public DbSet<ProjectSnapshot> ProjectSnapshots { get; set; }
 
+        /// <summary>
+        /// GitHub tokens table - User's GitHub PAT tokens for API access
+        /// </summary>
+        public DbSet<GitHubToken> GitHubTokens { get; set; }
+
+        /// <summary>
+        /// Git repositories table - GitHub repos linked to projects
+        /// </summary>
+        public DbSet<GitRepository> GitRepositories { get; set; }
+
+        /// <summary>
+        /// Git commits table - Cached commits from GitHub
+        /// </summary>
+        public DbSet<GitCommit> GitCommits { get; set; }
+
+        /// <summary>
+        /// Git file changes table - File changes within commits
+        /// </summary>
+        public DbSet<GitFileChange> GitFileChanges { get; set; }
+
         #endregion
 
         #region Model Configuration
@@ -116,6 +136,10 @@ namespace ProjectTracker.Data.Context
             modelBuilder.Entity<TeamInvitation>().ToTable("TeamInvitations");
             modelBuilder.Entity<TimeEntry>().ToTable("TimeEntries");
             modelBuilder.Entity<ProjectSnapshot>().ToTable("ProjectSnapshots");
+            modelBuilder.Entity<GitHubToken>().ToTable("GitHubTokens");
+            modelBuilder.Entity<GitRepository>().ToTable("GitRepositories");
+            modelBuilder.Entity<GitCommit>().ToTable("GitCommits");
+            modelBuilder.Entity<GitFileChange>().ToTable("GitFileChanges");
 
             // ============================================
             // ROLE CONFIGURATION
@@ -444,6 +468,123 @@ namespace ProjectTracker.Data.Context
 
                 // Unique constraint: One snapshot per project per date
                 entity.HasIndex(e => new { e.ProjectId, e.SnapshotDate }).IsUnique();
+            });
+
+            // ============================================
+            // GITHUB TOKEN CONFIGURATION (GitHub Integration)
+            // ============================================
+            modelBuilder.Entity<GitHubToken>(entity =>
+            {
+                entity.HasKey(e => e.GitHubTokenId);
+                entity.Property(e => e.EncryptedToken).IsRequired().HasMaxLength(500);
+                entity.Property(e => e.GitHubUsername).HasMaxLength(100);
+                entity.Property(e => e.RateLimitRemaining).IsRequired().HasDefaultValue(5000);
+                entity.Property(e => e.IsActive).IsRequired().HasDefaultValue(true);
+                entity.Property(e => e.CreatedAt).IsRequired().HasDefaultValueSql("GETDATE()");
+
+                // Relationship: GitHubToken -> User (Many-to-One)
+                entity.HasOne(gt => gt.User)
+                    .WithMany(u => u.GitHubTokens)
+                    .HasForeignKey(gt => gt.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                // Index on UserId for faster lookups
+                entity.HasIndex(e => e.UserId);
+            });
+
+            // ============================================
+            // GIT REPOSITORY CONFIGURATION (GitHub Integration)
+            // ============================================
+            modelBuilder.Entity<GitRepository>(entity =>
+            {
+                entity.HasKey(e => e.GitRepositoryId);
+                entity.Property(e => e.RepoUrl).IsRequired().HasMaxLength(500);
+                entity.Property(e => e.RepoOwner).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.RepoName).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.DefaultBranch).HasMaxLength(100).HasDefaultValue("main");
+                entity.Property(e => e.IsPrivate).IsRequired().HasDefaultValue(false);
+                entity.Property(e => e.SyncStatus).HasMaxLength(50).HasDefaultValue("Pending");
+                entity.Property(e => e.TotalCommits).HasDefaultValue(0);
+                entity.Property(e => e.TotalBranches).HasDefaultValue(0);
+                entity.Property(e => e.TotalContributors).HasDefaultValue(0);
+                entity.Property(e => e.OpenIssues).HasDefaultValue(0);
+                entity.Property(e => e.CreatedAt).IsRequired().HasDefaultValueSql("GETDATE()");
+
+                // Relationship: GitRepository -> Project (One-to-One)
+                entity.HasOne(gr => gr.Project)
+                    .WithOne(p => p.GitRepository)
+                    .HasForeignKey<GitRepository>(gr => gr.ProjectId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                // Unique constraint: One repo per project
+                entity.HasIndex(e => e.ProjectId).IsUnique();
+            });
+
+            // ============================================
+            // GIT COMMIT CONFIGURATION (GitHub Integration)
+            // ============================================
+            modelBuilder.Entity<GitCommit>(entity =>
+            {
+                entity.HasKey(e => e.GitCommitId);
+                entity.Property(e => e.Sha).IsRequired().HasMaxLength(40);
+                entity.Property(e => e.Message).HasMaxLength(2000);
+                entity.Property(e => e.AuthorName).HasMaxLength(100);
+                entity.Property(e => e.AuthorEmail).HasMaxLength(200);
+                entity.Property(e => e.AuthorGitHubUsername).HasMaxLength(100);
+                entity.Property(e => e.AuthorAvatarUrl).HasMaxLength(500);
+                entity.Property(e => e.CommitDate).IsRequired();
+                entity.Property(e => e.Additions).HasDefaultValue(0);
+                entity.Property(e => e.Deletions).HasDefaultValue(0);
+                entity.Property(e => e.ChangedFilesCount).HasDefaultValue(0);
+                entity.Property(e => e.MatchScore).HasPrecision(5, 2).HasDefaultValue(0);
+                entity.Property(e => e.CreatedAt).IsRequired().HasDefaultValueSql("GETDATE()");
+
+                // Relationship: GitCommit -> GitRepository (Many-to-One)
+                entity.HasOne(gc => gc.Repository)
+                    .WithMany(gr => gr.Commits)
+                    .HasForeignKey(gc => gc.GitRepositoryId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                // Relationship: GitCommit -> Task (Many-to-One, nullable)
+                // Using NoAction to avoid cascade path conflicts with SQL Server
+                entity.HasOne(gc => gc.LinkedTask)
+                    .WithMany(t => t.LinkedCommits)
+                    .HasForeignKey(gc => gc.LinkedTaskId)
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                // Unique constraint: SHA must be unique per repository
+                entity.HasIndex(e => new { e.GitRepositoryId, e.Sha }).IsUnique();
+
+                // Index on CommitDate for time-based queries
+                entity.HasIndex(e => e.CommitDate);
+
+                // Index on LinkedTaskId for task-commit lookups
+                entity.HasIndex(e => e.LinkedTaskId);
+            });
+
+            // ============================================
+            // GIT FILE CHANGE CONFIGURATION (GitHub Integration)
+            // ============================================
+            modelBuilder.Entity<GitFileChange>(entity =>
+            {
+                entity.HasKey(e => e.GitFileChangeId);
+                entity.Property(e => e.FileName).IsRequired().HasMaxLength(500);
+                entity.Property(e => e.FileExtension).HasMaxLength(20);
+                entity.Property(e => e.Status).HasMaxLength(20);
+                entity.Property(e => e.Additions).HasDefaultValue(0);
+                entity.Property(e => e.Deletions).HasDefaultValue(0);
+
+                // Relationship: GitFileChange -> GitCommit (Many-to-One)
+                entity.HasOne(gfc => gfc.Commit)
+                    .WithMany(gc => gc.FileChanges)
+                    .HasForeignKey(gfc => gfc.GitCommitId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                // Index on FileName for hotspot analysis
+                entity.HasIndex(e => e.FileName);
+
+                // Index on FileExtension for language distribution
+                entity.HasIndex(e => e.FileExtension);
             });
 
             // ============================================

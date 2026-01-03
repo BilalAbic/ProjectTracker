@@ -30,6 +30,10 @@ namespace ProjectTracker.Data
         private IRepository<TeamInvitation>? _teamInvitations;
         private IRepository<TimeEntry>? _timeEntries;
         private IRepository<ProjectSnapshot>? _projectSnapshots;
+        private IGitHubTokenRepository? _gitHubTokens;
+        private IGitRepositoryRepository? _gitRepositories;
+        private IGitCommitRepository? _gitCommits;
+        private IGitFileChangeRepository? _gitFileChanges;
 
         public UnitOfWork(AppDbContext context)
         {
@@ -109,6 +113,26 @@ namespace ProjectTracker.Data
         /// Project Snapshots repository - lazy initialized (Phase 7)
         /// </summary>
         public IRepository<ProjectSnapshot> ProjectSnapshots => _projectSnapshots ??= new Repository<ProjectSnapshot>(_context);
+
+        /// <summary>
+        /// GitHub Tokens repository - lazy initialized (GitHub Integration)
+        /// </summary>
+        public IGitHubTokenRepository GitHubTokens => _gitHubTokens ??= new GitHubTokenRepository(_context);
+
+        /// <summary>
+        /// Git Repositories repository - lazy initialized (GitHub Integration)
+        /// </summary>
+        public IGitRepositoryRepository GitRepositories => _gitRepositories ??= new GitRepositoryRepository(_context);
+
+        /// <summary>
+        /// Git Commits repository - lazy initialized (GitHub Integration)
+        /// </summary>
+        public IGitCommitRepository GitCommits => _gitCommits ??= new GitCommitRepository(_context);
+
+        /// <summary>
+        /// Git File Changes repository - lazy initialized (GitHub Integration)
+        /// </summary>
+        public IGitFileChangeRepository GitFileChanges => _gitFileChanges ??= new GitFileChangeRepository(_context);
 
         // ============================================
         // TRANSACTION OPERATIONS

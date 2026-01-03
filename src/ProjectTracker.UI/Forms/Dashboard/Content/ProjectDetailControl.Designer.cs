@@ -35,6 +35,12 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             lblTitle = new DevExpress.XtraEditors.LabelControl();
             btnBack = new DevExpress.XtraEditors.SimpleButton();
             pnlForm = new DevExpress.XtraEditors.PanelControl();
+            // Project Tasks Panel
+            pnlProjectTasks = new DevExpress.XtraEditors.PanelControl();
+            lblTasksTitle = new DevExpress.XtraEditors.LabelControl();
+            lblTasksSummary = new DevExpress.XtraEditors.LabelControl();
+            lblNoTasks = new DevExpress.XtraEditors.LabelControl();
+            pnlTasksList = new FlowLayoutPanel();
             btnSave = new DevExpress.XtraEditors.SimpleButton();
             btnCancel = new DevExpress.XtraEditors.SimpleButton();
             spinBudget = new DevExpress.XtraEditors.SpinEdit();
@@ -57,6 +63,8 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             pnlHeader.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pnlForm).BeginInit();
             pnlForm.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pnlProjectTasks).BeginInit();
+            pnlProjectTasks.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)spinBudget.Properties).BeginInit();
             ((System.ComponentModel.ISupportInitialize)lueManager.Properties).BeginInit();
             ((System.ComponentModel.ISupportInitialize)cmbStatus.Properties).BeginInit();
@@ -154,6 +162,73 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             pnlForm.Padding = new Padding(30);
             pnlForm.Size = new Size(600, 550);
             pnlForm.TabIndex = 1;
+            // 
+            // pnlProjectTasks - Right side panel for project tasks
+            // 
+            pnlProjectTasks.Appearance.BackColor = Color.FromArgb(36, 43, 61);
+            pnlProjectTasks.Appearance.Options.UseBackColor = true;
+            pnlProjectTasks.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
+            pnlProjectTasks.Controls.Add(pnlTasksList);
+            pnlProjectTasks.Controls.Add(lblTasksSummary);
+            pnlProjectTasks.Controls.Add(lblNoTasks);
+            pnlProjectTasks.Controls.Add(lblTasksTitle);
+            pnlProjectTasks.Location = new Point(620, 80);
+            pnlProjectTasks.Name = "pnlProjectTasks";
+            pnlProjectTasks.Padding = new Padding(15);
+            pnlProjectTasks.Size = new Size(460, 550);
+            pnlProjectTasks.TabIndex = 2;
+            pnlProjectTasks.Visible = false;
+            // 
+            // lblTasksTitle
+            // 
+            lblTasksTitle.Appearance.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
+            lblTasksTitle.Appearance.ForeColor = Color.FromArgb(248, 250, 252);
+            lblTasksTitle.Appearance.Options.UseFont = true;
+            lblTasksTitle.Appearance.Options.UseForeColor = true;
+            lblTasksTitle.Location = new Point(15, 15);
+            lblTasksTitle.Name = "lblTasksTitle";
+            lblTasksTitle.Size = new Size(113, 25);
+            lblTasksTitle.TabIndex = 0;
+            lblTasksTitle.Text = "Project Tasks";
+            // 
+            // lblTasksSummary
+            // 
+            lblTasksSummary.Appearance.Font = new Font("Segoe UI", 9F);
+            lblTasksSummary.Appearance.ForeColor = Color.FromArgb(100, 116, 139);
+            lblTasksSummary.Appearance.Options.UseFont = true;
+            lblTasksSummary.Appearance.Options.UseForeColor = true;
+            lblTasksSummary.Location = new Point(15, 45);
+            lblTasksSummary.Name = "lblTasksSummary";
+            lblTasksSummary.Size = new Size(100, 15);
+            lblTasksSummary.TabIndex = 1;
+            lblTasksSummary.Text = "0 tasks in this project";
+            // 
+            // lblNoTasks
+            // 
+            lblNoTasks.Appearance.Font = new Font("Segoe UI", 10F);
+            lblNoTasks.Appearance.ForeColor = Color.FromArgb(100, 116, 139);
+            lblNoTasks.Appearance.Options.UseFont = true;
+            lblNoTasks.Appearance.Options.UseForeColor = true;
+            lblNoTasks.Appearance.Options.UseTextOptions = true;
+            lblNoTasks.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Center;
+            lblNoTasks.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
+            lblNoTasks.Location = new Point(80, 250);
+            lblNoTasks.Name = "lblNoTasks";
+            lblNoTasks.Size = new Size(300, 50);
+            lblNoTasks.TabIndex = 2;
+            lblNoTasks.Text = "No tasks in this project yet";
+            lblNoTasks.Visible = false;
+            // 
+            // pnlTasksList - FlowLayout for task cards
+            // 
+            pnlTasksList.AutoScroll = true;
+            pnlTasksList.BackColor = Color.FromArgb(36, 43, 61);
+            pnlTasksList.Location = new Point(15, 70);
+            pnlTasksList.Name = "pnlTasksList";
+            pnlTasksList.FlowDirection = FlowDirection.TopDown;
+            pnlTasksList.WrapContents = false;
+            pnlTasksList.Size = new Size(430, 465);
+            pnlTasksList.TabIndex = 3;
             // 
             // btnSave
             // 
@@ -426,6 +501,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             AutoScaleDimensions = new SizeF(8F, 19F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(26, 31, 38);
+            Controls.Add(pnlProjectTasks);
             Controls.Add(pnlForm);
             Controls.Add(pnlHeader);
             Name = "ProjectDetailControl";
@@ -435,6 +511,9 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             ((System.ComponentModel.ISupportInitialize)pnlForm).EndInit();
             pnlForm.ResumeLayout(false);
             pnlForm.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pnlProjectTasks).EndInit();
+            pnlProjectTasks.ResumeLayout(false);
+            pnlProjectTasks.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)spinBudget.Properties).EndInit();
             ((System.ComponentModel.ISupportInitialize)lueManager.Properties).EndInit();
             ((System.ComponentModel.ISupportInitialize)cmbStatus.Properties).EndInit();
@@ -473,5 +552,12 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
         private DevExpress.XtraEditors.LabelControl lblManager;
         private DevExpress.XtraEditors.SimpleButton btnCancel;
         private DevExpress.XtraEditors.SimpleButton btnSave;
+        
+        // Project Tasks Panel
+        private DevExpress.XtraEditors.PanelControl pnlProjectTasks;
+        private DevExpress.XtraEditors.LabelControl lblTasksTitle;
+        private DevExpress.XtraEditors.LabelControl lblTasksSummary;
+        private DevExpress.XtraEditors.LabelControl lblNoTasks;
+        private FlowLayoutPanel pnlTasksList;
     }
 }

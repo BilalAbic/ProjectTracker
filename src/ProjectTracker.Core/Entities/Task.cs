@@ -102,5 +102,10 @@ namespace ProjectTracker.Core.Entities
         /// Navigation property - Time entries logged for this task
         /// </summary>
         public virtual ICollection<TimeEntry> TimeEntries { get; set; } = new List<TimeEntry>();
+
+        /// <summary>
+        /// Navigation property - GitHub commits linked to this task
+        /// </summary>
+        public virtual ICollection<GitCommit> LinkedCommits { get; set; } = new List<GitCommit>();
     }
 }

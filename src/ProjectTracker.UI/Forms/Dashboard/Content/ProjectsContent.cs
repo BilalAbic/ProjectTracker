@@ -23,6 +23,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
 
         private readonly IProjectService _projectService;
         private readonly ITeamService _teamService;
+        private readonly ITaskService? _taskService;
         private List<ProjectDto> _allProjects;
         private List<ProjectDto> _filteredProjects;
 
@@ -36,11 +37,13 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
         /// </summary>
         /// <param name="projectService">Project service instance</param>
         /// <param name="teamService">Team service instance</param>
-        public ProjectsContent(IProjectService projectService, ITeamService teamService)
+        /// <param name="taskService">Task service instance (optional)</param>
+        public ProjectsContent(IProjectService projectService, ITeamService teamService, ITaskService? taskService = null)
         {
             InitializeComponent();
             _projectService = projectService;
             _teamService = teamService;
+            _taskService = taskService;
 
             // Initialize
             SetupGrid();
@@ -428,7 +431,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
         /// <param name="project">Project to edit, or null for new project</param>
         private void OpenProjectDetail(ProjectDto? project)
         {
-            var detailControl = new ProjectDetailControl(_projectService, _teamService, project);
+            var detailControl = new ProjectDetailControl(_projectService, _teamService, project, _taskService);
 
             detailControl.ProjectSaved += async (s, e) =>
             {
