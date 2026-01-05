@@ -1,8 +1,8 @@
-name: Deploy static content to Pages
+name: Deploy Web Folder to Pages
 
 on:
   push:
-    branches: ["main"] # Burası senin ana dalının adı olmalı (master da olabilir)
+    branches: ["main"]
   workflow_dispatch:
 
 permissions:
@@ -21,27 +21,34 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      # 1. ADIM: Kodları sunucuya indir (Bu adım ÇOK ÖNEMLİ)
+      # 1. Kaynak kodunu indir
       - name: Checkout
         uses: actions/checkout@v4
 
-      # 2. ADIM: (DEBUG) Dosya yapısını kontrol et
-      # Bu adım hatanın nedenini Loglarda görmemizi sağlayacak
-      - name: List files in current directory
+      # 2. (Opsiyonel) Dosyaların doğru indiğini kontrol et
+      - name: Verify Directory Structure
         run: |
-          echo "Ana dizindeki dosyalar:"
+          echo "Mevcut dizin:"
           ls -R
+          if [ -d "./web" ]; then
+            echo "WEB klasörü bulundu!"
+          else
+            echo "HATA: WEB klasörü bulunamadı!"
+            exit 1
+          fi
 
+      # 3. Pages Kurulumu
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
+      # 4. Sadece 'web' klasörünü yükle
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Burayı kontrol et: Klasör adın 'Web' mi 'web' mi?
-          # Eğer klasörün 'src' içindeyse './src/web' yazmalısın.
-          path: './web' 
+          # BURASI ÖNEMLİ: Sadece 'web' klasörünün içeriğini alır
+          path: './web'
 
+      # 5. Yayına al
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
