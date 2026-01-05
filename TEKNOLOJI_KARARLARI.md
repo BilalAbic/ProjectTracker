@@ -2,7 +2,7 @@
 
 Bu dokümanda ProjectTracker projesi için alınan teknoloji kararları ve proje detayları belirtilmiştir.
 
-**Son Güncelleme:** 2 Ocak 2026
+**Son Güncelleme:** 5 Ocak 2026
 
 ---
 
@@ -10,17 +10,20 @@ Bu dokümanda ProjectTracker projesi için alınan teknoloji kararları ve proje
 
 1. [Teknoloji Stack](#-teknoloji-stack)
 2. [Mimari Yaklaşım](#-mimari-yaklaşım)
-3. [Proje Yapısı](#-proje-yapısı)
-4. [Veritabanı Yapısı](#-veritabanı-yapısı)
-5. [Kullanıcı Rolleri](#-kullanıcı-rolleri)
-6. [Akıllı Algoritmalar](#-akıllı-algoritmalar)
-7. [NuGet Paketleri](#-nuget-paketleri)
-8. [UI Standartları](#-ui-standartları)
-9. [Güvenlik](#-güvenlik)
-10. [Test Stratejisi](#-test-stratejisi)
-11. [Geliştirme Takvimi](#-geliştirme-takvimi)
-12. [Dokümantasyon Gereksinimleri](#-dokümantasyon-gereksinimleri)
-13. [Kurulum Gereksinimleri](#-kurulum-gereksinimleri)
+3. [Web API](#-web-api)
+4. [E-posta Sistemi](#-e-posta-sistemi)
+5. [Web Sitesi (GitHub Pages)](#-web-sitesi-github-pages)
+6. [Proje Yapısı](#-proje-yapısı)
+7. [Veritabanı Yapısı](#-veritabanı-yapısı)
+8. [Kullanıcı Rolleri](#-kullanıcı-rolleri)
+9. [Akıllı Algoritmalar](#-akıllı-algoritmalar)
+10. [NuGet Paketleri](#-nuget-paketleri)
+11. [UI Standartları](#-ui-standartları)
+12. [Güvenlik](#-güvenlik)
+13. [Test Stratejisi](#-test-stratejisi)
+14. [Geliştirme Takvimi](#-geliştirme-takvimi)
+15. [Dokümantasyon Gereksinimleri](#-dokümantasyon-gereksinimleri)
+16. [Kurulum Gereksinimleri](#-kurulum-gereksinimleri)
 
 ---
 
@@ -64,6 +67,282 @@ Bu dokümanda ProjectTracker projesi için alınan teknoloji kararları ve proje
 | **iTextSharp** | 5.5.13.3 | PDF export |
 | **BouncyCastle** | 1.8.9 | PDF şifreleme desteği |
 | **Octokit** | 13.0.1 | GitHub API client |
+
+### Web API & Hosting
+
+| Teknoloji | Versiyon | Açıklama |
+|-----------|----------|----------|
+| **ASP.NET Core** | 8.0 | Minimal API framework |
+| **GitHub Pages** | - | Statik web hosting |
+| **Plesk** | - | Windows hosting (IIS) |
+| **System.Net.Mail** | - | SMTP e-posta gönderimi |
+
+---
+
+## 🌐 WEB API
+
+### Genel Bilgiler
+
+| Özellik | Değer |
+|---------|-------|
+| **Proje** | ProjectTracker.API |
+| **Framework** | ASP.NET Core 8.0 Minimal API |
+| **Hosting** | Plesk (Windows Server + IIS) |
+| **URL** | https://bilalabic.com/api |
+| **Veritabanı** | SQL Server (Plesk) - Sadece Invitations tablosu |
+
+### Neden Minimal API?
+
+- Lightweight ve hızlı başlatma
+- Sadece davet işlemleri için yeterli
+- Kolay deployment
+- Düşük kaynak tüketimi
+
+### API Endpoints
+
+| Method | Endpoint | Açıklama | Request Body |
+|--------|----------|----------|--------------|
+| GET | `/` | API bilgi | - |
+| GET | `/ping` | Sağlık kontrolü (DB gerektirmez) | - |
+| GET | `/api/invitations/health` | DB bağlantı kontrolü | - |
+| GET | `/api/invitations/validate?token=xxx` | Davet doğrulama | - |
+| POST | `/api/invitations/create` | Davet oluştur | `CreateInvitationRequest` |
+| POST | `/api/invitations/accept` | Daveti kabul et | `{ token: "xxx" }` |
+| POST | `/api/invitations/decline` | Daveti reddet | `{ token: "xxx" }` |
+
+### Request/Response Modelleri
+
+```csharp
+// CreateInvitationRequest
+{
+    "token": "abc123...",
+    "email": "user@example.com",
+    "teamName": "Development Team",
+    "invitedByName": "Bilal Abiç",
+    "proposedRole": "Developer",
+    "expiresAt": "2026-01-12T00:00:00"
+}
+
+// ValidateResponse
+{
+    "isValid": true,
+    "teamName": "Development Team",
+    "invitedBy": "Bilal Abiç",
+    "proposedRole": "Developer",
+    "expiresAt": "2026-01-12T00:00:00",
+    "email": "user@example.com"
+}
+
+// AcceptResponse
+{
+    "success": true,
+    "message": "Davet kabul edildi!",
+    "email": "user@example.com"
+}
+```
+
+### CORS Yapılandırması
+
+```csharp
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+```
+
+### Veritabanı Otomatik Oluşturma
+
+```csharp
+// Program.cs
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<InvitationDbContext>();
+    db.Database.EnsureCreated();  // Tablo yoksa oluşturur
+}
+```
+
+### API Deployment (Plesk)
+
+1. **Publish:**
+   ```bash
+   dotnet publish src/ProjectTracker.API -c Release -o publish/api
+   ```
+
+2. **Plesk'e yükle:**
+   - `publish/api/` içeriğini `httpdocs/` klasörüne yükle
+   - .NET Core ayarlarını yapılandır
+
+3. **appsettings.Production.json:**
+   ```json
+   {
+     "ConnectionStrings": {
+       "DefaultConnection": "Server=...;Database=DboProjectTracker;User Id=...;Password=...;"
+     }
+   }
+   ```
+
+---
+
+## 📧 E-POSTA SİSTEMİ
+
+### Gmail SMTP Yapılandırması
+
+| Ayar | Değer |
+|------|-------|
+| **SMTP Host** | smtp.gmail.com |
+| **Port** | 587 |
+| **SSL** | Enabled |
+| **Authentication** | Gmail App Password |
+
+### appsettings.json Yapılandırması
+
+```json
+{
+  "Email": {
+    "Enabled": true,
+    "SmtpHost": "smtp.gmail.com",
+    "SmtpPort": 587,
+    "Username": "your-email@gmail.com",
+    "Password": "xxxx xxxx xxxx xxxx",
+    "FromEmail": "your-email@gmail.com",
+    "FromName": "ProjectTracker",
+    "EnableSsl": true
+  }
+}
+```
+
+### Gmail App Password Oluşturma
+
+1. Google Hesabı → Güvenlik
+2. 2 Adımlı Doğrulama → Aktif et
+3. Uygulama Şifreleri → Yeni şifre oluştur
+4. 16 karakterlik şifreyi kopyala
+
+### EmailService Kullanımı
+
+```csharp
+public class EmailService
+{
+    public async Task SendInvitationEmailAsync(
+        string toEmail, 
+        string teamName, 
+        string invitedByName, 
+        string proposedRole, 
+        string invitationToken)
+    {
+        var inviteUrl = $"{_invitationBaseUrl}?token={invitationToken}";
+        
+        var body = $@"
+        <h2>🎉 Takıma Davet Edildiniz!</h2>
+        <p><strong>{invitedByName}</strong> sizi <strong>{teamName}</strong> takımına davet etti.</p>
+        <p>Atanan Rol: <strong>{proposedRole}</strong></p>
+        <a href='{inviteUrl}'>Daveti Kabul Et</a>
+        ";
+        
+        await SendEmailAsync(toEmail, subject, body);
+    }
+}
+```
+
+### RemoteInvitationService
+
+WinForms'tan Plesk API'ye davet gönderen servis:
+
+```csharp
+public class RemoteInvitationService
+{
+    public async Task<bool> SendInvitationToRemoteAsync(
+        string token, string email, string teamName,
+        string invitedByName, string proposedRole, DateTime expiresAt)
+    {
+        if (!_isEnabled) return true;  // Disabled ise skip
+        
+        var payload = new { token, email, teamName, invitedByName, proposedRole, expiresAt };
+        var response = await _httpClient.PostAsJsonAsync($"{_apiBaseUrl}/invitations/create", payload);
+        
+        return response.IsSuccessStatusCode;
+    }
+}
+```
+
+### Davet Akışı
+
+```
+1. WinForms: Kullanıcı davet oluşturur
+2. InvitationService: Yerel DB'ye kaydeder
+3. RemoteInvitationService: Plesk API'ye gönderir
+4. EmailService: Gmail SMTP ile e-posta gönderir
+5. Kullanıcı: E-postadaki linke tıklar
+6. GitHub Pages: accept-invite.html sayfası açılır
+7. JavaScript: Plesk API'den davet bilgisi alır
+8. Kullanıcı: Kabul/Reddet butonuna tıklar
+9. API: Davet durumunu günceller
+```
+
+---
+
+## 🌍 WEB SİTESİ (GitHub Pages)
+
+### Hosting Bilgileri
+
+| Özellik | Değer |
+|---------|-------|
+| **Platform** | GitHub Pages |
+| **URL** | https://bilalabic.github.io/projecttracker |
+| **Kaynak** | `/web` klasörü |
+| **Teknoloji** | HTML, CSS, JavaScript (Vanilla) |
+
+### Dosya Yapısı
+
+```
+web/
+├── index.html          # Ana sayfa (tanıtım, özellikler, indirme)
+├── accept-invite.html  # Davet kabul sayfası
+├── css/
+│   ├── style.css       # Ana stil dosyası (dark theme)
+│   └── invite.css      # Davet sayfası stilleri
+└── js/
+    ├── config.js       # API URL yapılandırması
+    ├── invite.js       # Davet işlemleri (fetch API)
+    └── main.js         # Ana sayfa scriptleri
+```
+
+### config.js
+
+```javascript
+const CONFIG = {
+    API_BASE_URL: 'https://bilalabic.com',  // Plesk API
+    DOWNLOAD_URL: 'https://github.com/BilalAbic/projecttracker/releases/latest',
+    DEMO_MODE: false  // true yapılırsa API çağrısı yapmaz
+};
+```
+
+### invite.js API Çağrıları
+
+```javascript
+// Davet doğrulama
+const response = await fetch(`${API_BASE_URL}/api/invitations/validate?token=${token}`);
+const data = await response.json();
+
+// Daveti kabul et
+const response = await fetch(`${API_BASE_URL}/api/invitations/accept`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ token: currentToken })
+});
+```
+
+### GitHub Pages Aktifleştirme
+
+1. GitHub Repo → Settings → Pages
+2. Source: Deploy from a branch
+3. Branch: `main`, Folder: `/web`
+4. Save
 
 ---
 

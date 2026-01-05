@@ -1,13 +1,21 @@
 # 📊 PROJECT TRACKER
 
 ### Enterprise Project Management System
-*C# Windows Forms + DevExpress + Entity Framework Core 8.0*
+*C# Windows Forms + DevExpress + Entity Framework Core 8.0 + ASP.NET Core Web API*
 
 ---
 
 ## 🎯 Proje Özeti
 
 **Project Tracker**, projelerin planlama, yürütme ve izleme süreçlerini tek bir merkezi yapı altında toplayan, akademik gereksinimleri karşılayan bütünleşik bir yazılım çözümüdür. Modern dark theme UI, DevExpress kontrolleri ve akıllı analiz algoritmaları ile profesyonel proje yönetimi deneyimi sunar.
+
+### 🌐 Canlı Demo & Linkler
+
+| Platform | URL | Açıklama |
+|----------|-----|----------|
+| 🌍 **Web Sitesi** | [bilalabic.github.io/projecttracker](https://bilalabic.github.io/projecttracker) | GitHub Pages'te barındırılan tanıtım sitesi |
+| 🔌 **API** | [bilalabic.com/api](https://bilalabic.com/api) | Plesk'te barındırılan ASP.NET Core Web API |
+| 📦 **İndirme** | [GitHub Releases](https://github.com/BilalAbic/projecttracker/releases/latest) | Windows masaüstü uygulaması |
 
 ### ✨ Temel Özellikler
 
@@ -22,176 +30,70 @@
 | 🎨 **Modern Dashboard** | Anlık KPI'lar, interaktif grafikler, dark theme UI | ✅ |
 | 💬 **Özel Mesaj Kutusu** | Dark-themed, hata kodlu mesaj sistemi | ✅ |
 | 🐙 **GitHub Entegrasyonu** | Repository bağlama, commit analizi, task-commit eşleştirme | ✅ |
+| 📧 **E-posta Davet Sistemi** | Gmail SMTP ile takım daveti, web üzerinden kabul | ✅ |
+| 🌐 **Web API** | ASP.NET Core 8.0 Minimal API, davet yönetimi | ✅ |
 | 📈 **Gantt Chart** | Görsel zaman çizelgesi, kritik yol analizi (CPM) | 🔄 |
-| ⚠️ **Risk Analizi** | Ağırlıklı risk skoru, gecikme tahminleri | 🔄 |
-| 🔔 **Bildirim Sistemi** | Otomatik uyarılar, deadline hatırlatmaları | 🔄 |
 
 ---
 
-## 🏗️ Mimari Yapı
+## 🏗️ Sistem Mimarisi
 
-### Katmanlı Mimari (4 Katman)
-
-```
-┌─────────────────────────────────────────────────────────┐
-│            PRESENTATION LAYER (UI)                      │
-│        Windows Forms + DevExpress Controls              │
-│  • Forms: FrmLogin, FrmDashboard, FrmPendingWaitlist   │
-│  • UserControls: 10 Content/Detail kontrolü             │
-│  • Helpers: ColorPalette, FormStyleHelper, Session      │
-└─────────────────────────────────────────────────────────┘
-                          ↓
-┌─────────────────────────────────────────────────────────┐
-│            BUSINESS LAYER                               │
-│        Services + DTOs + Validation + Algorithms        │
-│  • 8 Service (Project, Task, Team, User, Report, etc.) │
-│  • 16 DTO (Create/Update/View varyantları)             │
-│  • AuditLogService, AdvancedReportService              │
-└─────────────────────────────────────────────────────────┘
-                          ↓
-┌─────────────────────────────────────────────────────────┐
-│            DATA ACCESS LAYER                            │
-│        Repository Pattern + Unit of Work + EF Core      │
-│  • Generic Repository<T>                                │
-│  • UnitOfWork (14 Repository)                          │
-│  • 14 Migration                                          │
-└─────────────────────────────────────────────────────────┘
-                          ↓
-┌─────────────────────────────────────────────────────────┐
-│            DATABASE                                     │
-│                SQL Server 2019+                         │
-│  • 14 Tablo                                            │
-│  • Navigation Properties                                │
-│  • Audit Logging                                        │
-└─────────────────────────────────────────────────────────┘
-```
-
-### 📁 Klasör Yapısı
+### Genel Bakış
 
 ```
-ProjectTracker/
-│
-├── src/
-│   ├── ProjectTracker.Core/              [Domain Layer]
-│   │   ├── Entities/                     [18 Entity sınıfı]
-│   │   │   ├── User.cs
-│   │   │   ├── Role.cs
-│   │   │   ├── Project.cs
-│   │   │   ├── Task.cs
-│   │   │   ├── Team.cs
-│   │   │   ├── TeamMember.cs
-│   │   │   ├── TeamInvitation.cs
-│   │   │   ├── AuditLog.cs
-│   │   │   ├── ProjectSnapshot.cs
-│   │   │   ├── TimeEntry.cs
-│   │   │   ├── GitHubToken.cs            [GitHub token havuzu]
-│   │   │   ├── GitRepository.cs          [Bağlı repository'ler]
-│   │   │   ├── GitCommit.cs              [Commit geçmişi]
-│   │   │   ├── GitFileChange.cs          [Dosya değişiklikleri]
-│   │   │   └── ...
-│   │   ├── Enums/                        [7 Enum tanımı]
-│   │   │   ├── ProjectStatus.cs
-│   │   │   ├── TaskStatus.cs
-│   │   │   ├── Priority.cs
-│   │   │   ├── TeamRole.cs
-│   │   │   ├── ActivityType.cs
-│   │   │   └── ...
-│   │   └── Interfaces/                   [Repository & UoW]
-│   │
-│   ├── ProjectTracker.Data/              [Data Access Layer]
-│   │   ├── Context/
-│   │   │   ├── AppDbContext.cs
-│   │   │   └── AppDbContextFactory.cs
-│   │   ├── Repositories/
-│   │   │   ├── Repository.cs (Generic)
-│   │   │   ├── ProjectRepository.cs
-│   │   │   └── TaskRepository.cs
-│   │   ├── UnitOfWork.cs
-│   │   └── Migrations/                   [4 Migration]
-│   │
-│   ├── ProjectTracker.Business/          [Business Logic Layer]
-│   │   ├── Services/                     [12 Service]
-│   │   │   ├── ProjectService.cs
-│   │   │   ├── TaskService.cs
-│   │   │   ├── TeamService.cs
-│   │   │   ├── UserService.cs
-│   │   │   ├── InvitationService.cs
-│   │   │   ├── AuditLogService.cs
-│   │   │   ├── ReportService.cs
-│   │   │   ├── AdvancedReportService.cs
-│   │   │   ├── TokenPoolService.cs       [GitHub token yönetimi]
-│   │   │   ├── TaskMatchingService.cs    [Commit-Task eşleştirme]
-│   │   │   ├── GitHubSyncService.cs      [Repository senkronizasyonu]
-│   │   │   └── GitHubAnalyticsService.cs [GitHub istatistikleri]
-│   │   ├── DTOs/                         [20+ DTO]
-│   │   │   ├── ProjectDto.cs, CreateProjectDto.cs, UpdateProjectDto.cs
-│   │   │   ├── TaskDto.cs, CreateTaskDto.cs, UpdateTaskDto.cs
-│   │   │   ├── TeamDto.cs, TeamMemberDto.cs, TeamInvitationDto.cs
-│   │   │   ├── ActivityDto.cs
-│   │   │   ├── Statistics/               [İstatistik DTO'ları]
-│   │   │   └── Analytics/                [Analitik DTO'ları]
-│   │   ├── Interfaces/                   [Service Interfaces]
-│   │   │   └── Services/
-│   │   │       ├── IProjectService.cs
-│   │   │       ├── ITaskService.cs
-│   │   │       ├── ITeamService.cs
-│   │   │       ├── IAuditLogService.cs
-│   │   │       ├── ICurrentUserService.cs
-│   │   │       └── ...
-│   │   ├── Validators/                   [FluentValidation]
-│   │   ├── Mappings/                     [AutoMapper]
-│   │   └── BackgroundServices/           [Arka plan servisleri]
-│   │
-│   └── ProjectTracker.UI/                [Presentation Layer]
-│       ├── Forms/
-│       │   ├── Common/
-│       │   │   └── FrmMessage.cs         [Özel mesaj kutusu]
-│       │   ├── Login/
-│       │   │   ├── FrmLogin.cs
-│       │   │   ├── FrmRegister.cs
-│       │   │   └── FrmPendingWaitlist.cs [Pending rol bekleme]
-│       │   └── Dashboard/
-│       │       ├── FrmDashboard.cs
-│       │       └── Content/              [12 UserControl]
-│       │           ├── DashboardContent.cs
-│       │           ├── ProjectsContent.cs
-│       │           ├── ProjectDetailControl.cs
-│       │           ├── TasksContent.cs
-│       │           ├── TaskDetailControl.cs
-│       │           ├── TeamsContent.cs
-│       │           ├── TeamDetailControl.cs
-│       │           ├── TeamMembersContent.cs
-│       │           ├── InvitationsContent.cs
-│       │           ├── ReportsContent.cs
-│       │           ├── GitHubContent.cs          [GitHub Analytics]
-│       │           └── UserSettingsContent.cs    [Kullanıcı ayarları]
-│       ├── Helpers/
-│       │   ├── ColorPalette.cs           [Renk yönetimi]
-│       │   ├── FormStyleHelper.cs        [Mesaj kutuları]
-│       │   ├── SessionManager.cs         [Oturum yönetimi]
-│       │   └── CurrentUserService.cs     [DI için kullanıcı servisi]
-│       └── Program.cs                    [DI Container]
-│
-├── tests/
-│   └── ProjectTracker.Tests/             [Unit Tests]
-│
-├── GitHubAnalyzerTest/                   [GitHub API Test Projesi]
-│   ├── Services/
-│   │   ├── TokenPoolService.cs
-│   │   ├── TaskMatchingService.cs
-│   │   └── GitHubSyncService.cs
-│   └── Program.cs
-│
-├── docs/
-│   ├── UML/                              [UML Diyagramları]
-│   ├── Screenshots/                      [Ekran Görüntüleri]
-│   └── Reports/                          [Proje Raporları]
-│
-├── SeedDataScript/
-│   ├── seed.sql                          [Test verileri]
-│   └── add_pending_role.sql              [Pending rol script]
-│
-└── bank/                                 [Geliştirme notları]
+┌─────────────────────────────────────────────────────────────────────────┐
+│                         KULLANICI ARAYÜZÜ                               │
+├─────────────────────────────────────────────────────────────────────────┤
+│  Windows Forms (WinForms)          │  Web Sitesi (GitHub Pages)         │
+│  • DevExpress UI Controls          │  • HTML/CSS/JavaScript             │
+│  • Masaüstü Uygulaması            │  • Davet Kabul Sayfası             │
+│  • Yerel Veritabanı Bağlantısı    │  • Statik Hosting                  │
+└─────────────────────────────────────────────────────────────────────────┘
+                    │                              │
+                    ▼                              ▼
+┌─────────────────────────────────────────────────────────────────────────┐
+│                         BACKEND SERVİSLERİ                              │
+├─────────────────────────────────────────────────────────────────────────┤
+│  Business Layer (Services)         │  Web API (ASP.NET Core 8.0)       │
+│  • ProjectService                  │  • InvitationsController          │
+│  • TaskService                     │  • /api/invitations/validate      │
+│  • TeamService                     │  • /api/invitations/accept        │
+│  • InvitationService               │  • /api/invitations/decline       │
+│  • EmailService (Gmail SMTP)       │  • /api/invitations/create        │
+│  • RemoteInvitationService         │  • /api/invitations/health        │
+└─────────────────────────────────────────────────────────────────────────┘
+                    │                              │
+                    ▼                              ▼
+┌─────────────────────────────────────────────────────────────────────────┐
+│                         VERİTABANI KATMANI                              │
+├─────────────────────────────────────────────────────────────────────────┤
+│  Yerel SQL Server                  │  Uzak SQL Server (Plesk)          │
+│  • Tüm uygulama verileri          │  • Sadece Invitations tablosu     │
+│  • 18 tablo                        │  • EnsureCreated() ile oluşturma  │
+│  • Entity Framework Core 8.0       │  • Entity Framework Core 8.0      │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+### Davet Sistemi Akışı
+
+```
+┌──────────────┐     ┌──────────────┐     ┌──────────────┐     ┌──────────────┐
+│   WinForms   │────▶│  EmailService │────▶│  Gmail SMTP  │────▶│  Kullanıcı   │
+│  Davet Oluştur│     │  (E-posta)   │     │              │     │  E-postası   │
+└──────────────┘     └──────────────┘     └──────────────┘     └──────────────┘
+       │                                                              │
+       ▼                                                              ▼
+┌──────────────┐                                              ┌──────────────┐
+│ RemoteApi    │                                              │ GitHub Pages │
+│ Service      │                                              │ Web Sitesi   │
+└──────────────┘                                              └──────────────┘
+       │                                                              │
+       ▼                                                              ▼
+┌──────────────┐     ┌──────────────┐     ┌──────────────┐     ┌──────────────┐
+│  Plesk API   │◀────│  Invitations │◀────│  JavaScript  │◀────│ accept-invite│
+│  (bilalabic  │     │  Controller  │     │  fetch()     │     │    .html     │
+│   .com/api)  │     │              │     │              │     │              │
+└──────────────┘     └──────────────┘     └──────────────┘     └──────────────┘
 ```
 
 ---
@@ -199,13 +101,16 @@ ProjectTracker/
 ## 💻 Teknoloji Stack
 
 ### Framework & Runtime
+
 | Teknoloji | Versiyon | Açıklama |
 |-----------|----------|----------|
-| .NET | 8.0 | Son versiyon framework |
+| .NET | 8.0 LTS | Son versiyon framework |
+| ASP.NET Core | 8.0 | Web API framework |
 | Windows Forms | - | Native UI framework |
 | C# | 12.0 | Modern syntax features |
 
 ### UI Framework
+
 | Teknoloji | Versiyon | Açıklama |
 |-----------|----------|----------|
 | DevExpress WinForms | 25.1.7 | Professional UI controls |
@@ -214,12 +119,22 @@ ProjectTracker/
 | - XtraEditors | - | Input controls |
 
 ### Database & ORM
+
 | Teknoloji | Versiyon | Açıklama |
 |-----------|----------|----------|
-| SQL Server | 2019+ | RDBMS |
+| SQL Server | 2019+ | RDBMS (Yerel + Plesk) |
 | Entity Framework Core | 8.0 | ORM (Code-First) |
 
+### Web & API
+
+| Teknoloji | Versiyon | Açıklama |
+|-----------|----------|----------|
+| ASP.NET Core Minimal API | 8.0 | Lightweight Web API |
+| GitHub Pages | - | Statik web hosting |
+| HTML/CSS/JavaScript | ES6+ | Frontend |
+
 ### Libraries
+
 | Kütüphane | Versiyon | Kullanım |
 |-----------|----------|----------|
 | AutoMapper | 12.0.1 | DTO mapping |
@@ -228,136 +143,225 @@ ProjectTracker/
 | iTextSharp | 5.5.13.3 | PDF export |
 | BouncyCastle | 1.8.9 | PDF şifreleme |
 | Octokit | 13.0.1 | GitHub API client |
+| System.Net.Mail | - | E-posta gönderimi |
 
 ---
 
-## 📦 Veritabanı Şeması
+## 🌐 Web API (ProjectTracker.API)
 
-### Entity İlişkileri
+### Genel Bilgiler
 
+| Özellik | Değer |
+|---------|-------|
+| **Framework** | ASP.NET Core 8.0 Minimal API |
+| **Hosting** | Plesk (Windows Server + IIS) |
+| **URL** | https://bilalabic.com/api |
+| **Veritabanı** | SQL Server (Plesk) |
+| **Tablo** | Invitations (tek tablo) |
+
+### API Endpoints
+
+| Method | Endpoint | Açıklama |
+|--------|----------|----------|
+| GET | `/api/invitations/validate?token=xxx` | Davet token'ını doğrula |
+| POST | `/api/invitations/create` | Yeni davet oluştur (WinForms'tan) |
+| POST | `/api/invitations/accept` | Daveti kabul et (Web'den) |
+| POST | `/api/invitations/decline` | Daveti reddet (Web'den) |
+| GET | `/api/invitations/health` | API sağlık kontrolü |
+| GET | `/` | API bilgi endpoint'i |
+| GET | `/ping` | Basit ping (DB gerektirmez) |
+
+### API Response Örnekleri
+
+```json
+// GET /api/invitations/validate?token=abc123
+{
+  "isValid": true,
+  "teamName": "Development Team",
+  "invitedBy": "Bilal Abiç",
+  "proposedRole": "Developer",
+  "expiresAt": "2026-01-12T00:00:00",
+  "email": "user@example.com"
+}
+
+// POST /api/invitations/accept
+{
+  "success": true,
+  "message": "Davet kabul edildi!",
+  "email": "user@example.com"
+}
+
+// GET /api/invitations/health
+{
+  "status": "OK",
+  "timestamp": "2026-01-05T22:39:52.540Z"
+}
 ```
-┌──────────┐       ┌──────────┐       ┌──────────┐
-│  Roles   │───────│  Users   │───────│  Teams   │
-└──────────┘       └────┬─────┘       └────┬─────┘
-                        │                   │
-         ┌──────────────┼───────────────────┤
-         │              │                   │
-    ┌────▼────┐    ┌────▼────┐    ┌────────▼────────┐
-    │Projects │    │  Tasks  │    │  TeamMembers    │
-    │(TeamId) │    │         │    │  TeamInvitations│
-    └────┬────┘    └────┬────┘    └─────────────────┘
-         │              │
-    ┌────▼──────────────▼────────────────┐
-    │  ProjectTeamMembers                 │
-    │  TaskComments                       │
-    │  ProjectRisks                       │
-    │  ProjectSnapshots                   │
-    │  TimeEntries                        │
-    │  AuditLogs                          │
-    └─────────────────────────────────────┘
-```
 
-### Tablolar (18 tablo)
+### API Yapılandırması
 
-| # | Tablo | Açıklama |
-|---|-------|----------|
-| 1 | **Users** | Kullanıcılar |
-| 2 | **Roles** | Roller (Admin, ProjectManager, Developer, Pending) |
-| 3 | **Projects** | Projeler (TeamId ile takıma bağlı) |
-| 4 | **Tasks** | Görevler (parent-child destekli) |
-| 5 | **Teams** | Takımlar |
-| 6 | **TeamMembers** | Takım üyeleri ve rolleri |
-| 7 | **TeamInvitations** | Takım davet sistemi |
-| 8 | **ProjectTeamMembers** | Proje ekip üyeleri |
-| 9 | **TaskComments** | Görev yorumları |
-| 10 | **ProjectRisks** | Proje riskleri |
-| 11 | **ProjectSnapshots** | Burndown/Burnup için snapshot |
-| 12 | **TimeEntries** | Zaman takibi |
-| 13 | **AuditLogs** | Aktivite logları |
-| 14 | **Notifications** | Bildirimler |
-| 15 | **GitHubTokens** | GitHub API token havuzu |
-| 16 | **GitRepositories** | Bağlı GitHub repository'leri |
-| 17 | **GitCommits** | Commit geçmişi |
-| 18 | **GitFileChanges** | Dosya değişiklikleri |
-
----
-
-## 👥 Kullanıcı Rolleri ve Yetkileri
-
-| Rol | Yetkiler | Kısıtlamalar |
-|-----|----------|--------------|
-| **Admin** | • Tüm yetkiler<br>• Kullanıcı yönetimi<br>• Sistem ayarları<br>• Tüm projeleri görme | - |
-| **ProjectManager** | • Proje CRUD<br>• Görev atama<br>• Takım yönetimi<br>• Raporlar | Kullanıcı ekleme/silme yapamaz |
-| **Developer** | • Atanan görevleri güncelleme<br>• Yorum yazma<br>• Kendi takım projelerini görme | Proje/Task oluşturamaz/silemez |
-| **Pending** | • Bekleme ekranı | Onay bekliyor, sisteme erişim yok |
-
----
-
-## 🎨 UI Tasarımı
-
-### Modern Slate Blue Theme
-
-Proje genelinde tutarlı renk kullanımı için `ColorPalette.cs` helper class kullanılır.
-
-#### Core Background Colors
-| Element | Hex | Kullanım |
-|---------|-----|----------|
-| BackgroundDeepNavy | `#1A1F26` | Form backgrounds |
-| BackgroundSlateDark | `#242B3D` | Cards, panels |
-| BackgroundSlateMedium | `#1E2A3A` | Input backgrounds |
-| BorderSlate | `#334155` | Borders |
-
-#### Accent Colors
-| Purpose | Hex | Kullanım |
-|---------|-----|----------|
-| AccentRoyalBlue | `#5B8DEF` | Primary buttons |
-| AccentSkyBlue | `#7BA8F7` | Hover states |
-| SuccessGreen | `#22C55E` | Success messages |
-| WarningOrange | `#F59E0B` | Warnings |
-| DangerRed | `#EF4444` | Errors, delete |
-
-### Özel Mesaj Kutusu Sistemi (FrmMessage)
-
-Dark-themed özel mesaj kutusu:
-- **Success**: Yeşil accent bar
-- **Error**: Kırmızı accent bar
-- **Warning**: Turuncu accent bar
-- **Info**: Mavi accent bar
-
-```csharp
-// Kullanım
-FormStyleHelper.ShowSuccess("İşlem başarılı!");
-FormStyleHelper.ShowError("Hata oluştu!");
-FormStyleHelper.ShowQuestion("Silmek istediğinize emin misiniz?");
+```json
+// appsettings.Production.json
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=...;Database=DboProjectTracker;..."
+  },
+  "Logging": {
+    "LogLevel": {
+      "Default": "Warning"
+    }
+  }
+}
 ```
 
 ---
 
-## 🚀 Geliştirme Roadmap
+## 📧 E-posta Sistemi
 
-### ✅ Tamamlanan Phase'ler
+### Gmail SMTP Yapılandırması
 
-| Phase | Durum | Detay |
-|-------|-------|-------|
-| **Phase 1:** Login & Auth | ✅ | FrmLogin, FrmRegister, Session yönetimi |
-| **Phase 2:** Dashboard Layout | ✅ | FrmDashboard, Sidebar, Top bar |
-| **Phase 3:** Projects Content | ✅ | ProjectsContent, CRUD, Filters, Team seçimi |
-| **Phase 4:** Tasks Content | ✅ | TasksContent, Grid & Kanban, Drag-drop, Proje filtresi |
-| **Phase 5:** Team Management | ✅ | TeamsContent, Members, Invitations |
-| **Phase 6:** Reports & Analytics | ✅ | ReportsContent, Charts, PDF/Excel export |
-| **Phase 6.5:** Rol Sistemi | ✅ | Pending rol, FrmPendingWaitlist, yetki kontrolleri |
-| **Phase 6.6:** Audit Log | ✅ | AuditLogService, aktivite takibi |
-| **Phase 6.7:** UI İyileştirmeleri | ✅ | FrmMessage, ColorPalette, FormStyleHelper |
-| **Phase 7:** GitHub Entegrasyonu | ✅ | Repository bağlama, commit analizi, leaderboard |
+```json
+// appsettings.json
+{
+  "Email": {
+    "Enabled": true,
+    "SmtpHost": "smtp.gmail.com",
+    "SmtpPort": 587,
+    "Username": "your-email@gmail.com",
+    "Password": "xxxx xxxx xxxx xxxx",  // Gmail App Password
+    "FromEmail": "your-email@gmail.com",
+    "FromName": "ProjectTracker",
+    "EnableSsl": true
+  }
+}
+```
 
-### 🔄 Devam Eden Phase'ler
+### Gmail App Password Oluşturma
 
-| Phase | Durum | Kapsam |
-|-------|-------|--------|
-| **Phase 8:** Gantt Chart | 🔄 | CPM algoritması, kritik yol, timeline |
-| **Phase 9:** Settings & Notifications | 🔄 | Ayarlar, bildirim sistemi |
-| **Phase 10:** Testing & Refinement | 🔄 | Unit tests, bug fixes |
-| **Phase 11:** Documentation | 🔄 | UML diyagramları, raporlar |
+1. Google Hesabı → Güvenlik → 2 Adımlı Doğrulama (aktif olmalı)
+2. Uygulama Şifreleri → Yeni şifre oluştur
+3. 16 karakterlik şifreyi `appsettings.json`'a yapıştır
+
+### E-posta Şablonu
+
+Davet e-postası HTML formatında gönderilir:
+- Takım adı ve davet eden kişi bilgisi
+- Atanan rol
+- Kabul linki (GitHub Pages'e yönlendirir)
+- Son geçerlilik tarihi
+
+---
+
+## 🌍 Web Sitesi (GitHub Pages)
+
+### Hosting Bilgileri
+
+| Özellik | Değer |
+|---------|-------|
+| **Platform** | GitHub Pages |
+| **URL** | https://bilalabic.github.io/projecttracker |
+| **Kaynak** | `/web` klasörü |
+| **Teknoloji** | HTML, CSS, JavaScript (Vanilla) |
+
+### Sayfa Yapısı
+
+```
+web/
+├── index.html          # Ana sayfa (tanıtım, özellikler, indirme)
+├── accept-invite.html  # Davet kabul sayfası
+├── css/
+│   ├── style.css       # Ana stil dosyası
+│   └── invite.css      # Davet sayfası stilleri
+└── js/
+    ├── config.js       # API URL yapılandırması
+    ├── invite.js       # Davet işlemleri
+    └── main.js         # Ana sayfa scriptleri
+```
+
+### JavaScript Yapılandırması
+
+```javascript
+// config.js
+const CONFIG = {
+    API_BASE_URL: 'https://bilalabic.com',  // Plesk API
+    DOWNLOAD_URL: 'https://github.com/BilalAbic/projecttracker/releases/latest',
+    DEMO_MODE: false  // true yapılırsa API çağrısı yapmaz
+};
+```
+
+---
+
+## 📁 Klasör Yapısı
+
+```
+ProjectTracker/
+│
+├── src/
+│   ├── ProjectTracker.Core/              [Domain Layer]
+│   │   ├── Entities/                     [18 Entity sınıfı]
+│   │   ├── Enums/                        [7 Enum tanımı]
+│   │   └── Interfaces/                   [Repository & UoW]
+│   │
+│   ├── ProjectTracker.Data/              [Data Access Layer]
+│   │   ├── Context/AppDbContext.cs
+│   │   ├── Repositories/
+│   │   ├── UnitOfWork.cs
+│   │   └── Migrations/
+│   │
+│   ├── ProjectTracker.Business/          [Business Logic Layer]
+│   │   ├── Services/
+│   │   │   ├── ProjectService.cs
+│   │   │   ├── TaskService.cs
+│   │   │   ├── TeamService.cs
+│   │   │   ├── InvitationService.cs
+│   │   │   ├── EmailService.cs           [Gmail SMTP]
+│   │   │   ├── RemoteInvitationService.cs [API çağrısı]
+│   │   │   ├── GitHubSyncService.cs
+│   │   │   └── ...
+│   │   ├── DTOs/
+│   │   ├── Interfaces/
+│   │   └── Mappings/
+│   │
+│   ├── ProjectTracker.UI/                [Presentation Layer - WinForms]
+│   │   ├── Forms/
+│   │   │   ├── Login/
+│   │   │   └── Dashboard/
+│   │   ├── Helpers/
+│   │   ├── appsettings.json
+│   │   └── Program.cs
+│   │
+│   └── ProjectTracker.API/               [Web API Layer] ⭐ YENİ
+│       ├── Controllers/
+│       │   └── InvitationsController.cs
+│       ├── Data/
+│       │   └── InvitationDbContext.cs
+│       ├── Models/
+│       │   └── InvitationModel.cs
+│       ├── appsettings.json
+│       ├── appsettings.Production.json
+│       ├── Program.cs
+│       └── web.config
+│
+├── web/                                  [Web Sitesi - GitHub Pages] ⭐ YENİ
+│   ├── index.html
+│   ├── accept-invite.html
+│   ├── css/
+│   └── js/
+│
+├── publish/
+│   └── api/                              [API publish çıktısı]
+│
+├── docs/
+│   ├── UML/
+│   ├── Screenshots/
+│   └── Reports/
+│
+├── SeedDataScript/
+│   ├── seed.sql
+│   └── plesk_invitations_table.sql       [Plesk DB scripti]
+│
+└── bank/                                 [Geliştirme notları]
+```
 
 ---
 
@@ -385,17 +389,33 @@ FormStyleHelper.ShowQuestion("Silmek istediğinize emin misiniz?");
    ```
 
 3. **Veritabanını oluştur:**
-   - SQL Server'da yeni bir database oluştur: `DboProjectTracker`
-   - Connection string'i güncelle: `appsettings.json`
-
-4. **Migration'ları uygula:**
-   ```bash
-   dotnet ef database update --project src/ProjectTracker.Data --startup-project src/ProjectTracker.UI
+   ```sql
+   CREATE DATABASE DboProjectTracker;
    ```
 
-5. **Seed data'yı yükle (opsiyonel):**
+4. **appsettings.json yapılandır:**
+   ```json
+   {
+     "ConnectionStrings": {
+       "DefaultConnection": "Server=localhost;Database=DboProjectTracker;Trusted_Connection=True;TrustServerCertificate=True;"
+     },
+     "Email": {
+       "Enabled": true,
+       "SmtpHost": "smtp.gmail.com",
+       "SmtpPort": 587,
+       "Username": "your-email@gmail.com",
+       "Password": "your-app-password"
+     },
+     "RemoteApi": {
+       "Enabled": true,
+       "BaseUrl": "https://bilalabic.com/api"
+     }
+   }
+   ```
+
+5. **Migration'ları uygula:**
    ```bash
-   # SeedDataScript/seed.sql dosyasını SQL Server'da çalıştır
+   dotnet ef database update --project src/ProjectTracker.Data --startup-project src/ProjectTracker.UI
    ```
 
 6. **Projeyi çalıştır:**
@@ -403,89 +423,60 @@ FormStyleHelper.ShowQuestion("Silmek istediğinize emin misiniz?");
    dotnet run --project src/ProjectTracker.UI
    ```
 
-7. **Varsayılan kullanıcılar:**
-   | Kullanıcı | Şifre | Rol |
-   |-----------|-------|-----|
-   | admin | admin123 | Admin |
-   | sarah | sarah123 | ProjectManager |
-   | mike | mike123 | Developer |
+### API Deployment (Plesk)
+
+1. **API'yi publish et:**
+   ```bash
+   dotnet publish src/ProjectTracker.API -c Release -o publish/api
+   ```
+
+2. **Plesk'e yükle:**
+   - `publish/api/` içeriğini `httpdocs/` klasörüne yükle
+   - .NET Core ayarlarını yapılandır
+   - `appsettings.Production.json` dosyasını düzenle
+
+3. **Test et:**
+   ```
+   https://your-domain.com/api/invitations/health
+   ```
 
 ---
 
-## 🐙 GitHub Entegrasyonu
+## 👥 Kullanıcı Rolleri
 
-### Özellikler
-
-| Özellik | Açıklama |
-|---------|----------|
-| **Repository Bağlama** | Projelere GitHub repository'si bağlama |
-| **Commit Senkronizasyonu** | Otomatik commit geçmişi çekme |
-| **Task-Commit Eşleştirme** | Akıllı algoritma ile commit'leri task'lara bağlama |
-| **Leaderboard** | Contributor sıralaması (commit sayısı, satır değişikliği) |
-| **Commit Trend** | Günlük commit grafiği |
-| **Hotspots** | En çok değişen dosyalar |
-| **Token Pool** | Rate limit yönetimi için token havuzu |
-
-### Task-Commit Eşleştirme Algoritması
-
-```
-Eşleştirme Skoru = (TaskAdıBenzerliği × 0.4) + 
-                   (AnahtarKelimeEşleşmesi × 0.3) + 
-                   (TaskIDEşleşmesi × 0.3)
-
-• TaskAdıBenzerliği: Levenshtein distance ile hesaplanır
-• AnahtarKelimeEşleşmesi: Task adındaki kelimeler commit mesajında aranır
-• TaskIDEşleşmesi: #123, TASK-123 gibi pattern'ler aranır
-
-Eşik Değeri: 0.3 (üzerindeki eşleşmeler kabul edilir)
-```
-
-### UI Bileşenleri
-
-| Bileşen | Açıklama |
-|---------|----------|
-| **GitHubContent** | Ana GitHub analytics ekranı |
-| **TaskDetailControl** | Sağ panelde ilişkili commit'ler |
-| **ProjectDetailControl** | Sağ panelde proje task'ları |
-| **UserSettingsContent** | GitHub token yönetimi |
+| Rol | Yetkiler |
+|-----|----------|
+| **Admin** | Tüm yetkiler, kullanıcı yönetimi, sistem ayarları |
+| **ProjectManager** | Proje CRUD, görev atama, takım yönetimi, raporlar |
+| **Developer** | Atanan görevleri güncelleme, yorum yazma |
+| **Pending** | Onay bekliyor, sisteme erişim yok |
 
 ---
 
-## 🧠 Akıllı Algoritmalar
+## 🚀 Sürüm Notları
 
-### 1. Ağırlıklı Risk Skoru Hesaplama
+### v1.1.0 (5 Ocak 2026) - Web API & Davet Sistemi
 
-```
-RiskSkoru = (GörevSayısı × 0.3) + 
-            ((100 - TamamlanmaOranı) × 0.4) + 
-            ((1 / TakımBüyüklüğü) × 0.2) + 
-            (BütçeKullanımOranı × 0.3)
+#### Yeni Özellikler
+- ✅ **ASP.NET Core 8.0 Web API** - Davet yönetimi için RESTful API
+- ✅ **GitHub Pages Web Sitesi** - Tanıtım ve davet kabul sayfası
+- ✅ **Gmail SMTP Entegrasyonu** - E-posta ile davet gönderimi
+- ✅ **Çift Veritabanı Mimarisi** - Yerel + Uzak (Plesk) DB desteği
+- ✅ **RemoteInvitationService** - WinForms'tan API'ye davet gönderimi
 
-Sonuç: 0-100 arası risk puanı
-• 0-40:   Düşük Risk (🟢)
-• 41-70:  Orta Risk (🟡)
-• 71-100: Yüksek Risk (🔴)
-```
+#### Teknik Detaylar
+- Minimal API pattern kullanımı
+- CORS desteği (AllowAll policy)
+- EnsureCreated() ile otomatik tablo oluşturma
+- Fire-and-forget async pattern
 
-### 2. Kritik Yol Analizi (CPM)
+### v1.0.0 (3 Ocak 2026) - İlk Sürüm
 
-1. **Forward Pass:** En erken başlangıç/bitiş zamanı
-2. **Backward Pass:** En geç başlangıç/bitiş zamanı
-3. **Slack Time:** `Slack = En Geç - En Erken`
-4. **Kritik Görevler:** Slack = 0
-
----
-
-## 🎓 Akademik Değer
-
-| Gereksinim | Durum | Detay |
-|------------|-------|-------|
-| OOP Prensipleri | ✅ | Encapsulation, Inheritance, Polymorphism |
-| Design Patterns | ✅ | Repository, Unit of Work, DI, DTO |
-| Katmanlı Mimari | ✅ | 4 katmanlı yapı |
-| Akıllı Algoritma | ✅ | Risk Skoru, CPM |
-| Test & Validation | ✅ | FluentValidation, Unit Tests |
-| Dokümantasyon | ✅ | XML comments, UML, Raporlar |
+- Proje, görev, takım yönetimi
+- GitHub entegrasyonu
+- Rol tabanlı yetkilendirme
+- Audit log sistemi
+- DevExpress UI
 
 ---
 
@@ -500,13 +491,13 @@ Sonuç: 0-100 arası risk puanı
 
 **Proje:** YMH 219 Nesne Tabanlı Programlama  
 **Dönem:** 2024-2025  
-**Geliştirici:** Bilal Abic  
+**Geliştirici:** Bilal Abiç  
 **GitHub:** [@BilalAbic](https://github.com/BilalAbic)
 
 ---
 
-**📌 Güncel Durum:** Phase 7 (GitHub Entegrasyonu) tamamlandı  
-**📈 İlerleme:** ~75%  
-**📅 Son Güncelleme:** 3 Ocak 2026
+**📌 Güncel Durum:** Phase 8 (Web API & Davet Sistemi) tamamlandı  
+**📈 İlerleme:** ~85%  
+**📅 Son Güncelleme:** 5 Ocak 2026
 
 🚀 **Happy Coding!**

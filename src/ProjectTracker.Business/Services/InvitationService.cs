@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.Extensions.Configuration;
 using ProjectTracker.Business.DTOs;
 using ProjectTracker.Business.Interfaces;
 using ProjectTracker.Core.Enums;
@@ -19,17 +20,20 @@ namespace ProjectTracker.Business.Services
         private readonly IMapper _mapper;
         private readonly ICurrentUserService _currentUserService;
         private readonly IEmailService _emailService;
+        private readonly RemoteInvitationService _remoteInvitationService;
 
         public InvitationService(
             IUnitOfWork unitOfWork, 
             IMapper mapper, 
             ICurrentUserService currentUserService,
-            IEmailService emailService)
+            IEmailService emailService,
+            IConfiguration configuration)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _currentUserService = currentUserService;
             _emailService = emailService;
+            _remoteInvitationService = new RemoteInvitationService(configuration);
         }
         
         /// <summary>
@@ -121,6 +125,26 @@ namespace ProjectTracker.Business.Services
                 }
             });
 
+            // Send to remote API (fire-and-forget)
+            _ = System.Threading.Tasks.Task.Run(async () =>
+            {
+                try
+                {
+                    await _remoteInvitationService.SendInvitationToRemoteAsync(
+                        token: invitation.Token,
+                        email: invitation.Email,
+                        teamName: team?.TeamName ?? "Unknown Team",
+                        invitedByName: inviter?.FullName ?? "Team Admin",
+                        proposedRole: invitation.ProposedRole.ToString(),
+                        expiresAt: invitation.ExpiresAt
+                    );
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"❌ Remote API failed: {ex.Message}");
+                }
+            });
+
             return await GetInvitationDto(invitation);
         }
 
@@ -158,6 +182,24 @@ namespace ProjectTracker.Business.Services
             }
 
             return dtos;
+        }
+
+        /// <summary>
+        /// Get invitation by token (for API)
+        /// </summary>
+        public async Task<ProjectTracker.Core.Entities.TeamInvitation?> GetByTokenAsync(string token)
+        {
+            var invitation = await _unitOfWork.TeamInvitations
+                .FirstOrDefaultAsync(ti => ti.Token == token);
+
+            if (invitation == null)
+                return null;
+
+            // Load related entities
+            invitation.Team = await _unitOfWork.Teams.GetByIdAsync(invitation.TeamId);
+            invitation.InvitedBy = await _unitOfWork.Users.GetByIdAsync(invitation.InvitedByUserId);
+
+            return invitation;
         }
 
         /// <summary>
@@ -243,6 +285,19 @@ namespace ProjectTracker.Business.Services
             if (invitation == null)
                 throw new InvalidOperationException("Invalid invitation token");
 
+            return await AcceptInvitationAsync(invitation.InvitationId);
+        }
+
+        /// <summary>
+        /// Accept invitation by ID
+        /// </summary>
+        public async Task<bool> AcceptInvitationAsync(int invitationId)
+        {
+            var invitation = await _unitOfWork.TeamInvitations.GetByIdAsync(invitationId);
+
+            if (invitation == null)
+                throw new InvalidOperationException("Invitation not found");
+
             if (invitation.Status != InvitationStatus.Pending)
                 throw new InvalidOperationException("Invitation is no longer pending");
 
@@ -297,6 +352,19 @@ namespace ProjectTracker.Business.Services
 
             if (invitation == null)
                 throw new InvalidOperationException("Invalid invitation token");
+
+            return await DeclineInvitationAsync(invitation.InvitationId);
+        }
+
+        /// <summary>
+        /// Decline invitation by ID
+        /// </summary>
+        public async Task<bool> DeclineInvitationAsync(int invitationId)
+        {
+            var invitation = await _unitOfWork.TeamInvitations.GetByIdAsync(invitationId);
+
+            if (invitation == null)
+                throw new InvalidOperationException("Invitation not found");
 
             if (invitation.Status != InvitationStatus.Pending)
                 throw new InvalidOperationException("Invitation is no longer pending");

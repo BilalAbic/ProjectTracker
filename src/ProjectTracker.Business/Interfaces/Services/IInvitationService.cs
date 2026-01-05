@@ -1,4 +1,5 @@
 using ProjectTracker.Business.DTOs;
+using ProjectTracker.Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -26,6 +27,11 @@ namespace ProjectTracker.Business.Interfaces
         Task<IEnumerable<TeamInvitationDto>> GetUserPendingInvitationsAsync(string email);
 
         /// <summary>
+        /// Get invitation by token
+        /// </summary>
+        Task<TeamInvitation?> GetByTokenAsync(string token);
+
+        /// <summary>
         /// Resend invitation
         /// </summary>
         Task<bool> ResendInvitationAsync(int invitationId);
@@ -36,9 +42,19 @@ namespace ProjectTracker.Business.Interfaces
         Task<bool> CancelInvitationAsync(int invitationId);
 
         /// <summary>
+        /// Accept invitation by ID
+        /// </summary>
+        Task<bool> AcceptInvitationAsync(int invitationId);
+
+        /// <summary>
         /// Accept invitation using token
         /// </summary>
         Task<bool> AcceptInvitationAsync(string token);
+
+        /// <summary>
+        /// Decline invitation by ID
+        /// </summary>
+        Task<bool> DeclineInvitationAsync(int invitationId);
 
         /// <summary>
         /// Decline invitation using token
