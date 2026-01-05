@@ -2,7 +2,7 @@
 
 Bu dokümanda ProjectTracker projesi için kullanılan kod standartları belirtilmiştir.
 
-**Son Güncelleme:** 3 Ocak 2026
+**Son Güncelleme:** 5 Ocak 2026
 
 ---
 
@@ -14,10 +14,12 @@ Bu dokümanda ProjectTracker projesi için kullanılan kod standartları belirti
 4. [Form İsimlendirmeleri](#-form-isimlendirmeleri)
 5. [DevExpress Kontrol İsimlendirmeleri](#-devexpress-kontrol-isimlendirmeleri)
 6. [Service Katmanı Standartları](#-service-katmanı-standartları)
-7. [Mesaj Kutusu Kullanımı](#-mesaj-kutusu-kullanımı)
-8. [Async/Await Kuralları](#-asyncawait-kuralları)
-9. [Exception Handling](#-exception-handling)
-10. [Veritabanı Standartları](#-veritabanı-standartları)
+7. [Web API Standartları](#-web-api-standartları)
+8. [E-posta Servisi Standartları](#-e-posta-servisi-standartları)
+9. [Mesaj Kutusu Kullanımı](#-mesaj-kutusu-kullanımı)
+10. [Async/Await Kuralları](#-asyncawait-kuralları)
+11. [Exception Handling](#-exception-handling)
+12. [Veritabanı Standartları](#-veritabanı-standartları)
 
 ---
 
@@ -411,6 +413,190 @@ public ProjectDetailControl(
 if (_taskService != null)
 {
     var tasks = await _taskService.GetTasksByProjectsAsync(new[] { projectId });
+}
+```
+
+---
+
+## 🌐 WEB API STANDARTLARI
+
+### Controller Yapısı
+
+```csharp
+[ApiController]
+[Route("api/[controller]")]
+public class InvitationsController : ControllerBase
+{
+    private readonly InvitationDbContext _context;
+
+    public InvitationsController(InvitationDbContext context)
+    {
+        _context = context;
+    }
+
+    [HttpGet("validate")]
+    public async Task<IActionResult> ValidateInvitation([FromQuery] string token)
+    {
+        // Implementation
+    }
+
+    [HttpPost("accept")]
+    public async Task<IActionResult> AcceptInvitation([FromBody] TokenRequest request)
+    {
+        // Implementation
+    }
+}
+```
+
+### Response Formatları
+
+```csharp
+// ✅ DOĞRU - Tutarlı response format
+return Ok(new { isValid = true, teamName = "...", message = "..." });
+return Ok(new { success = true, message = "İşlem başarılı." });
+return BadRequest(new { success = false, message = "Hata mesajı." });
+return StatusCode(500, new { success = false, message = ex.Message });
+
+// ❌ YANLIŞ - Tutarsız format
+return Ok("Success");
+return BadRequest("Error");
+```
+
+### CORS Yapılandırması
+
+```csharp
+// Program.cs
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+
+app.UseCors("AllowAll");
+```
+
+### Veritabanı Başlatma
+
+```csharp
+// ✅ DOĞRU - Try-catch ile
+try
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<InvitationDbContext>();
+    db.Database.EnsureCreated();
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"Database initialization failed: {ex.Message}");
+}
+```
+
+---
+
+## 📧 E-POSTA SERVİSİ STANDARTLARI
+
+### EmailService Yapısı
+
+```csharp
+public class EmailService
+{
+    private readonly SmtpClient _smtpClient;
+    private readonly string _fromEmail;
+    private readonly string _fromName;
+    private readonly bool _isEnabled;
+    private readonly string _invitationBaseUrl;
+
+    public EmailService(IConfiguration configuration)
+    {
+        _isEnabled = bool.Parse(configuration["Email:Enabled"] ?? "false");
+        _invitationBaseUrl = configuration["AppSettings:InvitationBaseUrl"] 
+            ?? "https://bilalabic.github.io/projecttracker/accept-invite.html";
+        // ...
+    }
+}
+```
+
+### E-posta Gönderimi
+
+```csharp
+// ✅ DOĞRU - Async ve try-catch ile
+public async Task<bool> SendEmailAsync(string to, string subject, string body)
+{
+    if (!_isEnabled)
+    {
+        Debug.WriteLine("📧 Email disabled, skipping...");
+        return true;
+    }
+
+    try
+    {
+        var message = new MailMessage(_fromEmail, to, subject, body)
+        {
+            IsBodyHtml = true
+        };
+        
+        await _smtpClient.SendMailAsync(message);
+        Debug.WriteLine($"✅ EMAIL SENT: To={to}, Subject={subject}");
+        return true;
+    }
+    catch (Exception ex)
+    {
+        Debug.WriteLine($"❌ EMAIL FAILED: {ex.Message}");
+        return false;
+    }
+}
+```
+
+### RemoteInvitationService Kullanımı
+
+```csharp
+// ✅ DOĞRU - Enabled kontrolü ile
+public async Task<bool> SendInvitationToRemoteAsync(...)
+{
+    if (!_isEnabled)
+    {
+        Debug.WriteLine("📡 Remote API disabled, skipping...");
+        return true;  // Disabled ise başarılı say
+    }
+
+    try
+    {
+        var response = await _httpClient.PostAsJsonAsync(url, payload);
+        return response.IsSuccessStatusCode;
+    }
+    catch (Exception ex)
+    {
+        Debug.WriteLine($"❌ Remote API error: {ex.Message}");
+        return false;  // Hata olsa bile uygulama devam etsin
+    }
+}
+```
+
+### appsettings.json Yapılandırması
+
+```json
+{
+  "Email": {
+    "Enabled": true,
+    "SmtpHost": "smtp.gmail.com",
+    "SmtpPort": 587,
+    "Username": "email@gmail.com",
+    "Password": "xxxx xxxx xxxx xxxx",
+    "FromEmail": "email@gmail.com",
+    "FromName": "ProjectTracker",
+    "EnableSsl": true
+  },
+  "RemoteApi": {
+    "Enabled": true,
+    "BaseUrl": "https://bilalabic.com/api"
+  },
+  "AppSettings": {
+    "InvitationBaseUrl": "https://bilalabic.github.io/projecttracker/accept-invite.html"
+  }
 }
 ```
 

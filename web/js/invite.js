@@ -4,6 +4,8 @@
  */
 
 // API Base URL - Loaded from config.js
+// CONFIG.API_BASE_URL = 'https://bilalabic.com' (base domain)
+// API endpoints: /api/invitations/...
 const API_BASE_URL = typeof CONFIG !== 'undefined' ? CONFIG.API_BASE_URL : 'http://localhost:5000';
 const DEMO_MODE = typeof CONFIG !== 'undefined' ? CONFIG.DEMO_MODE : true;
 
