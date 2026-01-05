@@ -260,8 +260,14 @@ MigrationBackup/
 appsettings.Development.json
 appsettings.Production.json
 **/appsettings.*.json
-\src\ProjectTracker.UI\appsettings.json
+src/ProjectTracker.UI/appsettings.json
+src/ProjectTracker.API/appsettings.json
+src/ProjectTracker.API/appsettings.Production.json
 !**/appsettings.example.json
+
+## Web config dosyaları (hassas bilgiler)
+web/js/config.js
+!web/js/config.example.js
 
 
 
@@ -317,3 +323,4 @@ $RECYCLE.BIN/
 *.lnk
 
 bank
+web
