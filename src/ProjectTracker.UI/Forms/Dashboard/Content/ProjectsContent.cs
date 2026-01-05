@@ -75,8 +75,28 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             var gridView = grdProjects.MainView as GridView;
             if (gridView == null) return;
 
-            // Repository items are now defined in Designer.cs
-            // Just assign the event handler for action buttons
+            // Setup action buttons with colors - no background
+            repositoryItemButtonEdit.Buttons.Clear();
+            repositoryItemButtonEdit.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+                new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Glyph) { 
+                    Caption = "✎", 
+                    ToolTip = "Edit Project", 
+                    Width = 28
+                },
+                new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Glyph) { 
+                    Caption = "✕", 
+                    ToolTip = "Delete Project", 
+                    Width = 28
+                }
+            });
+            repositoryItemButtonEdit.Buttons[0].Appearance.ForeColor = Color.FromArgb(91, 141, 239);
+            repositoryItemButtonEdit.Buttons[0].Appearance.BackColor = Color.Transparent;
+            repositoryItemButtonEdit.Buttons[0].Appearance.Options.UseBackColor = true;
+            repositoryItemButtonEdit.Buttons[1].Appearance.ForeColor = Color.FromArgb(220, 80, 80);
+            repositoryItemButtonEdit.Buttons[1].Appearance.BackColor = Color.Transparent;
+            repositoryItemButtonEdit.Buttons[1].Appearance.Options.UseBackColor = true;
+            
+            // Assign the event handler for action buttons
             repositoryItemButtonEdit.ButtonClick += ActionButtonsRepository_ButtonClick;
 
             // Custom draw for Status column
@@ -293,7 +313,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
         private void gridView1_RowClick(object sender, RowClickEventArgs e)
         {
             // Double click to edit
-            if (e.Clicks == 2)
+            if (e.Clicks == 2 && e.RowHandle >= 0)
             {
                 var gridView = sender as GridView;
                 var project = gridView?.GetFocusedRow() as ProjectDto;
@@ -365,9 +385,10 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
                 e.Graphics.FillRectangle(brush, e.Bounds);
             }
 
-            // Draw badge
-            int badgeWidth = 86;
-            int badgeHeight = 22;
+            // Draw badge - dynamically sized based on cell bounds
+            int padding = 6;
+            int badgeWidth = Math.Min(100, e.Bounds.Width - padding * 2);
+            int badgeHeight = Math.Min(24, e.Bounds.Height - padding);
             int badgeX = e.Bounds.X + (e.Bounds.Width - badgeWidth) / 2;
             int badgeY = e.Bounds.Y + (e.Bounds.Height - badgeHeight) / 2;
 
@@ -379,8 +400,8 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
                 e.Graphics.FillRectangle(brush, badgeRect);
             }
 
-            // Draw circle indicator
-            int circleSize = 8;
+            // Draw circle indicator - sized relative to badge
+            int circleSize = Math.Min(8, badgeHeight - 8);
             int circleX = badgeX + 8;
             int circleY = badgeY + (badgeHeight - circleSize) / 2;
 
@@ -392,9 +413,9 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             // Draw text
             string statusText = project.Status.ToString();
             using (var brush = new SolidBrush(badgeColor))
-            using (var font = new Font("Segoe UI", 8f, FontStyle.Bold))
+            using (var font = new Font("Segoe UI", 8.5f, FontStyle.Bold))
             {
-                var textRect = new Rectangle(circleX + circleSize + 4, badgeY, badgeWidth - circleSize - 16, badgeHeight);
+                var textRect = new Rectangle(circleX + circleSize + 5, badgeY, badgeWidth - circleSize - 18, badgeHeight);
                 var format = new StringFormat
                 {
                     Alignment = StringAlignment.Near,

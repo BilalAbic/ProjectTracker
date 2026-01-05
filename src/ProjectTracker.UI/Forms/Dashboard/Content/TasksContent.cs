@@ -46,8 +46,28 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
 
         private void InitializeGrid()
         {
-            // Repository items are now defined in Designer.cs
-            // Just assign the event handler for action buttons
+            // Setup action buttons with colors - no background
+            repositoryItemButtonEdit.Buttons.Clear();
+            repositoryItemButtonEdit.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+                new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Glyph) { 
+                    Caption = "✎", 
+                    ToolTip = "Edit Task", 
+                    Width = 28
+                },
+                new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Glyph) { 
+                    Caption = "✕", 
+                    ToolTip = "Delete Task", 
+                    Width = 28
+                }
+            });
+            repositoryItemButtonEdit.Buttons[0].Appearance.ForeColor = Color.FromArgb(91, 141, 239);
+            repositoryItemButtonEdit.Buttons[0].Appearance.BackColor = Color.Transparent;
+            repositoryItemButtonEdit.Buttons[0].Appearance.Options.UseBackColor = true;
+            repositoryItemButtonEdit.Buttons[1].Appearance.ForeColor = Color.FromArgb(220, 80, 80);
+            repositoryItemButtonEdit.Buttons[1].Appearance.BackColor = Color.Transparent;
+            repositoryItemButtonEdit.Buttons[1].Appearance.Options.UseBackColor = true;
+            
+            // Assign the event handler for action buttons
             repositoryItemButtonEdit.ButtonClick += ActionButtonsRepository_ButtonClick;
         }
 
@@ -61,6 +81,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             btnViewSwitcher.Click += BtnViewSwitcher_Click;
 
             gridView1.CustomDrawCell += GridView1_CustomDrawCell;
+            gridView1.RowClick += GridView1_RowClick;
 
             // Search & Filter Events
             txtSearch.EditValueChanged += (s, e) => ApplyFilters();
@@ -227,14 +248,17 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
                 var task = view.GetRow(rowHandle) as TaskDto;
                 if (task == null) return;
 
-                if (e.Button.Caption == "✏")
+                // Check button index instead of caption
+                int buttonIndex = repositoryItemButtonEdit.Buttons.IndexOf(e.Button);
+
+                if (buttonIndex == 0) // Edit
                 {
                     // Edit Task
                     var detailControl = Program.ServiceProvider.GetRequiredService<TaskDetailControl>();
                     detailControl.LoadTaskForEdit(task.TaskId);
                     ((FrmDashboard)this.ParentForm).LoadContent(detailControl);
                 }
-                else if (e.Button.Caption == "🗑")
+                else if (buttonIndex == 1) // Delete
                 {
                     // YETKİ KONTROLÜ: Developer task silemez
                     if (SessionManager.IsDeveloper)
@@ -527,6 +551,21 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             var detailControl = Program.ServiceProvider.GetRequiredService<TaskDetailControl>();
             detailControl.LoadTaskForEdit(taskId);
             ((FrmDashboard)this.ParentForm).LoadContent(detailControl);
+        }
+
+        /// <summary>
+        /// Grid row click event - double click to edit
+        /// </summary>
+        private void GridView1_RowClick(object sender, DevExpress.XtraGrid.Views.Grid.RowClickEventArgs e)
+        {
+            if (e.Clicks == 2 && e.RowHandle >= 0)
+            {
+                var task = gridView1.GetFocusedRow() as TaskDto;
+                if (task != null)
+                {
+                    OpenTaskForEdit(task.TaskId);
+                }
+            }
         }
 
         #endregion

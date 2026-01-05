@@ -74,43 +74,43 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             btnCreateTeam.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             btnCreateTeam.Appearance.BackColor = Color.FromArgb(91, 141, 239);
             btnCreateTeam.Appearance.BorderColor = Color.FromArgb(91, 141, 239);
-            btnCreateTeam.Appearance.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnCreateTeam.Appearance.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
             btnCreateTeam.Appearance.ForeColor = Color.White;
             btnCreateTeam.Appearance.Options.UseBackColor = true;
             btnCreateTeam.Appearance.Options.UseBorderColor = true;
             btnCreateTeam.Appearance.Options.UseFont = true;
             btnCreateTeam.Appearance.Options.UseForeColor = true;
-            btnCreateTeam.Location = new Point(955, 25);
+            btnCreateTeam.Location = new Point(955, 22);
             btnCreateTeam.Name = "btnCreateTeam";
-            btnCreateTeam.Size = new Size(130, 36);
+            btnCreateTeam.Size = new Size(135, 36);
             btnCreateTeam.TabIndex = 2;
             btnCreateTeam.Text = "+ Create Team";
             // 
             // lblSubtitle
             // 
             lblSubtitle.Appearance.Font = new Font("Segoe UI", 10F);
-            lblSubtitle.Appearance.ForeColor = Color.FromArgb(203, 213, 225);
+            lblSubtitle.Appearance.ForeColor = Color.FromArgb(148, 163, 184);
             lblSubtitle.Appearance.Options.UseFont = true;
             lblSubtitle.Appearance.Options.UseForeColor = true;
             lblSubtitle.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
-            lblSubtitle.Location = new Point(0, 48);
+            lblSubtitle.Location = new Point(0, 50);
             lblSubtitle.Name = "lblSubtitle";
-            lblSubtitle.Size = new Size(500, 20);
+            lblSubtitle.Size = new Size(500, 22);
             lblSubtitle.TabIndex = 1;
             lblSubtitle.Text = "Manage your teams and switch between workspaces";
             // 
             // lblTitle
             // 
-            lblTitle.Appearance.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
-            lblTitle.Appearance.ForeColor = Color.White;
+            lblTitle.Appearance.Font = new Font("Segoe UI", 20F, FontStyle.Bold);
+            lblTitle.Appearance.ForeColor = Color.FromArgb(248, 250, 252);
             lblTitle.Appearance.Options.UseFont = true;
             lblTitle.Appearance.Options.UseForeColor = true;
             lblTitle.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
-            lblTitle.Location = new Point(0, 10);
+            lblTitle.Location = new Point(0, 8);
             lblTitle.Name = "lblTitle";
-            lblTitle.Size = new Size(300, 32);
+            lblTitle.Size = new Size(300, 38);
             lblTitle.TabIndex = 0;
-            lblTitle.Text = "🏢 Teams";
+            lblTitle.Text = "👥 Teams";
             // 
             // pnlSwitcher
             // 

@@ -88,7 +88,8 @@ namespace ProjectTracker.UI
             services.AddTransient<IInvitationService, InvitationService>();
             services.AddTransient<IReportService, ProjectTracker.Business.Services.ReportService>(); 
             services.AddTransient<IAdvancedReportService, AdvancedReportService>();
-            services.AddTransient<IAuditLogService, AuditLogService>(); 
+            services.AddTransient<IAuditLogService, AuditLogService>();
+            services.AddTransient<IEmailService, EmailService>();
 
             // ============================================
             // GITHUB INTEGRATION SERVICES
@@ -117,6 +118,7 @@ namespace ProjectTracker.UI
             services.AddTransient<Forms.Dashboard.Content.TeamsContent>();
             services.AddTransient<Forms.Dashboard.Content.TeamDetailControl>();
             services.AddTransient<Forms.Dashboard.Content.InvitationsContent>();
+            services.AddTransient<Forms.Dashboard.Content.MyInvitationsContent>();
             services.AddTransient<Forms.Dashboard.Content.TeamMembersContent>();
             services.AddTransient<Forms.Dashboard.Content.ReportsContent>();
             services.AddTransient<Forms.Dashboard.Content.UserSettingsContent>();

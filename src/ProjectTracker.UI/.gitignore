@@ -1,3 +1,4 @@
+appsettings.json
 # ============================================
 # AKILLI PROJE YONETIM SISTEMI .gitignore
 # ============================================
@@ -317,3 +318,4 @@ $RECYCLE.BIN/
 *.lnk
 
 bank
+web

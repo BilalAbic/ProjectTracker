@@ -17,17 +17,20 @@ namespace ProjectTracker.Business.Services
         private readonly IMapper _mapper;
         private readonly IAuditLogService _auditLogService;
         private readonly ICurrentUserService _currentUserService;
+        private readonly IEmailService _emailService;
 
         public TaskService(
             IUnitOfWork unitOfWork, 
             IMapper mapper,
             IAuditLogService auditLogService,
-            ICurrentUserService currentUserService)
+            ICurrentUserService currentUserService,
+            IEmailService emailService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _auditLogService = auditLogService;
             _currentUserService = currentUserService;
+            _emailService = emailService;
         }
 
         public async Task<IEnumerable<TaskDto>> GetAllTasksAsync()
@@ -57,6 +60,38 @@ namespace ProjectTracker.Business.Services
             await _unitOfWork.Tasks.AddAsync(task);
             await _unitOfWork.SaveChangesAsync();
 
+            // Get project and assignee info for notifications
+            var project = await _unitOfWork.Projects.GetByIdAsync(task.ProjectId);
+            var currentUser = await _unitOfWork.Users.GetByIdAsync(_currentUserService.CurrentUserId);
+            
+            // Send email notification if task is assigned (fire-and-forget)
+            if (dto.AssignedUserId.HasValue)
+            {
+                _ = System.Threading.Tasks.Task.Run(async () =>
+                {
+                    try
+                    {
+                        var assignee = await _unitOfWork.Users.GetByIdAsync(dto.AssignedUserId.Value);
+                        if (assignee != null && !string.IsNullOrEmpty(assignee.Email))
+                        {
+                            await _emailService.SendTaskAssignmentEmailAsync(
+                                toEmail: assignee.Email,
+                                toName: assignee.FullName,
+                                taskName: task.TaskName,
+                                projectName: project?.ProjectName ?? "Unknown Project",
+                                assignedBy: currentUser?.FullName ?? "System",
+                                dueDate: task.DueDate,
+                                description: task.Description
+                            );
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"❌ Email notification failed: {ex.Message}");
+                    }
+                });
+            }
+
             // Log activity (fire-and-forget)
             var projectId = task.ProjectId;
             var taskId = task.TaskId;
@@ -64,7 +99,6 @@ namespace ProjectTracker.Business.Services
             {
                 try
                 {
-                    var project = await _unitOfWork.Projects.GetByIdAsync(projectId);
                     await _auditLogService.LogActivityAsync(
                         ActivityType.TaskCreated,
                         "Tasks",
@@ -103,13 +137,63 @@ namespace ProjectTracker.Business.Services
             _unitOfWork.Tasks.Update(task);
             await _unitOfWork.SaveChangesAsync();
 
-            // Log appropriate activity (fire-and-forget)
-            var projectId = task.ProjectId;
+            // Get project info
+            var project = await _unitOfWork.Projects.GetByIdAsync(task.ProjectId);
+            var currentUser = await _unitOfWork.Users.GetByIdAsync(_currentUserService.CurrentUserId);
+
+            // Send email notifications (fire-and-forget)
             _ = System.Threading.Tasks.Task.Run(async () =>
             {
                 try
                 {
-                    var project = await _unitOfWork.Projects.GetByIdAsync(projectId);
+                    // If assignee changed, send email to new assignee
+                    if (oldAssignee != dto.AssignedUserId && dto.AssignedUserId.HasValue)
+                    {
+                        var newAssignee = await _unitOfWork.Users.GetByIdAsync(dto.AssignedUserId.Value);
+                        if (newAssignee != null && !string.IsNullOrEmpty(newAssignee.Email))
+                        {
+                            await _emailService.SendTaskAssignmentEmailAsync(
+                                toEmail: newAssignee.Email,
+                                toName: newAssignee.FullName,
+                                taskName: task.TaskName,
+                                projectName: project?.ProjectName ?? "Unknown Project",
+                                assignedBy: currentUser?.FullName ?? "System",
+                                dueDate: task.DueDate,
+                                description: task.Description
+                            );
+                        }
+                    }
+                    
+                    // If status changed, notify assignee
+                    if (oldStatus != dto.Status && task.AssignedToUserId.HasValue)
+                    {
+                        var assignee = await _unitOfWork.Users.GetByIdAsync(task.AssignedToUserId.Value);
+                        if (assignee != null && !string.IsNullOrEmpty(assignee.Email))
+                        {
+                            await _emailService.SendTaskStatusUpdateEmailAsync(
+                                toEmail: assignee.Email,
+                                toName: assignee.FullName,
+                                taskName: task.TaskName,
+                                projectName: project?.ProjectName ?? "Unknown Project",
+                                oldStatus: oldStatus.ToString(),
+                                newStatus: dto.Status.ToString()
+                            );
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"❌ Email notification failed: {ex.Message}");
+                }
+            });
+
+            // Log appropriate activity (fire-and-forget)
+            var projectIdForLog = task.ProjectId;
+            _ = System.Threading.Tasks.Task.Run(async () =>
+            {
+                try
+                {
+                    var proj = await _unitOfWork.Projects.GetByIdAsync(projectIdForLog);
                     
                     if (oldStatus != dto.Status)
                     {
@@ -122,7 +206,7 @@ namespace ProjectTracker.Business.Services
                             _currentUserService.CurrentUserId,
                             oldValues: oldStatus.ToString(),
                             newValues: dto.Status.ToString(),
-                            teamId: project?.TeamId);
+                            teamId: proj?.TeamId);
                     }
                     else if (oldAssignee != dto.AssignedUserId)
                     {
@@ -130,7 +214,7 @@ namespace ProjectTracker.Business.Services
                             dto.AssignedUserId.HasValue ? ActivityType.TaskAssigned : ActivityType.TaskUnassigned,
                             "Tasks", taskId,
                             _currentUserService.CurrentUserId,
-                            teamId: project?.TeamId);
+                            teamId: proj?.TeamId);
                     }
                     else
                     {

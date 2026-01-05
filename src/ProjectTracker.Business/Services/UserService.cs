@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using FluentValidation;
 using ProjectTracker.Business.DTOs;
 using ProjectTracker.Core.Entities;
@@ -251,13 +251,13 @@ namespace ProjectTracker.Business.Services
                 throw new Exception("Email already exists");
             }
 
-            // 4. Determine role based on invitation token
+            // 4. Determine role based on invitation token OR pending invitation for this email
             int roleId = 4; // Default: Pending
             Core.Entities.TeamInvitation? invitation = null;
             
+            // First check if there's a valid invitation token
             if (!string.IsNullOrEmpty(registerDto.InvitationToken))
             {
-                // Check if invitation exists and is valid
                 invitation = await _unitOfWork.TeamInvitations
                     .FirstOrDefaultAsync(ti => ti.Token == registerDto.InvitationToken 
                         && ti.Status == Core.Enums.InvitationStatus.Pending
@@ -265,18 +265,46 @@ namespace ProjectTracker.Business.Services
                 
                 if (invitation != null)
                 {
-                    // Valid invitation - assign Developer role (or based on invitation)
-                    roleId = 3; // Developer
-                    System.Diagnostics.Debug.WriteLine($"✅ REGISTER: Valid invitation found, assigning Developer role");
+                    System.Diagnostics.Debug.WriteLine($"✅ REGISTER: Valid invitation token found");
                 }
                 else
                 {
-                    System.Diagnostics.Debug.WriteLine($"⚠️ REGISTER: Invalid/expired invitation token, assigning Pending role");
+                    System.Diagnostics.Debug.WriteLine($"⚠️ REGISTER: Invalid/expired invitation token");
                 }
+            }
+            
+            // If no valid token, check if there's a pending invitation for this email
+            if (invitation == null)
+            {
+                invitation = await _unitOfWork.TeamInvitations
+                    .FirstOrDefaultAsync(ti => ti.Email == registerDto.Email 
+                        && ti.Status == Core.Enums.InvitationStatus.Pending
+                        && ti.ExpiresAt > DateTime.Now);
+                
+                if (invitation != null)
+                {
+                    System.Diagnostics.Debug.WriteLine($"✅ REGISTER: Found pending invitation for email {registerDto.Email}");
+                }
+            }
+            
+            // If we found a valid invitation (by token or email), assign appropriate role
+            if (invitation != null)
+            {
+                // Map TeamRole to system Role
+                roleId = invitation.ProposedRole switch
+                {
+                    Core.Enums.TeamRole.Owner => 2,           // Project Manager
+                    Core.Enums.TeamRole.Admin => 2,           // Project Manager  
+                    Core.Enums.TeamRole.ProjectManager => 2,  // Project Manager
+                    Core.Enums.TeamRole.Developer => 3,       // Developer
+                    Core.Enums.TeamRole.Observer => 3,        // Developer (read-only in team)
+                    _ => 3                                     // Default: Developer
+                };
+                System.Diagnostics.Debug.WriteLine($"✅ REGISTER: Assigning role {roleId} based on team role {invitation.ProposedRole}");
             }
             else
             {
-                System.Diagnostics.Debug.WriteLine($"📝 REGISTER: No invitation token, assigning Pending role");
+                System.Diagnostics.Debug.WriteLine($"📝 REGISTER: No invitation found, assigning Pending role");
             }
 
             // 5. Hash password with BCrypt

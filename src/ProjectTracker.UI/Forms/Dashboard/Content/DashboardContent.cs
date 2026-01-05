@@ -24,6 +24,8 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
         private readonly IProjectService _projectService;
         private readonly IUserService _userService;
         private readonly IAuditLogService _auditLogService;
+        private readonly ITaskService _taskService;
+        private readonly ITeamService _teamService;
 
         /// <summary>
         /// Initializes a new instance of the DashboardContent class
@@ -31,13 +33,17 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
         public DashboardContent(
             IProjectService projectService, 
             IUserService userService,
-            IAuditLogService auditLogService)
+            IAuditLogService auditLogService,
+            ITaskService taskService,
+            ITeamService teamService)
         {
             InitializeComponent();
 
             _projectService = projectService;
             _userService = userService;
             _auditLogService = auditLogService;
+            _taskService = taskService;
+            _teamService = teamService;
 
             // Setup card shadows
             SetupCardShadows();
@@ -119,12 +125,6 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
         {
             // New Project button
             btnNewProject.Click += btnNewProject_Click;
-
-            // View All button
-            btnViewAllProjects.Click += btnViewAllProjects_Click;
-
-            // Grid row double click
-            gridViewRecentProjects.DoubleClick += gridViewRecentProjects_DoubleClick;
         }
 
         /// <summary>
@@ -150,82 +150,123 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
         }
 
         /// <summary>
-        /// View All button click
-        /// </summary>
-        private void btnViewAllProjects_Click(object sender, EventArgs e)
-        {
-            // Navigate to Projects page
-            var dashboard = this.FindForm() as FrmDashboard;
-            dashboard?.LoadContent(Program.ServiceProvider.GetRequiredService<ProjectsContent>());
-        }
-
-        /// <summary>
-        /// Grid row double click
-        /// </summary>
-        private void gridViewRecentProjects_DoubleClick(object sender, EventArgs e)
-        {
-            var view = gridViewRecentProjects;
-            var hitInfo = view.CalcHitInfo(gridRecentProjects.PointToClient(Cursor.Position));
-
-            if (hitInfo.InRow && hitInfo.RowHandle >= 0)
-            {
-                var project = view.GetRow(hitInfo.RowHandle) as ProjectDto;
-                if (project != null)
-                {
-                    FormStyleHelper.ShowInfo($"Open project: {project.ProjectName}");
-                }
-            }
-        }
-
-        /// <summary>
         /// Load dashboard data from services
         /// </summary>
         private async Task LoadDashboardDataAsync()
         {
             try
             {
-                // Get all projects
-                var allProjects = await _projectService.GetAllAsync();
+                // Rol bazlı veri getirme
+                var isAdmin = SessionManager.IsAdmin;
+                var currentUserId = SessionManager.CurrentUserId;
 
-                // Calculate KPIs
-                var totalProjects = allProjects.Count();
-                var activeProjects = allProjects.Count(p => p.Status == ProjectStatus.Active);
-                var completedProjects = allProjects.Count(p => p.Status == ProjectStatus.Completed);
-                var completionRate = totalProjects > 0
-                    ? (int)((double)completedProjects / totalProjects * 100)
-                    : 0;
-
-                // Update KPI cards
+                // ===== CARD 1: Projects =====
+                IEnumerable<ProjectDto> projects;
+                if (isAdmin)
+                {
+                    // Admin tüm projeleri görür
+                    projects = await _projectService.GetAllAsync();
+                }
+                else
+                {
+                    // Diğer kullanıcılar sadece kendi projelerini görür
+                    projects = await _projectService.GetUserProjectsAsync(currentUserId);
+                }
+                
+                var totalProjects = projects.Count();
+                var activeProjects = projects.Count(p => p.Status == ProjectStatus.Active);
+                var completedProjects = projects.Count(p => p.Status == ProjectStatus.Completed);
+                
+                // Bugün eklenen projeler
+                var projectsToday = projects.Count(p => p.CreatedAt.Date == DateTime.Today);
+                
                 lblCard1Value.Text = totalProjects.ToString();
-                lblCard2Value.Text = activeProjects.ToString();
-                lblCard3Value.Text = "12"; // Hardcoded for now (Team members)
-                lblCard4Value.Text = $"{completionRate}%";
+                lblCard1Label.Text = isAdmin ? "Total Projects" : "My Projects";
+                lblCard1Trend.Text = projectsToday > 0 ? $"↑ +{projectsToday} today" : "No new today";
+                lblCard1Trend.Appearance.ForeColor = projectsToday > 0 ? ColorPalette.SuccessGreen : ColorPalette.TextSecondary;
 
-                // Update progress bar
-                progressCompletion.Position = completionRate;
+                // ===== CARD 2: Tasks =====
+                IEnumerable<TaskDto> tasks;
+                if (isAdmin)
+                {
+                    // Admin tüm taskları görür
+                    tasks = await _taskService.GetAllTasksAsync();
+                }
+                else
+                {
+                    // Diğer kullanıcılar sadece kendi tasklarını görür
+                    tasks = await _taskService.GetUserTasksAsync(currentUserId);
+                }
+                
+                var activeTasks = tasks.Count(t => 
+                    t.Status == "InProgress" || 
+                    t.Status == "Pending");
+                var completedTasksThisWeek = tasks.Count(t => 
+                    t.Status == "Completed" && 
+                    t.CompletedDate.HasValue &&
+                    t.CompletedDate.Value >= DateTime.Today.AddDays(-7));
+                
+                lblCard2Value.Text = activeTasks.ToString();
+                lblCard2Label.Text = isAdmin ? "Active Tasks" : "My Tasks";
+                lblCard2Trend.Text = completedTasksThisWeek > 0 
+                    ? $"✓ {completedTasksThisWeek} done this week" 
+                    : "No completions";
+                lblCard2Trend.Appearance.ForeColor = completedTasksThisWeek > 0 
+                    ? ColorPalette.SuccessGreen 
+                    : ColorPalette.TextSecondary;
 
-                // Load recent projects (last 5)
-                var recentProjects = allProjects
-                    .OrderByDescending(p => p.CreatedAt)
-                    .Take(5)
-                    .Select(p => new
+                // ===== CARD 3: Team Members =====
+                int totalMembers;
+                string teamInfo;
+                
+                if (isAdmin)
+                {
+                    // Admin tüm aktif kullanıcıları görür
+                    var activeUsers = await _userService.GetActiveUsersAsync();
+                    totalMembers = activeUsers.Count();
+                    
+                    var allTeams = await _teamService.GetAllTeamsAsync();
+                    teamInfo = $"{allTeams.Count()} teams";
+                    lblCard3Label.Text = "Total Users";
+                }
+                else
+                {
+                    // Kullanıcı kendi takım üyelerini görür
+                    var userTeams = await _teamService.GetUserTeamsAsync();
+                    var teamsCount = userTeams.Count();
+                    
+                    // Takım üyelerini say
+                    totalMembers = 0;
+                    foreach (var team in userTeams)
                     {
-                        p.ProjectId,
-                        Name = p.ProjectName,
-                        Status = p.Status.ToString(),
-                        Progress = $"{p.CompletionPercentage}%",
-                        ManagerName = "Manager", // TODO: Get from User
-                        DueDate = p.EndDate
-                    })
-                    .ToList();
+                        var members = await _teamService.GetTeamMembersAsync(team.TeamId);
+                        totalMembers += members.Count();
+                    }
+                    
+                    teamInfo = teamsCount > 0 ? $"In {teamsCount} team(s)" : "No teams";
+                    lblCard3Label.Text = "Team Members";
+                }
+                
+                lblCard3Value.Text = totalMembers.ToString();
+                lblCard3Trend.Text = teamInfo;
+                lblCard3Trend.Appearance.ForeColor = ColorPalette.TextSecondary;
 
-                gridRecentProjects.DataSource = recentProjects;
+                // ===== CARD 4: Completion Rate =====
+                var totalTasks = tasks.Count();
+                var completedTasks = tasks.Count(t => t.Status == "Completed");
+                var taskCompletionRate = totalTasks > 0
+                    ? (int)((double)completedTasks / totalTasks * 100)
+                    : 0;
+                
+                lblCard4Value.Text = $"{taskCompletionRate}%";
+                lblCard4Label.Text = isAdmin ? "Overall Completion" : "My Completion";
+                progressCompletion.Position = taskCompletionRate;
 
-                // Load recent activities (ROL BAZLI)
+                // ===== Recent Activities Grid =====
                 await LoadRecentActivitiesAsync();
 
-                // Update trends (mock data for now)
-                UpdateTrends();
+                // Update welcome message with user name
+                UpdateWelcomeMessage();
             }
             catch (Exception ex)
             {
@@ -234,19 +275,24 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
         }
 
         /// <summary>
-        /// Update trend indicators (mock data)
+        /// Update welcome message with current user name
         /// </summary>
-        private void UpdateTrends()
+        private void UpdateWelcomeMessage()
         {
-            // Mock trends
-            lblCard1Trend.Text = "↑ +3 today";
-            lblCard1Trend.Appearance.ForeColor = ColorPalette.SuccessGreen;
-
-            lblCard2Trend.Text = "↑ +12 this week";
-            lblCard2Trend.Appearance.ForeColor = ColorPalette.SuccessGreen;
-
-            lblCard3Trend.Text = "Online: 8";
-            lblCard3Trend.Appearance.ForeColor = ColorPalette.TextSecondary;
+            var userName = SessionManager.CurrentUserFullName;
+            if (string.IsNullOrEmpty(userName))
+                userName = SessionManager.CurrentUser?.Username ?? "User";
+            
+            lblWelcomeTitle.Text = $"Welcome back, {userName}!";
+            
+            var hour = DateTime.Now.Hour;
+            string greeting;
+            if (hour < 12) greeting = "Good morning";
+            else if (hour < 18) greeting = "Good afternoon";
+            else greeting = "Good evening";
+            
+            var roleInfo = SessionManager.IsAdmin ? " (Admin View)" : "";
+            lblWelcomeSubtitle.Text = $"{greeting}! Here's what's happening with your projects today.{roleInfo}";
         }
 
         /// <summary>

@@ -59,7 +59,7 @@ namespace ProjectTracker.UI.Forms.Dashboard
         {
             // Admin: Full access to everything
             // ProjectManager: No Settings access
-            // Developer: No Reports, Settings, Team management access
+            // Developer: No Reports, Settings, GitHub Analytics access
             
             // Settings - Admin only
             btnSettings.Visible = SessionManager.IsAdmin;
@@ -67,11 +67,17 @@ namespace ProjectTracker.UI.Forms.Dashboard
             // Reports - Admin and ProjectManager only
             btnReports.Visible = SessionManager.HasManagementAccess;
             
-            // Team - Admin and ProjectManager only (for team management)
-            // Developers can still see teams they belong to
-            // btnTeam.Visible = true; // Keep visible but limit functionality inside
+            // GitHub Analytics - Admin and ProjectManager only
+            // Developers don't need to see repository-level analytics
+            btnAnalytics.Visible = SessionManager.HasManagementAccess;
+            
+            // Team - Everyone can see, but functionality is limited inside
+            // btnTeam.Visible = true;
             
             System.Diagnostics.Debug.WriteLine($"🔐 DASHBOARD: Role-based access configured for {SessionManager.CurrentRoleName}");
+            System.Diagnostics.Debug.WriteLine($"   - Settings: {btnSettings.Visible}");
+            System.Diagnostics.Debug.WriteLine($"   - Reports: {btnReports.Visible}");
+            System.Diagnostics.Debug.WriteLine($"   - GitHub Analytics: {btnAnalytics.Visible}");
         }
         
         /// <summary>
@@ -124,6 +130,9 @@ namespace ProjectTracker.UI.Forms.Dashboard
 
             // Top bar hover effects
             SetupTopBarHoverEffects();
+
+            // Notification button - opens My Invitations
+            btnNotification.Click += btnNotification_Click;
 
             // Sidebar navigation
             btnDashboard.Click += btnDashboard_Click;
@@ -219,7 +228,7 @@ namespace ProjectTracker.UI.Forms.Dashboard
             var sidebarButtons = new[]
             {
                 btnDashboard, btnProjects, btnTasks,
-                btnTeam, btnReports, btnSettings
+                btnTeam, btnReports, btnSettings, btnAnalytics
             };
 
             foreach (var btn in sidebarButtons)
@@ -295,6 +304,21 @@ namespace ProjectTracker.UI.Forms.Dashboard
             var projectsContent = _serviceProvider.GetRequiredService<Content.ProjectsContent>();
             LoadContent(projectsContent);
             UpdateSidebarSelection(btnProjects);
+        }
+
+        /// <summary>
+        /// Notification button click - Opens My Invitations
+        /// </summary>
+        private void btnNotification_Click(object? sender, EventArgs e)
+        {
+            var myInvitationsContent = _serviceProvider.GetRequiredService<Content.MyInvitationsContent>();
+            LoadContent(myInvitationsContent);
+            // Clear sidebar selection since this is from top bar
+            foreach (var btn in pnlSidebar.Controls.OfType<SimpleButton>())
+            {
+                btn.Appearance.ForeColor = ColorPalette.TextSecondary;
+            }
+            _activeButton = null!;
         }
 
         /// <summary>

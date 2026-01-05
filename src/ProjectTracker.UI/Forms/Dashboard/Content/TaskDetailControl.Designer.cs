@@ -34,12 +34,6 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             btnBack = new DevExpress.XtraEditors.SimpleButton();
             lblTitle = new DevExpress.XtraEditors.LabelControl();
             pnlFormContainer = new DevExpress.XtraEditors.PanelControl();
-            // Related Commits Panel
-            pnlRelatedCommits = new DevExpress.XtraEditors.PanelControl();
-            lblRelatedCommitsTitle = new DevExpress.XtraEditors.LabelControl();
-            pnlCommitsList = new FlowLayoutPanel();
-            lblCommitsSummary = new DevExpress.XtraEditors.LabelControl();
-            lblNoCommits = new DevExpress.XtraEditors.LabelControl();
             btnCancel = new DevExpress.XtraEditors.SimpleButton();
             btnSave = new DevExpress.XtraEditors.SimpleButton();
             cmbPriority = new DevExpress.XtraEditors.ComboBoxEdit();
@@ -58,12 +52,15 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             lblDescription = new DevExpress.XtraEditors.LabelControl();
             txtTaskName = new DevExpress.XtraEditors.TextEdit();
             lblTaskName = new DevExpress.XtraEditors.LabelControl();
+            pnlRelatedCommits = new DevExpress.XtraEditors.PanelControl();
+            pnlCommitsList = new FlowLayoutPanel();
+            lblCommitsSummary = new DevExpress.XtraEditors.LabelControl();
+            lblNoCommits = new DevExpress.XtraEditors.LabelControl();
+            lblRelatedCommitsTitle = new DevExpress.XtraEditors.LabelControl();
             ((System.ComponentModel.ISupportInitialize)pnlHeader).BeginInit();
             pnlHeader.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pnlFormContainer).BeginInit();
             pnlFormContainer.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pnlRelatedCommits).BeginInit();
-            pnlRelatedCommits.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)cmbPriority.Properties).BeginInit();
             ((System.ComponentModel.ISupportInitialize)cmbStatus.Properties).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dateDue.Properties).BeginInit();
@@ -74,6 +71,8 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             ((System.ComponentModel.ISupportInitialize)lueProject.Properties).BeginInit();
             ((System.ComponentModel.ISupportInitialize)txtDescription.Properties).BeginInit();
             ((System.ComponentModel.ISupportInitialize)txtTaskName.Properties).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pnlRelatedCommits).BeginInit();
+            pnlRelatedCommits.SuspendLayout();
             SuspendLayout();
             // 
             // pnlHeader
@@ -204,7 +203,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             lblPriority.Appearance.Options.UseForeColor = true;
             lblPriority.Location = new Point(310, 395);
             lblPriority.Name = "lblPriority";
-            lblPriority.Size = new Size(44, 17);
+            lblPriority.Size = new Size(41, 17);
             lblPriority.TabIndex = 14;
             lblPriority.Text = "Priority";
             // 
@@ -234,7 +233,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             lblStatus.Appearance.Options.UseForeColor = true;
             lblStatus.Location = new Point(0, 395);
             lblStatus.Name = "lblStatus";
-            lblStatus.Size = new Size(40, 17);
+            lblStatus.Size = new Size(35, 17);
             lblStatus.TabIndex = 12;
             lblStatus.Text = "Status";
             // 
@@ -268,7 +267,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             lblDueDate.Appearance.Options.UseForeColor = true;
             lblDueDate.Location = new Point(310, 320);
             lblDueDate.Name = "lblDueDate";
-            lblDueDate.Size = new Size(55, 17);
+            lblDueDate.Size = new Size(54, 17);
             lblDueDate.TabIndex = 10;
             lblDueDate.Text = "Due Date";
             // 
@@ -302,7 +301,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             lblStartDate.Appearance.Options.UseForeColor = true;
             lblStartDate.Location = new Point(0, 320);
             lblStartDate.Name = "lblStartDate";
-            lblStartDate.Size = new Size(68, 17);
+            lblStartDate.Size = new Size(67, 17);
             lblStartDate.TabIndex = 8;
             lblStartDate.Text = "Start Date *";
             // 
@@ -335,7 +334,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             lblAssignee.Appearance.Options.UseForeColor = true;
             lblAssignee.Location = new Point(310, 245);
             lblAssignee.Name = "lblAssignee";
-            lblAssignee.Size = new Size(54, 17);
+            lblAssignee.Size = new Size(52, 17);
             lblAssignee.TabIndex = 6;
             lblAssignee.Text = "Assignee";
             // 
@@ -367,7 +366,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             lblProject.Appearance.Options.UseForeColor = true;
             lblProject.Location = new Point(0, 245);
             lblProject.Name = "lblProject";
-            lblProject.Size = new Size(53, 17);
+            lblProject.Size = new Size(49, 17);
             lblProject.TabIndex = 4;
             lblProject.Text = "Project *";
             // 
@@ -395,7 +394,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             lblDescription.Appearance.Options.UseForeColor = true;
             lblDescription.Location = new Point(0, 75);
             lblDescription.Name = "lblDescription";
-            lblDescription.Size = new Size(70, 17);
+            lblDescription.Size = new Size(66, 17);
             lblDescription.TabIndex = 2;
             lblDescription.Text = "Description";
             // 
@@ -425,11 +424,11 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             lblTaskName.Appearance.Options.UseForeColor = true;
             lblTaskName.Location = new Point(0, 0);
             lblTaskName.Name = "lblTaskName";
-            lblTaskName.Size = new Size(75, 17);
+            lblTaskName.Size = new Size(74, 17);
             lblTaskName.TabIndex = 0;
             lblTaskName.Text = "Task Name *";
             // 
-            // pnlRelatedCommits - Right side panel for commits
+            // pnlRelatedCommits
             // 
             pnlRelatedCommits.Appearance.BackColor = Color.FromArgb(36, 43, 61);
             pnlRelatedCommits.Appearance.Options.UseBackColor = true;
@@ -445,21 +444,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             pnlRelatedCommits.TabIndex = 2;
             pnlRelatedCommits.Visible = false;
             // 
-            // lblRelatedCommitsTitle
-            // 
-            lblRelatedCommitsTitle.Appearance.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            lblRelatedCommitsTitle.Appearance.ForeColor = Color.FromArgb(248, 250, 252);
-            lblRelatedCommitsTitle.Appearance.Options.UseFont = true;
-            lblRelatedCommitsTitle.Appearance.Options.UseForeColor = true;
-            lblRelatedCommitsTitle.Dock = DockStyle.Top;
-            lblRelatedCommitsTitle.Location = new Point(15, 15);
-            lblRelatedCommitsTitle.Name = "lblRelatedCommitsTitle";
-            lblRelatedCommitsTitle.Padding = new Padding(0, 0, 0, 10);
-            lblRelatedCommitsTitle.Size = new Size(130, 31);
-            lblRelatedCommitsTitle.TabIndex = 0;
-            lblRelatedCommitsTitle.Text = "Related Commits";
-            // 
-            // pnlCommitsList - FlowLayout for commit cards
+            // pnlCommitsList
             // 
             pnlCommitsList.AutoScroll = true;
             pnlCommitsList.BackColor = Color.FromArgb(36, 43, 61);
@@ -468,7 +453,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             pnlCommitsList.Location = new Point(15, 46);
             pnlCommitsList.Name = "pnlCommitsList";
             pnlCommitsList.Padding = new Padding(0, 5, 0, 0);
-            pnlCommitsList.Size = new Size(370, 490);
+            pnlCommitsList.Size = new Size(370, 514);
             pnlCommitsList.TabIndex = 1;
             pnlCommitsList.WrapContents = false;
             // 
@@ -479,10 +464,10 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             lblCommitsSummary.Appearance.Options.UseFont = true;
             lblCommitsSummary.Appearance.Options.UseForeColor = true;
             lblCommitsSummary.Dock = DockStyle.Bottom;
-            lblCommitsSummary.Location = new Point(15, 554);
+            lblCommitsSummary.Location = new Point(15, 560);
             lblCommitsSummary.Name = "lblCommitsSummary";
             lblCommitsSummary.Padding = new Padding(0, 10, 0, 0);
-            lblCommitsSummary.Size = new Size(150, 31);
+            lblCommitsSummary.Size = new Size(158, 25);
             lblCommitsSummary.TabIndex = 2;
             lblCommitsSummary.Text = "Total: 0 commits, +0 / -0 lines";
             // 
@@ -503,6 +488,20 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             lblNoCommits.Text = "No commits linked to this task yet";
             lblNoCommits.Visible = false;
             // 
+            // lblRelatedCommitsTitle
+            // 
+            lblRelatedCommitsTitle.Appearance.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            lblRelatedCommitsTitle.Appearance.ForeColor = Color.FromArgb(248, 250, 252);
+            lblRelatedCommitsTitle.Appearance.Options.UseFont = true;
+            lblRelatedCommitsTitle.Appearance.Options.UseForeColor = true;
+            lblRelatedCommitsTitle.Dock = DockStyle.Top;
+            lblRelatedCommitsTitle.Location = new Point(15, 15);
+            lblRelatedCommitsTitle.Name = "lblRelatedCommitsTitle";
+            lblRelatedCommitsTitle.Padding = new Padding(0, 0, 0, 10);
+            lblRelatedCommitsTitle.Size = new Size(130, 31);
+            lblRelatedCommitsTitle.TabIndex = 0;
+            lblRelatedCommitsTitle.Text = "Related Commits";
+            // 
             // TaskDetailControl
             // 
             AutoScaleDimensions = new SizeF(8F, 19F);
@@ -518,9 +517,6 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             ((System.ComponentModel.ISupportInitialize)pnlFormContainer).EndInit();
             pnlFormContainer.ResumeLayout(false);
             pnlFormContainer.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)pnlRelatedCommits).EndInit();
-            pnlRelatedCommits.ResumeLayout(false);
-            pnlRelatedCommits.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)cmbPriority.Properties).EndInit();
             ((System.ComponentModel.ISupportInitialize)cmbStatus.Properties).EndInit();
             ((System.ComponentModel.ISupportInitialize)dateDue.Properties.CalendarTimeProperties).EndInit();
@@ -531,6 +527,9 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             ((System.ComponentModel.ISupportInitialize)lueProject.Properties).EndInit();
             ((System.ComponentModel.ISupportInitialize)txtDescription.Properties).EndInit();
             ((System.ComponentModel.ISupportInitialize)txtTaskName.Properties).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pnlRelatedCommits).EndInit();
+            pnlRelatedCommits.ResumeLayout(false);
+            pnlRelatedCommits.PerformLayout();
             ResumeLayout(false);
         }
 

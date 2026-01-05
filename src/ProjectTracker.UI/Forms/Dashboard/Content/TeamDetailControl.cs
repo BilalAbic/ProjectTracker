@@ -241,6 +241,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             try
             {
                 var invitationsContent = Program.ServiceProvider.GetRequiredService<InvitationsContent>();
+                invitationsContent.SetTeamContext(_editTeamId.Value, txtTeamName.Text);
                 ((FrmDashboard)this.ParentForm)?.LoadContent(invitationsContent);
             }
             catch (Exception ex)
