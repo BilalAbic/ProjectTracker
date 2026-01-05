@@ -21,6 +21,11 @@ namespace ProjectTracker.Business.Interfaces
         Task<IEnumerable<TeamInvitationDto>> GetTeamInvitationsAsync(int teamId);
 
         /// <summary>
+        /// Get pending invitations for current user (by email)
+        /// </summary>
+        Task<IEnumerable<TeamInvitationDto>> GetUserPendingInvitationsAsync(string email);
+
+        /// <summary>
         /// Resend invitation
         /// </summary>
         Task<bool> ResendInvitationAsync(int invitationId);

@@ -18,12 +18,18 @@ namespace ProjectTracker.Business.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly ICurrentUserService _currentUserService;
+        private readonly IEmailService _emailService;
 
-        public InvitationService(IUnitOfWork unitOfWork, IMapper mapper, ICurrentUserService currentUserService)
+        public InvitationService(
+            IUnitOfWork unitOfWork, 
+            IMapper mapper, 
+            ICurrentUserService currentUserService,
+            IEmailService emailService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _currentUserService = currentUserService;
+            _emailService = emailService;
         }
         
         /// <summary>
@@ -74,6 +80,10 @@ namespace ProjectTracker.Business.Services
             if (pendingInvitation != null)
                 throw new InvalidOperationException("There is already a pending invitation for this email");
 
+            // Get team and inviter info for email
+            var team = await _unitOfWork.Teams.GetByIdAsync(invitationDto.TeamId);
+            var inviter = await _unitOfWork.Users.GetByIdAsync(CurrentUserId);
+
             // Create invitation
             var invitation = new ProjectTracker.Core.Entities.TeamInvitation
             {
@@ -90,6 +100,27 @@ namespace ProjectTracker.Business.Services
             await _unitOfWork.TeamInvitations.AddAsync(invitation);
             await _unitOfWork.SaveChangesAsync();
 
+            // Send invitation email (fire-and-forget)
+            _ = System.Threading.Tasks.Task.Run(async () =>
+            {
+                try
+                {
+                    await _emailService.SendTeamInvitationEmailAsync(
+                        toEmail: invitation.Email,
+                        teamName: team?.TeamName ?? "Unknown Team",
+                        invitedByName: inviter?.FullName ?? "Team Admin",
+                        role: invitation.ProposedRole.ToString(),
+                        invitationToken: invitation.Token,
+                        expiresAt: invitation.ExpiresAt
+                    );
+                    System.Diagnostics.Debug.WriteLine($"✅ Invitation email sent to {invitation.Email}");
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"❌ Invitation email failed: {ex.Message}");
+                }
+            });
+
             return await GetInvitationDto(invitation);
         }
 
@@ -103,6 +134,25 @@ namespace ProjectTracker.Business.Services
 
             var dtos = new List<TeamInvitationDto>();
             foreach (var invitation in invitations)
+            {
+                dtos.Add(await GetInvitationDto(invitation));
+            }
+
+            return dtos;
+        }
+
+        /// <summary>
+        /// Get pending invitations for a user by email
+        /// </summary>
+        public async Task<IEnumerable<TeamInvitationDto>> GetUserPendingInvitationsAsync(string email)
+        {
+            var invitations = await _unitOfWork.TeamInvitations
+                .FindAsync(ti => ti.Email == email 
+                    && ti.Status == InvitationStatus.Pending
+                    && ti.ExpiresAt > DateTime.Now);
+
+            var dtos = new List<TeamInvitationDto>();
+            foreach (var invitation in invitations.OrderByDescending(i => i.SentAt))
             {
                 dtos.Add(await GetInvitationDto(invitation));
             }

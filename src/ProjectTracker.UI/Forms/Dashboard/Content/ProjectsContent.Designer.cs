@@ -89,42 +89,42 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             // 
             btnNewProject.Appearance.BackColor = Color.FromArgb(91, 141, 239);
             btnNewProject.Appearance.BorderColor = Color.FromArgb(91, 141, 239);
-            btnNewProject.Appearance.Font = new Font("Segoe UI", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnNewProject.Appearance.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnNewProject.Appearance.ForeColor = Color.FromArgb(248, 250, 252);
             btnNewProject.Appearance.Options.UseBackColor = true;
             btnNewProject.Appearance.Options.UseBorderColor = true;
             btnNewProject.Appearance.Options.UseFont = true;
             btnNewProject.Appearance.Options.UseForeColor = true;
-            btnNewProject.Location = new Point(1030, 25);
+            btnNewProject.Location = new Point(1010, 22);
             btnNewProject.Name = "btnNewProject";
-            btnNewProject.Size = new Size(130, 36);
+            btnNewProject.Size = new Size(140, 36);
             btnNewProject.TabIndex = 2;
             btnNewProject.Text = "+ New Project";
             btnNewProject.Click += btnNewProject_Click;
             // 
             // lblSubtitle
             // 
-            lblSubtitle.Appearance.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            lblSubtitle.Appearance.ForeColor = Color.FromArgb(203, 213, 225);
+            lblSubtitle.Appearance.Font = new Font("Segoe UI", 10F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblSubtitle.Appearance.ForeColor = Color.FromArgb(148, 163, 184);
             lblSubtitle.Appearance.Options.UseFont = true;
             lblSubtitle.Appearance.Options.UseForeColor = true;
             lblSubtitle.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
-            lblSubtitle.Location = new Point(0, 48);
+            lblSubtitle.Location = new Point(0, 50);
             lblSubtitle.Name = "lblSubtitle";
-            lblSubtitle.Size = new Size(320, 20);
+            lblSubtitle.Size = new Size(320, 22);
             lblSubtitle.TabIndex = 1;
             lblSubtitle.Text = "Manage projects in one place";
             // 
             // lblTitle
             // 
-            lblTitle.Appearance.Font = new Font("Segoe UI", 18F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblTitle.Appearance.Font = new Font("Segoe UI", 20F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblTitle.Appearance.ForeColor = Color.FromArgb(248, 250, 252);
             lblTitle.Appearance.Options.UseFont = true;
             lblTitle.Appearance.Options.UseForeColor = true;
             lblTitle.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
-            lblTitle.Location = new Point(0, 10);
+            lblTitle.Location = new Point(0, 8);
             lblTitle.Name = "lblTitle";
-            lblTitle.Size = new Size(300, 32);
+            lblTitle.Size = new Size(300, 38);
             lblTitle.TabIndex = 0;
             lblTitle.Text = "📁 Projects";
             // 
@@ -279,6 +279,9 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             grdProjects.Size = new Size(1100, 575);
             grdProjects.TabIndex = 0;
             grdProjects.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] { gridView1 });
+            // Scrollbar styling for dark theme
+            grdProjects.LookAndFeel.Style = DevExpress.LookAndFeel.LookAndFeelStyle.Flat;
+            grdProjects.LookAndFeel.UseDefaultLookAndFeel = false;
             // 
             // gridView1
             // 
@@ -289,31 +292,89 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             gridView1.Appearance.ColumnFilterButton.Options.UseBorderColor = true;
             gridView1.Appearance.ColumnFilterButton.Options.UseForeColor = true;
             gridView1.Appearance.Empty.BackColor = Color.FromArgb(36, 43, 61);
+            gridView1.Appearance.Empty.Font = new Font("Segoe UI", 8.25F);
             gridView1.Appearance.Empty.ForeColor = Color.FromArgb(203, 213, 225);
             gridView1.Appearance.Empty.Options.UseBackColor = true;
+            gridView1.Appearance.Empty.Options.UseFont = true;
             gridView1.Appearance.Empty.Options.UseForeColor = true;
             gridView1.Appearance.FocusedRow.BackColor = Color.FromArgb(51, 65, 85);
+            gridView1.Appearance.FocusedRow.Font = new Font("Segoe UI", 9.5F);
             gridView1.Appearance.FocusedRow.ForeColor = Color.FromArgb(248, 250, 252);
             gridView1.Appearance.FocusedRow.Options.UseBackColor = true;
+            gridView1.Appearance.FocusedRow.Options.UseFont = true;
             gridView1.Appearance.FocusedRow.Options.UseForeColor = true;
-            gridView1.Appearance.HeaderPanel.BackColor = Color.FromArgb(36, 43, 61);
-            gridView1.Appearance.HeaderPanel.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            gridView1.Appearance.HeaderPanel.ForeColor = Color.Black;
+            gridView1.Appearance.FocusedCell.BackColor = Color.FromArgb(51, 65, 85);
+            gridView1.Appearance.FocusedCell.ForeColor = Color.FromArgb(248, 250, 252);
+            gridView1.Appearance.FocusedCell.Options.UseBackColor = true;
+            gridView1.Appearance.FocusedCell.Options.UseForeColor = true;
+            gridView1.Appearance.HeaderPanel.BackColor = Color.FromArgb(30, 36, 47);
+            gridView1.Appearance.HeaderPanel.BorderColor = Color.FromArgb(30, 36, 47);
+            gridView1.Appearance.HeaderPanel.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
+            gridView1.Appearance.HeaderPanel.ForeColor = Color.FromArgb(180, 190, 200);
             gridView1.Appearance.HeaderPanel.Options.UseBackColor = true;
+            gridView1.Appearance.HeaderPanel.Options.UseBorderColor = true;
             gridView1.Appearance.HeaderPanel.Options.UseFont = true;
             gridView1.Appearance.HeaderPanel.Options.UseForeColor = true;
             gridView1.Appearance.HorzLine.BackColor = Color.FromArgb(51, 65, 85);
             gridView1.Appearance.HorzLine.Options.UseBackColor = true;
             gridView1.Appearance.Row.BackColor = Color.FromArgb(36, 43, 61);
+            gridView1.Appearance.Row.Font = new Font("Segoe UI", 9.5F);
             gridView1.Appearance.Row.ForeColor = Color.FromArgb(248, 250, 252);
             gridView1.Appearance.Row.Options.UseBackColor = true;
+            gridView1.Appearance.Row.Options.UseFont = true;
             gridView1.Appearance.Row.Options.UseForeColor = true;
             gridView1.Appearance.SelectedRow.BackColor = Color.FromArgb(51, 65, 85);
+            gridView1.Appearance.SelectedRow.Font = new Font("Segoe UI", 9.5F);
             gridView1.Appearance.SelectedRow.ForeColor = Color.FromArgb(248, 250, 252);
             gridView1.Appearance.SelectedRow.Options.UseBackColor = true;
+            gridView1.Appearance.SelectedRow.Options.UseFont = true;
             gridView1.Appearance.SelectedRow.Options.UseForeColor = true;
             gridView1.Appearance.VertLine.BackColor = Color.FromArgb(51, 65, 85);
             gridView1.Appearance.VertLine.Options.UseBackColor = true;
+            // Hover effect - HotTrack
+            gridView1.Appearance.HideSelectionRow.BackColor = Color.FromArgb(45, 55, 72);
+            gridView1.Appearance.HideSelectionRow.ForeColor = Color.FromArgb(248, 250, 252);
+            gridView1.Appearance.HideSelectionRow.Options.UseBackColor = true;
+            gridView1.Appearance.HideSelectionRow.Options.UseForeColor = true;
+            // OddRow for zebra pattern
+            gridView1.Appearance.OddRow.BackColor = Color.FromArgb(32, 39, 52);
+            gridView1.Appearance.OddRow.Font = new Font("Segoe UI", 9.5F);
+            gridView1.Appearance.OddRow.ForeColor = Color.FromArgb(248, 250, 252);
+            gridView1.Appearance.OddRow.Options.UseBackColor = true;
+            gridView1.Appearance.OddRow.Options.UseFont = true;
+            gridView1.Appearance.OddRow.Options.UseForeColor = true;
+            // EvenRow
+            gridView1.Appearance.EvenRow.BackColor = Color.FromArgb(36, 43, 61);
+            gridView1.Appearance.EvenRow.Font = new Font("Segoe UI", 9.5F);
+            gridView1.Appearance.EvenRow.ForeColor = Color.FromArgb(248, 250, 252);
+            gridView1.Appearance.EvenRow.Options.UseBackColor = true;
+            gridView1.Appearance.EvenRow.Options.UseFont = true;
+            gridView1.Appearance.EvenRow.Options.UseForeColor = true;
+            // Footer panel styling
+            gridView1.Appearance.FooterPanel.BackColor = Color.FromArgb(30, 36, 47);
+            gridView1.Appearance.FooterPanel.BorderColor = Color.FromArgb(51, 65, 85);
+            gridView1.Appearance.FooterPanel.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
+            gridView1.Appearance.FooterPanel.ForeColor = Color.FromArgb(180, 190, 200);
+            gridView1.Appearance.FooterPanel.Options.UseBackColor = true;
+            gridView1.Appearance.FooterPanel.Options.UseBorderColor = true;
+            gridView1.Appearance.FooterPanel.Options.UseFont = true;
+            gridView1.Appearance.FooterPanel.Options.UseForeColor = true;
+            // Group row styling
+            gridView1.Appearance.GroupRow.BackColor = Color.FromArgb(42, 50, 68);
+            gridView1.Appearance.GroupRow.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
+            gridView1.Appearance.GroupRow.ForeColor = Color.FromArgb(91, 141, 239);
+            gridView1.Appearance.GroupRow.Options.UseBackColor = true;
+            gridView1.Appearance.GroupRow.Options.UseFont = true;
+            gridView1.Appearance.GroupRow.Options.UseForeColor = true;
+            // Preview row styling
+            gridView1.Appearance.Preview.BackColor = Color.FromArgb(30, 36, 47);
+            gridView1.Appearance.Preview.Font = new Font("Segoe UI", 9F, FontStyle.Italic);
+            gridView1.Appearance.Preview.ForeColor = Color.FromArgb(148, 163, 184);
+            gridView1.Appearance.Preview.Options.UseBackColor = true;
+            gridView1.Appearance.Preview.Options.UseFont = true;
+            gridView1.Appearance.Preview.Options.UseForeColor = true;
+            gridView1.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
+            gridView1.ColumnPanelRowHeight = 40;
             gridView1.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] { ProjectName, Status, CompletionPercentage, Priority, ManagerName, EndDate, Actions });
             gridView1.GridControl = grdProjects;
             gridView1.Name = "gridView1";
@@ -321,40 +382,68 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             gridView1.OptionsView.ShowHorizontalLines = DevExpress.Utils.DefaultBoolean.True;
             gridView1.OptionsView.ShowIndicator = false;
             gridView1.OptionsView.ShowVerticalLines = DevExpress.Utils.DefaultBoolean.True;
+            gridView1.OptionsView.RowAutoHeight = false;
+            gridView1.OptionsView.EnableAppearanceOddRow = true;
+            gridView1.OptionsView.EnableAppearanceEvenRow = true;
+            gridView1.OptionsView.AnimationType = DevExpress.XtraGrid.Views.Base.GridAnimationType.AnimateFocusedItem;
+            gridView1.OptionsSelection.EnableAppearanceFocusedCell = true;
+            gridView1.OptionsSelection.EnableAppearanceFocusedRow = true;
+            gridView1.OptionsMenu.EnableColumnMenu = true;
+            gridView1.OptionsMenu.EnableFooterMenu = true;
+            gridView1.OptionsMenu.EnableGroupPanelMenu = false;
+            gridView1.OptionsScrollAnnotations.ShowSelectedRows = DevExpress.Utils.DefaultBoolean.True;
+            gridView1.OptionsScrollAnnotations.ShowFocusedRow = DevExpress.Utils.DefaultBoolean.True;
+            gridView1.PaintStyleName = "Web";
+            gridView1.RowHeight = 36;
+            gridView1.ScrollStyle = DevExpress.XtraGrid.Views.Grid.ScrollStyleFlags.LiveVertScroll | DevExpress.XtraGrid.Views.Grid.ScrollStyleFlags.LiveHorzScroll;
             gridView1.RowClick += gridView1_RowClick;
             gridView1.CustomDrawCell += gridView1_CustomDrawCell;
             // 
             // ProjectName
             // 
-            ProjectName.AppearanceCell.Font = new Font("Segoe UI", 9.75F);
+            ProjectName.AppearanceCell.Font = new Font("Segoe UI Semibold", 9.5F, FontStyle.Bold);
+            ProjectName.AppearanceCell.ForeColor = Color.FromArgb(248, 250, 252);
             ProjectName.AppearanceCell.Options.UseFont = true;
-            ProjectName.Caption = "Project Name";
+            ProjectName.AppearanceCell.Options.UseForeColor = true;
+            ProjectName.AppearanceHeader.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
+            ProjectName.AppearanceHeader.ForeColor = Color.FromArgb(180, 190, 200);
+            ProjectName.AppearanceHeader.Options.UseFont = true;
+            ProjectName.AppearanceHeader.Options.UseForeColor = true;
+            ProjectName.Caption = "📁 Project Name";
             ProjectName.FieldName = "ProjectName";
             ProjectName.Name = "ProjectName";
             ProjectName.OptionsColumn.AllowEdit = false;
             ProjectName.Visible = true;
             ProjectName.VisibleIndex = 0;
-            ProjectName.Width = 527;
+            ProjectName.Width = 310;
             // 
             // Status
             // 
-            Status.Caption = "Status";
+            Status.AppearanceHeader.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
+            Status.AppearanceHeader.ForeColor = Color.FromArgb(180, 190, 200);
+            Status.AppearanceHeader.Options.UseFont = true;
+            Status.AppearanceHeader.Options.UseForeColor = true;
+            Status.Caption = "⚡   Status";
             Status.FieldName = "Status";
             Status.Name = "Status";
             Status.OptionsColumn.AllowEdit = false;
             Status.Visible = true;
             Status.VisibleIndex = 1;
-            Status.Width = 79;
+            Status.Width = 120;
             // 
             // CompletionPercentage
             // 
-            CompletionPercentage.Caption = "Progress";
+            CompletionPercentage.AppearanceHeader.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
+            CompletionPercentage.AppearanceHeader.ForeColor = Color.FromArgb(180, 190, 200);
+            CompletionPercentage.AppearanceHeader.Options.UseFont = true;
+            CompletionPercentage.AppearanceHeader.Options.UseForeColor = true;
+            CompletionPercentage.Caption = "📊 Progress";
             CompletionPercentage.ColumnEdit = repositoryItemProgressBar;
             CompletionPercentage.FieldName = "CompletionPercentage";
             CompletionPercentage.Name = "CompletionPercentage";
             CompletionPercentage.Visible = true;
             CompletionPercentage.VisibleIndex = 2;
-            CompletionPercentage.Width = 93;
+            CompletionPercentage.Width = 141;
             // 
             // repositoryItemProgressBar
             // 
@@ -365,27 +454,45 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             // 
             // Priority
             // 
-            Priority.Caption = "Priority";
+            Priority.AppearanceCell.Font = new Font("Segoe UI", 9.5F);
+            Priority.AppearanceCell.Options.UseFont = true;
+            Priority.AppearanceHeader.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
+            Priority.AppearanceHeader.ForeColor = Color.FromArgb(180, 190, 200);
+            Priority.AppearanceHeader.Options.UseFont = true;
+            Priority.AppearanceHeader.Options.UseForeColor = true;
+            Priority.Caption = "🔥Priority";
             Priority.FieldName = "Priority";
             Priority.Name = "Priority";
             Priority.OptionsColumn.AllowEdit = false;
             Priority.Visible = true;
             Priority.VisibleIndex = 3;
-            Priority.Width = 78;
+            Priority.Width = 100;
             // 
             // ManagerName
             // 
-            ManagerName.Caption = "Team";
+            ManagerName.AppearanceCell.Font = new Font("Segoe UI", 9.5F);
+            ManagerName.AppearanceCell.Options.UseFont = true;
+            ManagerName.AppearanceHeader.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
+            ManagerName.AppearanceHeader.ForeColor = Color.FromArgb(180, 190, 200);
+            ManagerName.AppearanceHeader.Options.UseFont = true;
+            ManagerName.AppearanceHeader.Options.UseForeColor = true;
+            ManagerName.Caption = "👥Team";
             ManagerName.FieldName = "TeamName";
             ManagerName.Name = "ManagerName";
             ManagerName.OptionsColumn.AllowEdit = false;
             ManagerName.Visible = true;
             ManagerName.VisibleIndex = 4;
-            ManagerName.Width = 98;
+            ManagerName.Width = 120;
             // 
             // EndDate
             // 
-            EndDate.Caption = "Due Date";
+            EndDate.AppearanceCell.Font = new Font("Segoe UI", 9.5F);
+            EndDate.AppearanceCell.Options.UseFont = true;
+            EndDate.AppearanceHeader.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
+            EndDate.AppearanceHeader.ForeColor = Color.FromArgb(180, 190, 200);
+            EndDate.AppearanceHeader.Options.UseFont = true;
+            EndDate.AppearanceHeader.Options.UseForeColor = true;
+            EndDate.Caption = "📅 Due Date";
             EndDate.DisplayFormat.FormatString = "dd MMM yyyy";
             EndDate.DisplayFormat.FormatType = DevExpress.Utils.FormatType.DateTime;
             EndDate.FieldName = "EndDate";
@@ -393,11 +500,15 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             EndDate.OptionsColumn.AllowEdit = false;
             EndDate.Visible = true;
             EndDate.VisibleIndex = 5;
-            EndDate.Width = 106;
+            EndDate.Width = 110;
             // 
             // Actions
             // 
-            Actions.Caption = "Actions";
+            Actions.AppearanceHeader.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
+            Actions.AppearanceHeader.ForeColor = Color.FromArgb(180, 190, 200);
+            Actions.AppearanceHeader.Options.UseFont = true;
+            Actions.AppearanceHeader.Options.UseForeColor = true;
+            Actions.Caption = "⚙  Actions";
             Actions.ColumnEdit = repositoryItemButtonEdit;
             Actions.FieldName = "Actions";
             Actions.Name = "Actions";
@@ -406,13 +517,28 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             Actions.UnboundType = DevExpress.Data.UnboundColumnType.String;
             Actions.Visible = true;
             Actions.VisibleIndex = 6;
-            Actions.Width = 117;
+            Actions.Width = 85;
             // 
             // repositoryItemButtonEdit
             // 
-            repositoryItemButtonEdit.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] { new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Glyph), new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Glyph) });
+            repositoryItemButtonEdit.AutoHeight = false;
             repositoryItemButtonEdit.Name = "repositoryItemButtonEdit";
             repositoryItemButtonEdit.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.HideTextEditor;
+            repositoryItemButtonEdit.Buttons.Clear();
+            repositoryItemButtonEdit.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+                new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Glyph) { 
+                    Caption = "✎", 
+                    ToolTip = "Edit Project", 
+                    Width = 26,
+                    Appearance = { ForeColor = Color.FromArgb(91, 141, 239) }
+                },
+                new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Glyph) { 
+                    Caption = "✕", 
+                    ToolTip = "Delete Project", 
+                    Width = 26,
+                    Appearance = { ForeColor = Color.FromArgb(220, 80, 80) }
+                }
+            });
             // 
             // ProjectsContent
             // 

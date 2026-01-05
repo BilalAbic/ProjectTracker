@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Davet Kabul - ProjectTracker</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/invite.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">📊</span>
+                <span class="logo-text">ProjectTracker</span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html">Ana Sayfa</a>
+                <a href="index.html#download">İndir</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Invite Section -->
+    <section class="invite-section">
+        <div class="container">
+            <div class="invite-card" id="inviteCard">
+                <!-- Loading State -->
+                <div class="invite-loading" id="loadingState">
+                    <div class="spinner"></div>
+                    <p>Davet bilgileri yükleniyor...</p>
+                </div>
+
+                <!-- Invite Content (hidden initially) -->
+                <div class="invite-content" id="inviteContent" style="display: none;">
+                    <div class="invite-icon">🎉</div>
+                    <h1>Takıma Davet Edildiniz!</h1>
+                    
+                    <div class="invite-details">
+                        <div class="team-info">
+                            <div class="team-avatar">👥</div>
+                            <div class="team-text">
+                                <h2 id="teamName">Takım Adı</h2>
+                                <p>Takıma katılmanız için davet edildiniz</p>
+                            </div>
+                        </div>
+                        
+                        <div class="invite-meta">
+                            <div class="meta-item">
+                                <span class="meta-icon">👤</span>
+                                <div>
+                                    <span class="meta-label">Davet Eden</span>
+                                    <span class="meta-value" id="invitedBy">-</span>
+                                </div>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-icon">🎭</span>
+                                <div>
+                                    <span class="meta-label">Atanan Rol</span>
+                                    <span class="meta-value role-badge" id="proposedRole">Developer</span>
+                                </div>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-icon">⏳</span>
+                                <div>
+                                    <span class="meta-label">Son Geçerlilik</span>
+                                    <span class="meta-value" id="expiresAt">-</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="invite-actions">
+                        <button class="btn btn-accept" id="btnAccept">
+                            <span>✅</span> Daveti Kabul Et
+                        </button>
+                        <button class="btn btn-decline" id="btnDecline">
+                            <span>❌</span> Reddet
+                        </button>
+                    </div>
+
+                    <div class="invite-note">
+                        <p>💡 Daveti kabul etmek için önce <a href="index.html#download">uygulamayı indirip</a> kayıt olmanız gerekiyor.</p>
+                    </div>
+                </div>
+
+                <!-- Error State -->
+                <div class="invite-error" id="errorState" style="display: none;">
+                    <div class="error-icon">😕</div>
+                    <h2>Davet Bulunamadı</h2>
+                    <p id="errorMessage">Bu davet linki geçersiz veya süresi dolmuş olabilir.</p>
+                    <a href="index.html" class="btn btn-secondary">Ana Sayfaya Dön</a>
+                </div>
+
+                <!-- Success State -->
+                <div class="invite-success" id="successState" style="display: none;">
+                    <div class="success-icon">🎉</div>
+                    <h2>Tebrikler!</h2>
+                    <p>Daveti başarıyla kabul ettiniz. Artık takımın bir üyesisiniz!</p>
+                    <div class="success-actions">
+                        <a href="index.html#download" class="btn btn-primary">
+                            <span>⬇️</span> Uygulamayı İndir
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>© 2025 ProjectTracker. Tüm hakları saklıdır.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/config.js"></script>
+    <script src="js/invite.js"></script>
+</body>
+</html>

@@ -19,15 +19,18 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
     {
         private readonly ITaskService _taskService;
         private readonly IProjectService _projectService;
+        private readonly ITeamService _teamService;
         private readonly IGitHubAnalyticsService? _analyticsService;
 
         private int? _editingTaskId = null; // Edit mode indicator
+        private List<TeamMemberDto>? _teamMembers; // Cache for team members
 
-        public TaskDetailControl(ITaskService taskService, IProjectService projectService, IGitHubAnalyticsService? analyticsService = null)
+        public TaskDetailControl(ITaskService taskService, IProjectService projectService, ITeamService teamService, IGitHubAnalyticsService? analyticsService = null)
         {
             InitializeComponent();
             _taskService = taskService;
             _projectService = projectService;
+            _teamService = teamService;
             _analyticsService = analyticsService;
 
             // Fill ComboBox Enums
@@ -42,6 +45,9 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             btnSave.Click += BtnSave_Click;
             btnCancel.Click += BtnCancel_Click;
             btnBack.Click += BtnCancel_Click;
+            
+            // Project selection changed - load team members
+            lueProject.EditValueChanged += LueProject_EditValueChanged;
 
             this.Load += async (s, e) => await LoadDropdownsAsync();
         }
@@ -55,7 +61,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
         {
             try
             {
-                // ROL BAZLI PROJE LİSTESİ
+                // ROL BAZLI PROJE LİSTESİ - Sadece task eklenebilir projeler
                 IEnumerable<ProjectDto> projects;
                 if (SessionManager.IsAdmin)
                 {
@@ -66,7 +72,14 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
                     projects = await _projectService.GetUserProjectsAsync(SessionManager.CurrentUserId);
                 }
                 
-                lueProject.Properties.DataSource = projects;
+                // Sadece aktif projeleri filtrele (Completed ve Cancelled hariç)
+                var activeProjects = projects.Where(p => 
+                    p.Status != Core.Enums.ProjectStatus.Completed && 
+                    p.Status != Core.Enums.ProjectStatus.Cancelled)
+                    .OrderBy(p => p.ProjectName)
+                    .ToList();
+                
+                lueProject.Properties.DataSource = activeProjects;
                 lueProject.Properties.DisplayMember = "ProjectName";
                 lueProject.Properties.ValueMember = "ProjectId";
 
@@ -74,23 +87,83 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
                 lueProject.Properties.Columns.Clear();
                 lueProject.Properties.Columns.Add(new DevExpress.XtraEditors.Controls.LookUpColumnInfo("ProjectName", "Project Name", 250));
                 lueProject.Properties.Columns.Add(new DevExpress.XtraEditors.Controls.LookUpColumnInfo("Status", "Status", 80));
-                lueProject.Properties.Columns.Add(new DevExpress.XtraEditors.Controls.LookUpColumnInfo("CreatedByUserName", "Manager", 150));
+                lueProject.Properties.Columns.Add(new DevExpress.XtraEditors.Controls.LookUpColumnInfo("TeamName", "Team", 120));
                 lueProject.Properties.Columns.Add(new DevExpress.XtraEditors.Controls.LookUpColumnInfo("EndDate", "Due Date", 100) 
                 { 
                     FormatString = "dd MMM yyyy", 
                     FormatType = DevExpress.Utils.FormatType.DateTime 
                 });
 
-                // Load Assignee (Users) - will be implemented when User service is available
-                // var users = await _userService.GetAllUsersAsync();
-                // lueAssignee.Properties.DataSource = users;
-                // lueAssignee.Properties.DisplayMember = "FullName";
-                // lueAssignee.Properties.ValueMember = "UserId";
-                lueAssignee.Properties.NullText = "Unassigned";
+                // Configure Assignee LookUpEdit columns
+                lueAssignee.Properties.Columns.Clear();
+                lueAssignee.Properties.Columns.Add(new DevExpress.XtraEditors.Controls.LookUpColumnInfo("UserName", "Name", 180));
+                lueAssignee.Properties.Columns.Add(new DevExpress.XtraEditors.Controls.LookUpColumnInfo("Email", "Email", 200));
+                lueAssignee.Properties.Columns.Add(new DevExpress.XtraEditors.Controls.LookUpColumnInfo("RoleName", "Role", 100));
+                lueAssignee.Properties.DisplayMember = "UserName";
+                lueAssignee.Properties.ValueMember = "UserId";
+                lueAssignee.Properties.NullText = "Select assignee...";
+                lueAssignee.Properties.PopupWidth = 500;
+                lueAssignee.Properties.ShowFooter = false;
             }
             catch (Exception ex)
             {
                 FormStyleHelper.ShowError($"Error loading data: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// When project is selected, load team members for assignee dropdown
+        /// </summary>
+        private async void LueProject_EditValueChanged(object sender, EventArgs e)
+        {
+            await LoadAssigneesForProjectAsync();
+        }
+
+        /// <summary>
+        /// Load team members for the selected project
+        /// </summary>
+        private async System.Threading.Tasks.Task LoadAssigneesForProjectAsync()
+        {
+            try
+            {
+                if (lueProject.EditValue == null)
+                {
+                    lueAssignee.Properties.DataSource = null;
+                    lueAssignee.EditValue = null;
+                    return;
+                }
+
+                int projectId = Convert.ToInt32(lueProject.EditValue);
+                
+                // Get project to find team
+                var project = await _projectService.GetProjectByIdAsync(projectId);
+                if (project == null || project.TeamId == 0)
+                {
+                    lueAssignee.Properties.DataSource = null;
+                    lueAssignee.EditValue = null;
+                    return;
+                }
+
+                // Get team members
+                _teamMembers = (await _teamService.GetTeamMembersAsync(project.TeamId)).ToList();
+                
+                lueAssignee.Properties.DataSource = _teamMembers;
+                
+                // If editing and assignee was set, keep it
+                if (_editingTaskId.HasValue && lueAssignee.EditValue != null)
+                {
+                    // Verify assignee is still in team
+                    var assigneeId = Convert.ToInt32(lueAssignee.EditValue);
+                    if (!_teamMembers.Any(m => m.UserId == assigneeId))
+                    {
+                        lueAssignee.EditValue = null;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error loading assignees: {ex.Message}");
+                lueAssignee.Properties.DataSource = null;
             }
         }
 
@@ -110,7 +183,13 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
                 txtTaskName.Text = task.TaskName;
                 txtDescription.Text = task.Description;
                 lueProject.EditValue = task.ProjectId;
+                
+                // Load assignees for this project first
+                await LoadAssigneesForProjectAsync();
+                
+                // Then set the assignee
                 lueAssignee.EditValue = task.AssignedToUserId;
+                
                 dateStart.DateTime = task.StartDate ?? DateTime.Today;
                 dateDue.DateTime = task.DueDate ?? DateTime.Today.AddDays(7);
                 

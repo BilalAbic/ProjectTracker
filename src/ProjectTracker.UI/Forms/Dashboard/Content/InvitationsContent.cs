@@ -54,6 +54,11 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
         {
             _selectedTeamId = teamId;
             _selectedTeamName = teamName;
+            
+            // Update title to show team name
+            lblTitle.Text = $"📧   {teamName} - Invitations";
+            lblSubtitle.Text = $"Invite members to {teamName}";
+            
             LoadInvitationsForTeamAsync(teamId);
         }
         
@@ -64,10 +69,11 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
         private void LoadRoles()
         {
             cmbRole.Properties.Items.Clear();
+            // Admin role removed - Admin should be assigned by system admin, not via invitation
             cmbRole.Properties.Items.AddRange(new object[] {
-                "Admin", "Project Manager", "Developer", "Observer"
+                "Project Manager", "Developer", "Observer"
             });
-            cmbRole.SelectedIndex = 2; // Developer
+            cmbRole.SelectedIndex = 1; // Developer as default
         }
         
         private void SetupEventHandlers()
@@ -166,51 +172,62 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
         {
             var card = new PanelControl
             {
-                Width = 980,
-                Height = 140,
+                Width = 1050,
+                Height = 120,
                 BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.Simple,
-                Margin = new Padding(0, 0, 0, 15)
+                Margin = new Padding(0, 0, 0, 12)
             };
             card.Appearance.BackColor = ColorPalette.BackgroundSlateDark;
             card.Appearance.BorderColor = ColorPalette.BorderSlate;
+            card.Appearance.Options.UseBackColor = true;
+            card.Appearance.Options.UseBorderColor = true;
             
-            // Email
+            // Email - Primary info
             var lblEmail = new LabelControl
             {
-                Text = $"📧 {invitation.Email}",
-                Location = new Point(15, 15),
+                Text = $"📧  {invitation.Email}",
+                Location = new Point(20, 15),
                 AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None,
-                Size = new Size(950, 24)
+                Size = new Size(500, 24)
             };
-            lblEmail.Appearance.Font = new Font("Segoe UI", 11, FontStyle.Bold);
-            lblEmail.Appearance.ForeColor = Color.White;
+            lblEmail.Appearance.Font = new Font("Segoe UI Semibold", 11F, FontStyle.Bold);
+            lblEmail.Appearance.ForeColor = ColorPalette.TextPrimary;
+            lblEmail.Appearance.Options.UseFont = true;
+            lblEmail.Appearance.Options.UseForeColor = true;
             card.Controls.Add(lblEmail);
             
-            // Role
+            // Role badge
             var lblRole = new LabelControl
             {
-                Text = $"Role: {invitation.ProposedRole}",
-                Location = new Point(15, 45),
+                Text = $"👤 {invitation.ProposedRole}",
+                Location = new Point(20, 45),
                 AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None,
-                Size = new Size(950, 20)
+                Size = new Size(150, 20)
             };
-            lblRole.Appearance.ForeColor = ColorPalette.TextSecondary;
+            lblRole.Appearance.Font = new Font("Segoe UI", 9.5F);
+            lblRole.Appearance.ForeColor = ColorPalette.AccentLightBlue;
+            lblRole.Appearance.Options.UseFont = true;
+            lblRole.Appearance.Options.UseForeColor = true;
             card.Controls.Add(lblRole);
             
-            // Sent & Expiry
+            // Sent & Expiry info
             var daysAgo = (DateTime.Now - invitation.SentAt).Days;
+            var sentText = daysAgo == 0 ? "Today" : daysAgo == 1 ? "Yesterday" : $"{daysAgo} days ago";
             var expiryInfo = invitation.IsExpired 
-                ? "Expired" 
-                : $"Expires in {(invitation.ExpiresAt - DateTime.Now).Days} days";
+                ? "⏱️ Expired" 
+                : $"⏳ Expires in {(invitation.ExpiresAt - DateTime.Now).Days} days";
             
             var lblTime = new LabelControl
             {
-                Text = $"Sent: {daysAgo} days ago • {expiryInfo}",
-                Location = new Point(15, 70),
+                Text = $"📅 Sent: {sentText}  •  {expiryInfo}",
+                Location = new Point(180, 45),
                 AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None,
-                Size = new Size(950, 20)
+                Size = new Size(350, 20)
             };
+            lblTime.Appearance.Font = new Font("Segoe UI", 9F);
             lblTime.Appearance.ForeColor = ColorPalette.TextSecondary;
+            lblTime.Appearance.Options.UseFont = true;
+            lblTime.Appearance.Options.UseForeColor = true;
             card.Controls.Add(lblTime);
             
             // Status badge
@@ -218,67 +235,75 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             var lblStatus = new LabelControl
             {
                 Text = statusText,
-                Location = new Point(15, 95),
+                Location = new Point(20, 80),
                 AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None,
-                Size = new Size(200, 20)
+                Size = new Size(120, 22)
             };
-            lblStatus.Appearance.Font = new Font("Segoe UI", 9, FontStyle.Bold);
+            lblStatus.Appearance.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
             lblStatus.Appearance.ForeColor = statusColor;
+            lblStatus.Appearance.Options.UseFont = true;
+            lblStatus.Appearance.Options.UseForeColor = true;
             card.Controls.Add(lblStatus);
             
             // Invited by
             var lblInvitedBy = new LabelControl
             {
-                Text = $"Invited by: {invitation.InvitedByName}",
-                Location = new Point(230, 95),
+                Text = $"👤 Invited by: {invitation.InvitedByName ?? "Unknown"}",
+                Location = new Point(150, 80),
                 AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None,
-                Size = new Size(300, 20)
+                Size = new Size(300, 22)
             };
-            lblInvitedBy.Appearance.ForeColor = ColorPalette.TextSecondary;
+            lblInvitedBy.Appearance.Font = new Font("Segoe UI", 9F);
+            lblInvitedBy.Appearance.ForeColor = ColorPalette.TextTertiary;
+            lblInvitedBy.Appearance.Options.UseFont = true;
+            lblInvitedBy.Appearance.Options.UseForeColor = true;
             card.Controls.Add(lblInvitedBy);
             
-            // Action buttons
-            int buttonX = 550;
+            // Action buttons - right aligned
+            int buttonX = 700;
             
-            // Copy Link
+            // Copy Link (only if not expired)
             if (!invitation.IsExpired)
             {
-                var btnCopy = new SimpleButton
-                {
-                    Text = "📋 Copy Link",
-                    Location = new Point(buttonX, 90),
-                    Size = new Size(120, 28)
-                };
-                btnCopy.Appearance.BackColor = ColorPalette.BorderSlate;
+                var btnCopy = CreateActionButton("📋 Copy Link", ColorPalette.BorderSlate, ColorPalette.TextPrimary);
+                btnCopy.Location = new Point(buttonX, 75);
+                btnCopy.Size = new Size(110, 30);
                 btnCopy.Click += (s, e) => CopyInvitationLink(invitation.Token);
                 card.Controls.Add(btnCopy);
-                buttonX += 130;
+                buttonX += 120;
             }
             
             // Resend
-            var btnResend = new SimpleButton
-            {
-                Text = "🔄 Resend",
-                Location = new Point(buttonX, 90),
-                Size = new Size(100, 28)
-            };
-            btnResend.Appearance.BackColor = ColorPalette.AccentRoyalBlue;
+            var btnResend = CreateActionButton("🔄 Resend", ColorPalette.AccentRoyalBlue, Color.White);
+            btnResend.Location = new Point(buttonX, 75);
+            btnResend.Size = new Size(100, 30);
             btnResend.Click += async (s, e) => await ResendInvitation(invitation.InvitationId);
             card.Controls.Add(btnResend);
             buttonX += 110;
             
             // Cancel
-            var btnCancel = new SimpleButton
-            {
-                Text = "❌ Cancel",
-                Location = new Point(buttonX, 90),
-                Size = new Size(100, 28)
-            };
-            btnCancel.Appearance.BackColor = ColorPalette.DangerRed;
+            var btnCancel = CreateActionButton("❌ Cancel", ColorPalette.DangerRed, Color.White);
+            btnCancel.Location = new Point(buttonX, 75);
+            btnCancel.Size = new Size(100, 30);
             btnCancel.Click += async (s, e) => await CancelInvitation(invitation.InvitationId);
             card.Controls.Add(btnCancel);
             
             return card;
+        }
+        
+        private SimpleButton CreateActionButton(string text, Color backColor, Color foreColor)
+        {
+            var btn = new SimpleButton
+            {
+                Text = text
+            };
+            btn.Appearance.BackColor = backColor;
+            btn.Appearance.ForeColor = foreColor;
+            btn.Appearance.Font = new Font("Segoe UI", 9F);
+            btn.Appearance.Options.UseBackColor = true;
+            btn.Appearance.Options.UseForeColor = true;
+            btn.Appearance.Options.UseFont = true;
+            return btn;
         }
         
         private (string text, Color color) GetStatusDisplay(TeamInvitationDto invitation)

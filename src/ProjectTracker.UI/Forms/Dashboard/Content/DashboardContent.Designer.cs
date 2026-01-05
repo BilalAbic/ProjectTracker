@@ -55,16 +55,6 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             lblCard1Label = new DevExpress.XtraEditors.LabelControl();
             lblCard1Value = new DevExpress.XtraEditors.LabelControl();
             lblCard1Icon = new DevExpress.XtraEditors.LabelControl();
-            pnlRecentHeader = new DevExpress.XtraEditors.PanelControl();
-            btnViewAllProjects = new DevExpress.XtraEditors.SimpleButton();
-            lblRecentTitle = new DevExpress.XtraEditors.LabelControl();
-            gridRecentProjects = new DevExpress.XtraGrid.GridControl();
-            gridViewRecentProjects = new DevExpress.XtraGrid.Views.Grid.GridView();
-            colProjectName = new DevExpress.XtraGrid.Columns.GridColumn();
-            colStatus = new DevExpress.XtraGrid.Columns.GridColumn();
-            colProgress = new DevExpress.XtraGrid.Columns.GridColumn();
-            colManagerName = new DevExpress.XtraGrid.Columns.GridColumn();
-            colDueDate = new DevExpress.XtraGrid.Columns.GridColumn();
             pnlActivitiesHeader = new DevExpress.XtraEditors.PanelControl();
             lblActivitiesTitle = new DevExpress.XtraEditors.LabelControl();
             gridRecentActivities = new DevExpress.XtraGrid.GridControl();
@@ -87,10 +77,6 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             pnlCardTasks.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pnlCardProjects).BeginInit();
             pnlCardProjects.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pnlRecentHeader).BeginInit();
-            pnlRecentHeader.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)gridRecentProjects).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)gridViewRecentProjects).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pnlActivitiesHeader).BeginInit();
             pnlActivitiesHeader.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)gridRecentActivities).BeginInit();
@@ -415,163 +401,16 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             lblCard1Icon.TabIndex = 0;
             lblCard1Icon.Text = "📁";
             // 
-            // pnlRecentHeader
-            // 
-            pnlRecentHeader.Appearance.BackColor = Color.FromArgb(26, 31, 38);
-            pnlRecentHeader.Appearance.Options.UseBackColor = true;
-            pnlRecentHeader.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
-            pnlRecentHeader.Controls.Add(btnViewAllProjects);
-            pnlRecentHeader.Controls.Add(lblRecentTitle);
-            pnlRecentHeader.Location = new Point(0, 252);
-            pnlRecentHeader.Name = "pnlRecentHeader";
-            pnlRecentHeader.Size = new Size(1200, 40);
-            pnlRecentHeader.TabIndex = 2;
-            // 
-            // btnViewAllProjects
-            // 
-            btnViewAllProjects.Appearance.BackColor = Color.Transparent;
-            btnViewAllProjects.Appearance.BorderColor = Color.FromArgb(51, 65, 85);
-            btnViewAllProjects.Appearance.ForeColor = Color.FromArgb(203, 213, 225);
-            btnViewAllProjects.Appearance.Options.UseBackColor = true;
-            btnViewAllProjects.Appearance.Options.UseBorderColor = true;
-            btnViewAllProjects.Appearance.Options.UseForeColor = true;
-            btnViewAllProjects.Location = new Point(1080, 6);
-            btnViewAllProjects.Name = "btnViewAllProjects";
-            btnViewAllProjects.Size = new Size(100, 28);
-            btnViewAllProjects.TabIndex = 1;
-            btnViewAllProjects.Text = "View All →";
-            btnViewAllProjects.Click += btnViewAllProjects_Click;
-            // 
-            // lblRecentTitle
-            // 
-            lblRecentTitle.Appearance.Font = new Font("Segoe UI", 14.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblRecentTitle.Appearance.Options.UseFont = true;
-            lblRecentTitle.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
-            lblRecentTitle.Location = new Point(0, 8);
-            lblRecentTitle.Name = "lblRecentTitle";
-            lblRecentTitle.Size = new Size(300, 24);
-            lblRecentTitle.TabIndex = 0;
-            lblRecentTitle.Text = "📋 Recent Projects";
-            // 
-            // gridRecentProjects
-            // 
-            gridRecentProjects.Location = new Point(0, 308);
-            gridRecentProjects.MainView = gridViewRecentProjects;
-            gridRecentProjects.Name = "gridRecentProjects";
-            gridRecentProjects.Size = new Size(1200, 180);
-            gridRecentProjects.TabIndex = 3;
-            gridRecentProjects.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] { gridViewRecentProjects });
-            // 
-            // gridViewRecentProjects
-            // 
-            gridViewRecentProjects.Appearance.Empty.BackColor = Color.FromArgb(36, 43, 61);
-            gridViewRecentProjects.Appearance.Empty.ForeColor = Color.FromArgb(203, 213, 225);
-            gridViewRecentProjects.Appearance.Empty.Options.UseBackColor = true;
-            gridViewRecentProjects.Appearance.Empty.Options.UseForeColor = true;
-            gridViewRecentProjects.Appearance.EvenRow.BackColor = Color.FromArgb(36, 43, 61);
-            gridViewRecentProjects.Appearance.EvenRow.ForeColor = Color.FromArgb(248, 250, 252);
-            gridViewRecentProjects.Appearance.EvenRow.Options.UseBackColor = true;
-            gridViewRecentProjects.Appearance.EvenRow.Options.UseForeColor = true;
-            gridViewRecentProjects.Appearance.FocusedRow.BackColor = Color.FromArgb(51, 65, 85);
-            gridViewRecentProjects.Appearance.FocusedRow.ForeColor = Color.FromArgb(248, 250, 252);
-            gridViewRecentProjects.Appearance.FocusedRow.Options.UseBackColor = true;
-            gridViewRecentProjects.Appearance.FocusedRow.Options.UseForeColor = true;
-            gridViewRecentProjects.Appearance.HeaderPanel.BackColor = Color.FromArgb(36, 43, 61);
-            gridViewRecentProjects.Appearance.HeaderPanel.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            gridViewRecentProjects.Appearance.HeaderPanel.ForeColor = Color.Black;
-            gridViewRecentProjects.Appearance.HeaderPanel.Options.UseBackColor = true;
-            gridViewRecentProjects.Appearance.HeaderPanel.Options.UseFont = true;
-            gridViewRecentProjects.Appearance.HeaderPanel.Options.UseForeColor = true;
-            gridViewRecentProjects.Appearance.HorzLine.BackColor = Color.FromArgb(51, 65, 85);
-            gridViewRecentProjects.Appearance.HorzLine.Options.UseBackColor = true;
-            gridViewRecentProjects.Appearance.Row.BackColor = Color.FromArgb(36, 43, 61);
-            gridViewRecentProjects.Appearance.Row.ForeColor = Color.FromArgb(248, 250, 252);
-            gridViewRecentProjects.Appearance.Row.Options.UseBackColor = true;
-            gridViewRecentProjects.Appearance.Row.Options.UseForeColor = true;
-            gridViewRecentProjects.Appearance.SelectedRow.BackColor = Color.FromArgb(51, 65, 85);
-            gridViewRecentProjects.Appearance.SelectedRow.ForeColor = Color.FromArgb(248, 250, 252);
-            gridViewRecentProjects.Appearance.SelectedRow.Options.UseBackColor = true;
-            gridViewRecentProjects.Appearance.SelectedRow.Options.UseForeColor = true;
-            gridViewRecentProjects.Appearance.VertLine.BackColor = Color.FromArgb(51, 65, 85);
-            gridViewRecentProjects.Appearance.VertLine.Options.UseBackColor = true;
-            gridViewRecentProjects.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] { colProjectName, colStatus, colProgress, colManagerName, colDueDate });
-            gridViewRecentProjects.GridControl = gridRecentProjects;
-            gridViewRecentProjects.Name = "gridViewRecentProjects";
-            gridViewRecentProjects.OptionsBehavior.Editable = false;
-            gridViewRecentProjects.OptionsCustomization.AllowColumnMoving = false;
-            gridViewRecentProjects.OptionsCustomization.AllowFilter = false;
-            gridViewRecentProjects.OptionsCustomization.AllowSort = false;
-            gridViewRecentProjects.OptionsSelection.EnableAppearanceFocusedCell = false;
-            gridViewRecentProjects.OptionsView.ShowGroupPanel = false;
-            gridViewRecentProjects.OptionsView.ShowHorizontalLines = DevExpress.Utils.DefaultBoolean.True;
-            gridViewRecentProjects.OptionsView.ShowIndicator = false;
-            gridViewRecentProjects.OptionsView.ShowVerticalLines = DevExpress.Utils.DefaultBoolean.True;
-            gridViewRecentProjects.DoubleClick += gridViewRecentProjects_DoubleClick;
-            // 
-            // colProjectName
-            // 
-            colProjectName.AppearanceCell.ForeColor = Color.White;
-            colProjectName.AppearanceCell.Options.UseForeColor = true;
-            colProjectName.Caption = "Project Name";
-            colProjectName.FieldName = "Name";
-            colProjectName.Name = "colProjectName";
-            colProjectName.OptionsColumn.AllowEdit = false;
-            colProjectName.Visible = true;
-            colProjectName.VisibleIndex = 0;
-            colProjectName.Width = 300;
-            // 
-            // colStatus
-            // 
-            colStatus.Caption = "Status";
-            colStatus.FieldName = "Status";
-            colStatus.Name = "colStatus";
-            colStatus.OptionsColumn.AllowEdit = false;
-            colStatus.Visible = true;
-            colStatus.VisibleIndex = 1;
-            colStatus.Width = 150;
-            // 
-            // colProgress
-            // 
-            colProgress.Caption = "Progress";
-            colProgress.FieldName = "Progress";
-            colProgress.Name = "colProgress";
-            colProgress.OptionsColumn.AllowEdit = false;
-            colProgress.Visible = true;
-            colProgress.VisibleIndex = 2;
-            colProgress.Width = 150;
-            // 
-            // colManagerName
-            // 
-            colManagerName.Caption = "Manager";
-            colManagerName.FieldName = "ManagerName";
-            colManagerName.Name = "colManagerName";
-            colManagerName.OptionsColumn.AllowEdit = false;
-            colManagerName.Visible = true;
-            colManagerName.VisibleIndex = 3;
-            colManagerName.Width = 200;
-            // 
-            // colDueDate
-            // 
-            colDueDate.Caption = "Due Date";
-            colDueDate.DisplayFormat.FormatString = "dd MMM yyyy";
-            colDueDate.DisplayFormat.FormatType = DevExpress.Utils.FormatType.DateTime;
-            colDueDate.FieldName = "DueDate";
-            colDueDate.Name = "colDueDate";
-            colDueDate.OptionsColumn.AllowEdit = false;
-            colDueDate.Visible = true;
-            colDueDate.VisibleIndex = 4;
-            colDueDate.Width = 150;
-            // 
             // pnlActivitiesHeader
             // 
             pnlActivitiesHeader.Appearance.BackColor = Color.FromArgb(26, 31, 38);
             pnlActivitiesHeader.Appearance.Options.UseBackColor = true;
             pnlActivitiesHeader.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
             pnlActivitiesHeader.Controls.Add(lblActivitiesTitle);
-            pnlActivitiesHeader.Location = new Point(0, 500);
+            pnlActivitiesHeader.Location = new Point(0, 252);
             pnlActivitiesHeader.Name = "pnlActivitiesHeader";
             pnlActivitiesHeader.Size = new Size(1200, 40);
-            pnlActivitiesHeader.TabIndex = 4;
+            pnlActivitiesHeader.TabIndex = 2;
             // 
             // lblActivitiesTitle
             // 
@@ -586,60 +425,137 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             // 
             // gridRecentActivities
             // 
-            gridRecentActivities.Location = new Point(0, 548);
+            gridRecentActivities.Location = new Point(0, 300);
             gridRecentActivities.MainView = gridViewRecentActivities;
             gridRecentActivities.Name = "gridRecentActivities";
-            gridRecentActivities.Size = new Size(1200, 180);
-            gridRecentActivities.TabIndex = 5;
+            gridRecentActivities.Size = new Size(1200, 430);
+            gridRecentActivities.TabIndex = 3;
             gridRecentActivities.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] { gridViewRecentActivities });
+            // Scrollbar styling for dark theme
+            gridRecentActivities.LookAndFeel.Style = DevExpress.LookAndFeel.LookAndFeelStyle.Flat;
+            gridRecentActivities.LookAndFeel.UseDefaultLookAndFeel = false;
             // 
             // gridViewRecentActivities
             // 
+            gridViewRecentActivities.Appearance.ColumnFilterButton.BackColor = Color.FromArgb(36, 43, 61);
+            gridViewRecentActivities.Appearance.ColumnFilterButton.BorderColor = Color.FromArgb(51, 65, 85);
+            gridViewRecentActivities.Appearance.ColumnFilterButton.ForeColor = Color.FromArgb(248, 250, 252);
+            gridViewRecentActivities.Appearance.ColumnFilterButton.Options.UseBackColor = true;
+            gridViewRecentActivities.Appearance.ColumnFilterButton.Options.UseBorderColor = true;
+            gridViewRecentActivities.Appearance.ColumnFilterButton.Options.UseForeColor = true;
             gridViewRecentActivities.Appearance.Empty.BackColor = Color.FromArgb(36, 43, 61);
+            gridViewRecentActivities.Appearance.Empty.Font = new Font("Segoe UI", 9F);
             gridViewRecentActivities.Appearance.Empty.ForeColor = Color.FromArgb(203, 213, 225);
             gridViewRecentActivities.Appearance.Empty.Options.UseBackColor = true;
+            gridViewRecentActivities.Appearance.Empty.Options.UseFont = true;
             gridViewRecentActivities.Appearance.Empty.Options.UseForeColor = true;
             gridViewRecentActivities.Appearance.EvenRow.BackColor = Color.FromArgb(36, 43, 61);
+            gridViewRecentActivities.Appearance.EvenRow.Font = new Font("Segoe UI", 9.5F);
             gridViewRecentActivities.Appearance.EvenRow.ForeColor = Color.FromArgb(248, 250, 252);
             gridViewRecentActivities.Appearance.EvenRow.Options.UseBackColor = true;
+            gridViewRecentActivities.Appearance.EvenRow.Options.UseFont = true;
             gridViewRecentActivities.Appearance.EvenRow.Options.UseForeColor = true;
             gridViewRecentActivities.Appearance.FocusedRow.BackColor = Color.FromArgb(51, 65, 85);
+            gridViewRecentActivities.Appearance.FocusedRow.Font = new Font("Segoe UI", 9.5F);
             gridViewRecentActivities.Appearance.FocusedRow.ForeColor = Color.FromArgb(248, 250, 252);
             gridViewRecentActivities.Appearance.FocusedRow.Options.UseBackColor = true;
+            gridViewRecentActivities.Appearance.FocusedRow.Options.UseFont = true;
             gridViewRecentActivities.Appearance.FocusedRow.Options.UseForeColor = true;
-            gridViewRecentActivities.Appearance.HeaderPanel.BackColor = Color.FromArgb(36, 43, 61);
-            gridViewRecentActivities.Appearance.HeaderPanel.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            gridViewRecentActivities.Appearance.HeaderPanel.ForeColor = Color.Black;
+            gridViewRecentActivities.Appearance.FocusedCell.BackColor = Color.FromArgb(51, 65, 85);
+            gridViewRecentActivities.Appearance.FocusedCell.ForeColor = Color.FromArgb(248, 250, 252);
+            gridViewRecentActivities.Appearance.FocusedCell.Options.UseBackColor = true;
+            gridViewRecentActivities.Appearance.FocusedCell.Options.UseForeColor = true;
+            gridViewRecentActivities.Appearance.HeaderPanel.BackColor = Color.FromArgb(30, 36, 47);
+            gridViewRecentActivities.Appearance.HeaderPanel.BorderColor = Color.FromArgb(30, 36, 47);
+            gridViewRecentActivities.Appearance.HeaderPanel.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
+            gridViewRecentActivities.Appearance.HeaderPanel.ForeColor = Color.FromArgb(180, 190, 200);
             gridViewRecentActivities.Appearance.HeaderPanel.Options.UseBackColor = true;
+            gridViewRecentActivities.Appearance.HeaderPanel.Options.UseBorderColor = true;
             gridViewRecentActivities.Appearance.HeaderPanel.Options.UseFont = true;
             gridViewRecentActivities.Appearance.HeaderPanel.Options.UseForeColor = true;
+            gridViewRecentActivities.Appearance.HideSelectionRow.BackColor = Color.FromArgb(45, 55, 72);
+            gridViewRecentActivities.Appearance.HideSelectionRow.ForeColor = Color.FromArgb(248, 250, 252);
+            gridViewRecentActivities.Appearance.HideSelectionRow.Options.UseBackColor = true;
+            gridViewRecentActivities.Appearance.HideSelectionRow.Options.UseForeColor = true;
             gridViewRecentActivities.Appearance.HorzLine.BackColor = Color.FromArgb(51, 65, 85);
             gridViewRecentActivities.Appearance.HorzLine.Options.UseBackColor = true;
+            gridViewRecentActivities.Appearance.OddRow.BackColor = Color.FromArgb(32, 39, 52);
+            gridViewRecentActivities.Appearance.OddRow.Font = new Font("Segoe UI", 9.5F);
+            gridViewRecentActivities.Appearance.OddRow.ForeColor = Color.FromArgb(248, 250, 252);
+            gridViewRecentActivities.Appearance.OddRow.Options.UseBackColor = true;
+            gridViewRecentActivities.Appearance.OddRow.Options.UseFont = true;
+            gridViewRecentActivities.Appearance.OddRow.Options.UseForeColor = true;
             gridViewRecentActivities.Appearance.Row.BackColor = Color.FromArgb(36, 43, 61);
+            gridViewRecentActivities.Appearance.Row.Font = new Font("Segoe UI", 9.5F);
             gridViewRecentActivities.Appearance.Row.ForeColor = Color.FromArgb(248, 250, 252);
             gridViewRecentActivities.Appearance.Row.Options.UseBackColor = true;
+            gridViewRecentActivities.Appearance.Row.Options.UseFont = true;
             gridViewRecentActivities.Appearance.Row.Options.UseForeColor = true;
             gridViewRecentActivities.Appearance.SelectedRow.BackColor = Color.FromArgb(51, 65, 85);
+            gridViewRecentActivities.Appearance.SelectedRow.Font = new Font("Segoe UI", 9.5F);
             gridViewRecentActivities.Appearance.SelectedRow.ForeColor = Color.FromArgb(248, 250, 252);
             gridViewRecentActivities.Appearance.SelectedRow.Options.UseBackColor = true;
+            gridViewRecentActivities.Appearance.SelectedRow.Options.UseFont = true;
             gridViewRecentActivities.Appearance.SelectedRow.Options.UseForeColor = true;
             gridViewRecentActivities.Appearance.VertLine.BackColor = Color.FromArgb(51, 65, 85);
             gridViewRecentActivities.Appearance.VertLine.Options.UseBackColor = true;
+            gridViewRecentActivities.Appearance.FooterPanel.BackColor = Color.FromArgb(30, 36, 47);
+            gridViewRecentActivities.Appearance.FooterPanel.BorderColor = Color.FromArgb(51, 65, 85);
+            gridViewRecentActivities.Appearance.FooterPanel.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
+            gridViewRecentActivities.Appearance.FooterPanel.ForeColor = Color.FromArgb(180, 190, 200);
+            gridViewRecentActivities.Appearance.FooterPanel.Options.UseBackColor = true;
+            gridViewRecentActivities.Appearance.FooterPanel.Options.UseBorderColor = true;
+            gridViewRecentActivities.Appearance.FooterPanel.Options.UseFont = true;
+            gridViewRecentActivities.Appearance.FooterPanel.Options.UseForeColor = true;
+            gridViewRecentActivities.Appearance.GroupRow.BackColor = Color.FromArgb(42, 50, 68);
+            gridViewRecentActivities.Appearance.GroupRow.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
+            gridViewRecentActivities.Appearance.GroupRow.ForeColor = Color.FromArgb(91, 141, 239);
+            gridViewRecentActivities.Appearance.GroupRow.Options.UseBackColor = true;
+            gridViewRecentActivities.Appearance.GroupRow.Options.UseFont = true;
+            gridViewRecentActivities.Appearance.GroupRow.Options.UseForeColor = true;
+            gridViewRecentActivities.Appearance.Preview.BackColor = Color.FromArgb(30, 36, 47);
+            gridViewRecentActivities.Appearance.Preview.Font = new Font("Segoe UI", 9F, FontStyle.Italic);
+            gridViewRecentActivities.Appearance.Preview.ForeColor = Color.FromArgb(148, 163, 184);
+            gridViewRecentActivities.Appearance.Preview.Options.UseBackColor = true;
+            gridViewRecentActivities.Appearance.Preview.Options.UseFont = true;
+            gridViewRecentActivities.Appearance.Preview.Options.UseForeColor = true;
+            gridViewRecentActivities.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
             gridViewRecentActivities.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] { colActivityIcon, colActivityDescription, colActivityTarget, colActivityProject, colActivityTime });
             gridViewRecentActivities.GridControl = gridRecentActivities;
             gridViewRecentActivities.Name = "gridViewRecentActivities";
+            gridViewRecentActivities.RowHeight = 36;
+            gridViewRecentActivities.ColumnPanelRowHeight = 40;
             gridViewRecentActivities.OptionsBehavior.Editable = false;
             gridViewRecentActivities.OptionsCustomization.AllowColumnMoving = false;
             gridViewRecentActivities.OptionsCustomization.AllowFilter = false;
             gridViewRecentActivities.OptionsCustomization.AllowSort = false;
-            gridViewRecentActivities.OptionsSelection.EnableAppearanceFocusedCell = false;
+            gridViewRecentActivities.OptionsSelection.EnableAppearanceFocusedCell = true;
+            gridViewRecentActivities.OptionsSelection.EnableAppearanceFocusedRow = true;
             gridViewRecentActivities.OptionsView.ShowGroupPanel = false;
             gridViewRecentActivities.OptionsView.ShowHorizontalLines = DevExpress.Utils.DefaultBoolean.True;
             gridViewRecentActivities.OptionsView.ShowIndicator = false;
             gridViewRecentActivities.OptionsView.ShowVerticalLines = DevExpress.Utils.DefaultBoolean.True;
+            gridViewRecentActivities.OptionsView.RowAutoHeight = false;
+            gridViewRecentActivities.OptionsView.EnableAppearanceOddRow = true;
+            gridViewRecentActivities.OptionsView.EnableAppearanceEvenRow = true;
+            gridViewRecentActivities.OptionsView.AnimationType = DevExpress.XtraGrid.Views.Base.GridAnimationType.AnimateFocusedItem;
+            gridViewRecentActivities.OptionsMenu.EnableColumnMenu = true;
+            gridViewRecentActivities.OptionsMenu.EnableFooterMenu = true;
+            gridViewRecentActivities.OptionsMenu.EnableGroupPanelMenu = false;
+            gridViewRecentActivities.OptionsScrollAnnotations.ShowSelectedRows = DevExpress.Utils.DefaultBoolean.True;
+            gridViewRecentActivities.OptionsScrollAnnotations.ShowFocusedRow = DevExpress.Utils.DefaultBoolean.True;
+            gridViewRecentActivities.ScrollStyle = DevExpress.XtraGrid.Views.Grid.ScrollStyleFlags.LiveVertScroll | DevExpress.XtraGrid.Views.Grid.ScrollStyleFlags.LiveHorzScroll;
+            gridViewRecentActivities.PaintStyleName = "Web";
             // 
             // colActivityIcon
             // 
+            colActivityIcon.AppearanceCell.Font = new Font("Segoe UI", 9.5F);
+            colActivityIcon.AppearanceCell.Options.UseFont = true;
+            colActivityIcon.AppearanceHeader.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
+            colActivityIcon.AppearanceHeader.ForeColor = Color.FromArgb(180, 190, 200);
+            colActivityIcon.AppearanceHeader.Options.UseFont = true;
+            colActivityIcon.AppearanceHeader.Options.UseForeColor = true;
+            colActivityIcon.Caption = "";
             colActivityIcon.FieldName = "Icon";
             colActivityIcon.Name = "colActivityIcon";
             colActivityIcon.OptionsColumn.AllowEdit = false;
@@ -649,7 +565,15 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             // 
             // colActivityDescription
             // 
-            colActivityDescription.Caption = "Activity";
+            colActivityDescription.AppearanceCell.Font = new Font("Segoe UI Semibold", 9.5F, FontStyle.Bold);
+            colActivityDescription.AppearanceCell.ForeColor = Color.FromArgb(248, 250, 252);
+            colActivityDescription.AppearanceCell.Options.UseFont = true;
+            colActivityDescription.AppearanceCell.Options.UseForeColor = true;
+            colActivityDescription.AppearanceHeader.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
+            colActivityDescription.AppearanceHeader.ForeColor = Color.FromArgb(180, 190, 200);
+            colActivityDescription.AppearanceHeader.Options.UseFont = true;
+            colActivityDescription.AppearanceHeader.Options.UseForeColor = true;
+            colActivityDescription.Caption = "📋 Activity";
             colActivityDescription.FieldName = "Description";
             colActivityDescription.Name = "colActivityDescription";
             colActivityDescription.OptionsColumn.AllowEdit = false;
@@ -659,7 +583,13 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             // 
             // colActivityTarget
             // 
-            colActivityTarget.Caption = "Target";
+            colActivityTarget.AppearanceCell.Font = new Font("Segoe UI", 9.5F);
+            colActivityTarget.AppearanceCell.Options.UseFont = true;
+            colActivityTarget.AppearanceHeader.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
+            colActivityTarget.AppearanceHeader.ForeColor = Color.FromArgb(180, 190, 200);
+            colActivityTarget.AppearanceHeader.Options.UseFont = true;
+            colActivityTarget.AppearanceHeader.Options.UseForeColor = true;
+            colActivityTarget.Caption = "🎯 Target";
             colActivityTarget.FieldName = "Target";
             colActivityTarget.Name = "colActivityTarget";
             colActivityTarget.OptionsColumn.AllowEdit = false;
@@ -669,7 +599,13 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             // 
             // colActivityProject
             // 
-            colActivityProject.Caption = "Project";
+            colActivityProject.AppearanceCell.Font = new Font("Segoe UI", 9.5F);
+            colActivityProject.AppearanceCell.Options.UseFont = true;
+            colActivityProject.AppearanceHeader.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
+            colActivityProject.AppearanceHeader.ForeColor = Color.FromArgb(180, 190, 200);
+            colActivityProject.AppearanceHeader.Options.UseFont = true;
+            colActivityProject.AppearanceHeader.Options.UseForeColor = true;
+            colActivityProject.Caption = "📁 Project";
             colActivityProject.FieldName = "Project";
             colActivityProject.Name = "colActivityProject";
             colActivityProject.OptionsColumn.AllowEdit = false;
@@ -679,7 +615,15 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             // 
             // colActivityTime
             // 
-            colActivityTime.Caption = "Time";
+            colActivityTime.AppearanceCell.Font = new Font("Segoe UI", 9.5F);
+            colActivityTime.AppearanceCell.ForeColor = Color.FromArgb(148, 163, 184);
+            colActivityTime.AppearanceCell.Options.UseFont = true;
+            colActivityTime.AppearanceCell.Options.UseForeColor = true;
+            colActivityTime.AppearanceHeader.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
+            colActivityTime.AppearanceHeader.ForeColor = Color.FromArgb(180, 190, 200);
+            colActivityTime.AppearanceHeader.Options.UseFont = true;
+            colActivityTime.AppearanceHeader.Options.UseForeColor = true;
+            colActivityTime.Caption = "🕐 Time";
             colActivityTime.FieldName = "Time";
             colActivityTime.Name = "colActivityTime";
             colActivityTime.OptionsColumn.AllowEdit = false;
@@ -694,8 +638,6 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             BackColor = Color.FromArgb(26, 31, 38);
             Controls.Add(gridRecentActivities);
             Controls.Add(pnlActivitiesHeader);
-            Controls.Add(gridRecentProjects);
-            Controls.Add(pnlRecentHeader);
             Controls.Add(pnlKPIContainer);
             Controls.Add(pnlWelcomeHeader);
             ForeColor = Color.FromArgb(248, 250, 252);
@@ -718,10 +660,6 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             ((System.ComponentModel.ISupportInitialize)pnlCardProjects).EndInit();
             pnlCardProjects.ResumeLayout(false);
             pnlCardProjects.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)pnlRecentHeader).EndInit();
-            pnlRecentHeader.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)gridRecentProjects).EndInit();
-            ((System.ComponentModel.ISupportInitialize)gridViewRecentProjects).EndInit();
             ((System.ComponentModel.ISupportInitialize)pnlActivitiesHeader).EndInit();
             pnlActivitiesHeader.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)gridRecentActivities).EndInit();
@@ -756,22 +694,10 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
         private DevExpress.XtraEditors.LabelControl lblCard4Value;
         private DevExpress.XtraEditors.LabelControl lblCard4Icon;
         private DevExpress.XtraEditors.ProgressBarControl progressCompletion;
-        private DevExpress.XtraEditors.PanelControl pnlRecentHeader;
-        private DevExpress.XtraEditors.LabelControl lblRecentTitle;
-        private DevExpress.XtraEditors.SimpleButton btnViewAllProjects;
-        private DevExpress.XtraGrid.GridControl gridRecentProjects;
-        private DevExpress.XtraGrid.Views.Grid.GridView gridViewRecentProjects;
         private DevExpress.XtraEditors.PanelControl pnlActivitiesHeader;
         private DevExpress.XtraEditors.LabelControl lblActivitiesTitle;
         private DevExpress.XtraGrid.GridControl gridRecentActivities;
         private DevExpress.XtraGrid.Views.Grid.GridView gridViewRecentActivities;
-        
-        // Grid Columns for Recent Projects
-        private DevExpress.XtraGrid.Columns.GridColumn colProjectName;
-        private DevExpress.XtraGrid.Columns.GridColumn colStatus;
-        private DevExpress.XtraGrid.Columns.GridColumn colProgress;
-        private DevExpress.XtraGrid.Columns.GridColumn colManagerName;
-        private DevExpress.XtraGrid.Columns.GridColumn colDueDate;
         
         // Grid Columns for Recent Activities
         private DevExpress.XtraGrid.Columns.GridColumn colActivityIcon;

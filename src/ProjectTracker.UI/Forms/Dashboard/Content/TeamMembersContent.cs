@@ -196,12 +196,24 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
                 {
                     e.Handled = true;
                     
-                    // Draw colored circle
+                    // Draw background first
+                    using (var bgBrush = new SolidBrush(e.Appearance.BackColor))
+                    {
+                        e.Graphics.FillRectangle(bgBrush, e.Bounds);
+                    }
+                    
+                    // Draw colored circle - küçük ve ortalanmış
                     var roleColor = GetRoleColor(member.RoleName);
+                    int circleSize = 26;
+                    int circleX = e.Bounds.X + (e.Bounds.Width - circleSize) / 2;
+                    int circleY = e.Bounds.Y + (e.Bounds.Height - circleSize) / 2;
+                    
+                    // Anti-aliasing için
+                    e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                    
                     using (var brush = new SolidBrush(roleColor))
                     {
-                        e.Graphics.FillEllipse(brush, 
-                            e.Bounds.X + 10, e.Bounds.Y + 8, 30, 30);
+                        e.Graphics.FillEllipse(brush, circleX, circleY, circleSize, circleSize);
                     }
                     
                     // Draw initials
@@ -210,8 +222,8 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
                     using (var textBrush = new SolidBrush(Color.White))
                     {
                         var textSize = e.Graphics.MeasureString(initials, font);
-                        var x = e.Bounds.X + 25 - (textSize.Width / 2);
-                        var y = e.Bounds.Y + 23 - (textSize.Height / 2);
+                        var x = circleX + (circleSize - textSize.Width) / 2;
+                        var y = circleY + (circleSize - textSize.Height) / 2;
                         e.Graphics.DrawString(initials, font, textBrush, x, y);
                     }
                 }

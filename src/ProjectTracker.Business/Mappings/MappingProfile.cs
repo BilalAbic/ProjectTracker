@@ -63,6 +63,21 @@ namespace ProjectTracker.Business.Mappings
                     string.IsNullOrEmpty(src.Priority) ? Core.Enums.Priority.Medium : Enum.Parse<Core.Enums.Priority>(src.Priority)))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => 
                     string.IsNullOrEmpty(src.Status) ? Core.Enums.TaskStatus.Pending : Enum.Parse<Core.Enums.TaskStatus>(src.Status)));
+
+            // CreateTaskDto -> Task mapping
+            CreateMap<CreateTaskDto, Core.Entities.Task>()
+                .ForMember(dest => dest.TaskId, opt => opt.Ignore())
+                .ForMember(dest => dest.Project, opt => opt.Ignore())
+                .ForMember(dest => dest.AssignedToUser, opt => opt.Ignore())
+                .ForMember(dest => dest.Comments, opt => opt.Ignore())
+                .ForMember(dest => dest.TimeEntries, opt => opt.Ignore())
+                .ForMember(dest => dest.LinkedCommits, opt => opt.Ignore())
+                .ForMember(dest => dest.EstimatedHours, opt => opt.Ignore())
+                .ForMember(dest => dest.ActualHours, opt => opt.Ignore())
+                .ForMember(dest => dest.CompletedDate, opt => opt.Ignore())
+                .ForMember(dest => dest.IsCriticalPath, opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(_ => DateTime.UtcNow))
+                .ForMember(dest => dest.AssignedToUserId, opt => opt.MapFrom(src => src.AssignedUserId));
         }
     }
 }
