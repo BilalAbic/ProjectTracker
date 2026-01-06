@@ -109,22 +109,23 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             pnlMain.Location = new Point(0, 166);
             pnlMain.Margin = new Padding(3, 4, 3, 4);
             pnlMain.Name = "pnlMain";
-            pnlMain.Size = new Size(1437, 1013);
+            pnlMain.Size = new Size(1100, 1050);
             pnlMain.TabIndex = 2;
             pnlMain.Visible = false;
             // 
             // pnlCommits
             // 
+            pnlCommits.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             pnlCommits.Appearance.BackColor = Color.FromArgb(36, 43, 61);
             pnlCommits.Appearance.Options.UseBackColor = true;
             pnlCommits.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
             pnlCommits.Controls.Add(grdCommits);
             pnlCommits.Controls.Add(lblCommitsTitle);
-            pnlCommits.Location = new Point(17, 690);
+            pnlCommits.Location = new Point(12, 728);
             pnlCommits.Margin = new Padding(3, 4, 3, 4);
             pnlCommits.Name = "pnlCommits";
-            pnlCommits.Padding = new Padding(17, 19, 17, 19);
-            pnlCommits.Size = new Size(1377, 279);
+            pnlCommits.Padding = new Padding(15, 15, 15, 15);
+            pnlCommits.Size = new Size(1080, 280);
             pnlCommits.TabIndex = 5;
             // 
             // grdCommits
@@ -135,40 +136,93 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             grdCommits.MainView = gridViewCommits;
             grdCommits.Margin = new Padding(3, 4, 3, 4);
             grdCommits.Name = "grdCommits";
-            grdCommits.Size = new Size(1343, 208);
+            grdCommits.Size = new Size(1046, 213);
             grdCommits.TabIndex = 1;
             grdCommits.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] { gridViewCommits });
+            grdCommits.LookAndFeel.Style = DevExpress.LookAndFeel.LookAndFeelStyle.Flat;
+            grdCommits.LookAndFeel.UseDefaultLookAndFeel = false;
             // 
             // gridViewCommits
             // 
+            gridViewCommits.Appearance.ColumnFilterButton.BackColor = Color.FromArgb(36, 43, 61);
+            gridViewCommits.Appearance.ColumnFilterButton.BorderColor = Color.FromArgb(51, 65, 85);
+            gridViewCommits.Appearance.ColumnFilterButton.ForeColor = Color.FromArgb(248, 250, 252);
+            gridViewCommits.Appearance.ColumnFilterButton.Options.UseBackColor = true;
+            gridViewCommits.Appearance.ColumnFilterButton.Options.UseBorderColor = true;
+            gridViewCommits.Appearance.ColumnFilterButton.Options.UseForeColor = true;
             gridViewCommits.Appearance.Empty.BackColor = Color.FromArgb(36, 43, 61);
+            gridViewCommits.Appearance.Empty.Font = new Font("Segoe UI", 8.25F);
+            gridViewCommits.Appearance.Empty.ForeColor = Color.FromArgb(203, 213, 225);
             gridViewCommits.Appearance.Empty.Options.UseBackColor = true;
-            gridViewCommits.Appearance.EvenRow.BackColor = Color.FromArgb(30, 42, 58);
+            gridViewCommits.Appearance.Empty.Options.UseFont = true;
+            gridViewCommits.Appearance.Empty.Options.UseForeColor = true;
+            gridViewCommits.Appearance.EvenRow.BackColor = Color.FromArgb(36, 43, 61);
+            gridViewCommits.Appearance.EvenRow.Font = new Font("Segoe UI", 9.5F);
             gridViewCommits.Appearance.EvenRow.ForeColor = Color.FromArgb(248, 250, 252);
             gridViewCommits.Appearance.EvenRow.Options.UseBackColor = true;
+            gridViewCommits.Appearance.EvenRow.Options.UseFont = true;
             gridViewCommits.Appearance.EvenRow.Options.UseForeColor = true;
-            gridViewCommits.Appearance.FocusedRow.BackColor = Color.FromArgb(91, 141, 239);
-            gridViewCommits.Appearance.FocusedRow.ForeColor = Color.White;
+            gridViewCommits.Appearance.OddRow.BackColor = Color.FromArgb(32, 39, 52);
+            gridViewCommits.Appearance.OddRow.Font = new Font("Segoe UI", 9.5F);
+            gridViewCommits.Appearance.OddRow.ForeColor = Color.FromArgb(248, 250, 252);
+            gridViewCommits.Appearance.OddRow.Options.UseBackColor = true;
+            gridViewCommits.Appearance.OddRow.Options.UseFont = true;
+            gridViewCommits.Appearance.OddRow.Options.UseForeColor = true;
+            gridViewCommits.Appearance.FocusedRow.BackColor = Color.FromArgb(51, 65, 85);
+            gridViewCommits.Appearance.FocusedRow.Font = new Font("Segoe UI", 9.5F);
+            gridViewCommits.Appearance.FocusedRow.ForeColor = Color.FromArgb(248, 250, 252);
             gridViewCommits.Appearance.FocusedRow.Options.UseBackColor = true;
+            gridViewCommits.Appearance.FocusedRow.Options.UseFont = true;
             gridViewCommits.Appearance.FocusedRow.Options.UseForeColor = true;
-            gridViewCommits.Appearance.HeaderPanel.BackColor = Color.FromArgb(42, 63, 95);
-            gridViewCommits.Appearance.HeaderPanel.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            gridViewCommits.Appearance.HeaderPanel.ForeColor = Color.FromArgb(248, 250, 252);
+            gridViewCommits.Appearance.FocusedCell.BackColor = Color.FromArgb(51, 65, 85);
+            gridViewCommits.Appearance.FocusedCell.ForeColor = Color.FromArgb(248, 250, 252);
+            gridViewCommits.Appearance.FocusedCell.Options.UseBackColor = true;
+            gridViewCommits.Appearance.FocusedCell.Options.UseForeColor = true;
+            gridViewCommits.Appearance.SelectedRow.BackColor = Color.FromArgb(51, 65, 85);
+            gridViewCommits.Appearance.SelectedRow.Font = new Font("Segoe UI", 9.5F);
+            gridViewCommits.Appearance.SelectedRow.ForeColor = Color.FromArgb(248, 250, 252);
+            gridViewCommits.Appearance.SelectedRow.Options.UseBackColor = true;
+            gridViewCommits.Appearance.SelectedRow.Options.UseFont = true;
+            gridViewCommits.Appearance.SelectedRow.Options.UseForeColor = true;
+            gridViewCommits.Appearance.HideSelectionRow.BackColor = Color.FromArgb(45, 55, 72);
+            gridViewCommits.Appearance.HideSelectionRow.ForeColor = Color.FromArgb(248, 250, 252);
+            gridViewCommits.Appearance.HideSelectionRow.Options.UseBackColor = true;
+            gridViewCommits.Appearance.HideSelectionRow.Options.UseForeColor = true;
+            gridViewCommits.Appearance.HeaderPanel.BackColor = Color.FromArgb(30, 36, 47);
+            gridViewCommits.Appearance.HeaderPanel.BorderColor = Color.FromArgb(30, 36, 47);
+            gridViewCommits.Appearance.HeaderPanel.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
+            gridViewCommits.Appearance.HeaderPanel.ForeColor = Color.FromArgb(180, 190, 200);
             gridViewCommits.Appearance.HeaderPanel.Options.UseBackColor = true;
+            gridViewCommits.Appearance.HeaderPanel.Options.UseBorderColor = true;
             gridViewCommits.Appearance.HeaderPanel.Options.UseFont = true;
             gridViewCommits.Appearance.HeaderPanel.Options.UseForeColor = true;
+            gridViewCommits.Appearance.HorzLine.BackColor = Color.FromArgb(51, 65, 85);
+            gridViewCommits.Appearance.HorzLine.Options.UseBackColor = true;
             gridViewCommits.Appearance.Row.BackColor = Color.FromArgb(36, 43, 61);
+            gridViewCommits.Appearance.Row.Font = new Font("Segoe UI", 9.5F);
             gridViewCommits.Appearance.Row.ForeColor = Color.FromArgb(248, 250, 252);
             gridViewCommits.Appearance.Row.Options.UseBackColor = true;
+            gridViewCommits.Appearance.Row.Options.UseFont = true;
             gridViewCommits.Appearance.Row.Options.UseForeColor = true;
+            gridViewCommits.Appearance.VertLine.BackColor = Color.FromArgb(51, 65, 85);
+            gridViewCommits.Appearance.VertLine.Options.UseBackColor = true;
+            gridViewCommits.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
+            gridViewCommits.ColumnPanelRowHeight = 40;
             gridViewCommits.DetailHeight = 443;
             gridViewCommits.GridControl = grdCommits;
             gridViewCommits.Name = "gridViewCommits";
             gridViewCommits.OptionsBehavior.Editable = false;
             gridViewCommits.OptionsEditForm.PopupEditFormWidth = 914;
             gridViewCommits.OptionsView.EnableAppearanceEvenRow = true;
+            gridViewCommits.OptionsView.EnableAppearanceOddRow = true;
             gridViewCommits.OptionsView.ShowGroupPanel = false;
             gridViewCommits.OptionsView.ShowIndicator = false;
+            gridViewCommits.OptionsView.ShowHorizontalLines = DevExpress.Utils.DefaultBoolean.True;
+            gridViewCommits.OptionsView.ShowVerticalLines = DevExpress.Utils.DefaultBoolean.True;
+            gridViewCommits.OptionsSelection.EnableAppearanceFocusedCell = true;
+            gridViewCommits.OptionsSelection.EnableAppearanceFocusedRow = true;
+            gridViewCommits.PaintStyleName = "Web";
+            gridViewCommits.RowHeight = 38;
             // 
             // lblCommitsTitle
             // 
@@ -192,11 +246,11 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             pnlHotspots.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
             pnlHotspots.Controls.Add(grdHotspots);
             pnlHotspots.Controls.Add(lblHotspotsTitle);
-            pnlHotspots.Location = new Point(714, 399);
+            pnlHotspots.Location = new Point(555, 468);
             pnlHotspots.Margin = new Padding(3, 4, 3, 4);
             pnlHotspots.Name = "pnlHotspots";
             pnlHotspots.Padding = new Padding(17, 19, 17, 19);
-            pnlHotspots.Size = new Size(680, 279);
+            pnlHotspots.Size = new Size(537, 250);
             pnlHotspots.TabIndex = 4;
             // 
             // grdHotspots
@@ -207,36 +261,93 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             grdHotspots.MainView = gridViewHotspots;
             grdHotspots.Margin = new Padding(3, 4, 3, 4);
             grdHotspots.Name = "grdHotspots";
-            grdHotspots.Size = new Size(646, 208);
+            grdHotspots.Size = new Size(503, 179);
             grdHotspots.TabIndex = 1;
             grdHotspots.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] { gridViewHotspots });
+            grdHotspots.LookAndFeel.Style = DevExpress.LookAndFeel.LookAndFeelStyle.Flat;
+            grdHotspots.LookAndFeel.UseDefaultLookAndFeel = false;
             // 
             // gridViewHotspots
             // 
+            gridViewHotspots.Appearance.ColumnFilterButton.BackColor = Color.FromArgb(36, 43, 61);
+            gridViewHotspots.Appearance.ColumnFilterButton.BorderColor = Color.FromArgb(51, 65, 85);
+            gridViewHotspots.Appearance.ColumnFilterButton.ForeColor = Color.FromArgb(248, 250, 252);
+            gridViewHotspots.Appearance.ColumnFilterButton.Options.UseBackColor = true;
+            gridViewHotspots.Appearance.ColumnFilterButton.Options.UseBorderColor = true;
+            gridViewHotspots.Appearance.ColumnFilterButton.Options.UseForeColor = true;
             gridViewHotspots.Appearance.Empty.BackColor = Color.FromArgb(36, 43, 61);
+            gridViewHotspots.Appearance.Empty.Font = new Font("Segoe UI", 8.25F);
+            gridViewHotspots.Appearance.Empty.ForeColor = Color.FromArgb(203, 213, 225);
             gridViewHotspots.Appearance.Empty.Options.UseBackColor = true;
-            gridViewHotspots.Appearance.EvenRow.BackColor = Color.FromArgb(30, 42, 58);
+            gridViewHotspots.Appearance.Empty.Options.UseFont = true;
+            gridViewHotspots.Appearance.Empty.Options.UseForeColor = true;
+            gridViewHotspots.Appearance.EvenRow.BackColor = Color.FromArgb(36, 43, 61);
+            gridViewHotspots.Appearance.EvenRow.Font = new Font("Segoe UI", 9.5F);
             gridViewHotspots.Appearance.EvenRow.ForeColor = Color.FromArgb(248, 250, 252);
             gridViewHotspots.Appearance.EvenRow.Options.UseBackColor = true;
+            gridViewHotspots.Appearance.EvenRow.Options.UseFont = true;
             gridViewHotspots.Appearance.EvenRow.Options.UseForeColor = true;
-            gridViewHotspots.Appearance.HeaderPanel.BackColor = Color.FromArgb(42, 63, 95);
-            gridViewHotspots.Appearance.HeaderPanel.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            gridViewHotspots.Appearance.HeaderPanel.ForeColor = Color.FromArgb(248, 250, 252);
+            gridViewHotspots.Appearance.OddRow.BackColor = Color.FromArgb(32, 39, 52);
+            gridViewHotspots.Appearance.OddRow.Font = new Font("Segoe UI", 9.5F);
+            gridViewHotspots.Appearance.OddRow.ForeColor = Color.FromArgb(248, 250, 252);
+            gridViewHotspots.Appearance.OddRow.Options.UseBackColor = true;
+            gridViewHotspots.Appearance.OddRow.Options.UseFont = true;
+            gridViewHotspots.Appearance.OddRow.Options.UseForeColor = true;
+            gridViewHotspots.Appearance.FocusedRow.BackColor = Color.FromArgb(51, 65, 85);
+            gridViewHotspots.Appearance.FocusedRow.Font = new Font("Segoe UI", 9.5F);
+            gridViewHotspots.Appearance.FocusedRow.ForeColor = Color.FromArgb(248, 250, 252);
+            gridViewHotspots.Appearance.FocusedRow.Options.UseBackColor = true;
+            gridViewHotspots.Appearance.FocusedRow.Options.UseFont = true;
+            gridViewHotspots.Appearance.FocusedRow.Options.UseForeColor = true;
+            gridViewHotspots.Appearance.FocusedCell.BackColor = Color.FromArgb(51, 65, 85);
+            gridViewHotspots.Appearance.FocusedCell.ForeColor = Color.FromArgb(248, 250, 252);
+            gridViewHotspots.Appearance.FocusedCell.Options.UseBackColor = true;
+            gridViewHotspots.Appearance.FocusedCell.Options.UseForeColor = true;
+            gridViewHotspots.Appearance.SelectedRow.BackColor = Color.FromArgb(51, 65, 85);
+            gridViewHotspots.Appearance.SelectedRow.Font = new Font("Segoe UI", 9.5F);
+            gridViewHotspots.Appearance.SelectedRow.ForeColor = Color.FromArgb(248, 250, 252);
+            gridViewHotspots.Appearance.SelectedRow.Options.UseBackColor = true;
+            gridViewHotspots.Appearance.SelectedRow.Options.UseFont = true;
+            gridViewHotspots.Appearance.SelectedRow.Options.UseForeColor = true;
+            gridViewHotspots.Appearance.HideSelectionRow.BackColor = Color.FromArgb(45, 55, 72);
+            gridViewHotspots.Appearance.HideSelectionRow.ForeColor = Color.FromArgb(248, 250, 252);
+            gridViewHotspots.Appearance.HideSelectionRow.Options.UseBackColor = true;
+            gridViewHotspots.Appearance.HideSelectionRow.Options.UseForeColor = true;
+            gridViewHotspots.Appearance.HeaderPanel.BackColor = Color.FromArgb(30, 36, 47);
+            gridViewHotspots.Appearance.HeaderPanel.BorderColor = Color.FromArgb(30, 36, 47);
+            gridViewHotspots.Appearance.HeaderPanel.Font = new Font("Segoe UI Semibold", 10F, FontStyle.Bold);
+            gridViewHotspots.Appearance.HeaderPanel.ForeColor = Color.FromArgb(180, 190, 200);
             gridViewHotspots.Appearance.HeaderPanel.Options.UseBackColor = true;
+            gridViewHotspots.Appearance.HeaderPanel.Options.UseBorderColor = true;
             gridViewHotspots.Appearance.HeaderPanel.Options.UseFont = true;
             gridViewHotspots.Appearance.HeaderPanel.Options.UseForeColor = true;
+            gridViewHotspots.Appearance.HorzLine.BackColor = Color.FromArgb(51, 65, 85);
+            gridViewHotspots.Appearance.HorzLine.Options.UseBackColor = true;
             gridViewHotspots.Appearance.Row.BackColor = Color.FromArgb(36, 43, 61);
+            gridViewHotspots.Appearance.Row.Font = new Font("Segoe UI", 9.5F);
             gridViewHotspots.Appearance.Row.ForeColor = Color.FromArgb(248, 250, 252);
             gridViewHotspots.Appearance.Row.Options.UseBackColor = true;
+            gridViewHotspots.Appearance.Row.Options.UseFont = true;
             gridViewHotspots.Appearance.Row.Options.UseForeColor = true;
+            gridViewHotspots.Appearance.VertLine.BackColor = Color.FromArgb(51, 65, 85);
+            gridViewHotspots.Appearance.VertLine.Options.UseBackColor = true;
+            gridViewHotspots.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
+            gridViewHotspots.ColumnPanelRowHeight = 40;
             gridViewHotspots.DetailHeight = 443;
             gridViewHotspots.GridControl = grdHotspots;
             gridViewHotspots.Name = "gridViewHotspots";
             gridViewHotspots.OptionsBehavior.Editable = false;
             gridViewHotspots.OptionsEditForm.PopupEditFormWidth = 914;
             gridViewHotspots.OptionsView.EnableAppearanceEvenRow = true;
+            gridViewHotspots.OptionsView.EnableAppearanceOddRow = true;
             gridViewHotspots.OptionsView.ShowGroupPanel = false;
             gridViewHotspots.OptionsView.ShowIndicator = false;
+            gridViewHotspots.OptionsView.ShowHorizontalLines = DevExpress.Utils.DefaultBoolean.True;
+            gridViewHotspots.OptionsView.ShowVerticalLines = DevExpress.Utils.DefaultBoolean.True;
+            gridViewHotspots.OptionsSelection.EnableAppearanceFocusedCell = true;
+            gridViewHotspots.OptionsSelection.EnableAppearanceFocusedRow = true;
+            gridViewHotspots.PaintStyleName = "Web";
+            gridViewHotspots.RowHeight = 36;
             // 
             // lblHotspotsTitle
             // 
@@ -260,11 +371,11 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             pnlCommitTrend.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
             pnlCommitTrend.Controls.Add(chartCommitTrend);
             pnlCommitTrend.Controls.Add(lblCommitTrendTitle);
-            pnlCommitTrend.Location = new Point(17, 399);
+            pnlCommitTrend.Location = new Point(12, 468);
             pnlCommitTrend.Margin = new Padding(3, 4, 3, 4);
             pnlCommitTrend.Name = "pnlCommitTrend";
             pnlCommitTrend.Padding = new Padding(17, 19, 17, 19);
-            pnlCommitTrend.Size = new Size(680, 279);
+            pnlCommitTrend.Size = new Size(530, 250);
             pnlCommitTrend.TabIndex = 3;
             // 
             // chartCommitTrend
@@ -273,7 +384,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             chartCommitTrend.Location = new Point(17, 52);
             chartCommitTrend.Margin = new Padding(3, 4, 3, 4);
             chartCommitTrend.Name = "chartCommitTrend";
-            chartCommitTrend.Size = new Size(646, 208);
+            chartCommitTrend.Size = new Size(496, 179);
             chartCommitTrend.TabIndex = 1;
             // 
             // lblCommitTrendTitle
@@ -298,11 +409,11 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             pnlLeaderboard.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
             pnlLeaderboard.Controls.Add(grdLeaderboard);
             pnlLeaderboard.Controls.Add(lblLeaderboardTitle);
-            pnlLeaderboard.Location = new Point(17, 158);
+            pnlLeaderboard.Location = new Point(12, 158);
             pnlLeaderboard.Margin = new Padding(3, 4, 3, 4);
             pnlLeaderboard.Name = "pnlLeaderboard";
             pnlLeaderboard.Padding = new Padding(17, 19, 17, 19);
-            pnlLeaderboard.Size = new Size(1377, 228);
+            pnlLeaderboard.Size = new Size(1080, 300);
             pnlLeaderboard.TabIndex = 1;
             // 
             // grdLeaderboard
@@ -313,7 +424,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             grdLeaderboard.MainView = layoutViewLeaderboard;
             grdLeaderboard.Margin = new Padding(3, 4, 3, 4);
             grdLeaderboard.Name = "grdLeaderboard";
-            grdLeaderboard.Size = new Size(1343, 157);
+            grdLeaderboard.Size = new Size(1046, 229);
             grdLeaderboard.TabIndex = 1;
             grdLeaderboard.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] { layoutViewLeaderboard });
             // 
@@ -323,12 +434,18 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             layoutViewLeaderboard.Appearance.CardCaption.ForeColor = Color.FromArgb(248, 250, 252);
             layoutViewLeaderboard.Appearance.CardCaption.Options.UseBackColor = true;
             layoutViewLeaderboard.Appearance.CardCaption.Options.UseForeColor = true;
+            layoutViewLeaderboard.Appearance.FieldCaption.BackColor = Color.FromArgb(30, 42, 58);
             layoutViewLeaderboard.Appearance.FieldCaption.ForeColor = Color.FromArgb(148, 163, 184);
+            layoutViewLeaderboard.Appearance.FieldCaption.Options.UseBackColor = true;
             layoutViewLeaderboard.Appearance.FieldCaption.Options.UseForeColor = true;
+            layoutViewLeaderboard.Appearance.FieldValue.BackColor = Color.FromArgb(30, 42, 58);
             layoutViewLeaderboard.Appearance.FieldValue.ForeColor = Color.FromArgb(248, 250, 252);
+            layoutViewLeaderboard.Appearance.FieldValue.Options.UseBackColor = true;
             layoutViewLeaderboard.Appearance.FieldValue.Options.UseForeColor = true;
             layoutViewLeaderboard.Appearance.ViewBackground.BackColor = Color.FromArgb(36, 43, 61);
             layoutViewLeaderboard.Appearance.ViewBackground.Options.UseBackColor = true;
+            layoutViewLeaderboard.Appearance.Card.BackColor = Color.FromArgb(30, 42, 58);
+            layoutViewLeaderboard.Appearance.Card.Options.UseBackColor = true;
             layoutViewLeaderboard.CardMinSize = new Size(229, 127);
             layoutViewLeaderboard.DetailHeight = 443;
             layoutViewLeaderboard.GridControl = grdLeaderboard;
@@ -366,7 +483,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             pnlSummary.Location = new Point(0, 0);
             pnlSummary.Margin = new Padding(3, 4, 3, 4);
             pnlSummary.Name = "pnlSummary";
-            pnlSummary.Size = new Size(1437, 152);
+            pnlSummary.Size = new Size(1100, 152);
             pnlSummary.TabIndex = 0;
             // 
             // pnlCardMatched
@@ -376,10 +493,10 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             pnlCardMatched.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
             pnlCardMatched.Controls.Add(lblMatchedValue);
             pnlCardMatched.Controls.Add(lblMatchedLabel);
-            pnlCardMatched.Location = new Point(1063, 13);
+            pnlCardMatched.Location = new Point(831, 13);
             pnlCardMatched.Margin = new Padding(3, 4, 3, 4);
             pnlCardMatched.Name = "pnlCardMatched";
-            pnlCardMatched.Size = new Size(331, 127);
+            pnlCardMatched.Size = new Size(260, 127);
             pnlCardMatched.TabIndex = 3;
             // 
             // lblMatchedValue
@@ -415,10 +532,10 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             pnlCardAdditions.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
             pnlCardAdditions.Controls.Add(lblAdditionsValue);
             pnlCardAdditions.Controls.Add(lblAdditionsLabel);
-            pnlCardAdditions.Location = new Point(714, 13);
+            pnlCardAdditions.Location = new Point(558, 13);
             pnlCardAdditions.Margin = new Padding(3, 4, 3, 4);
             pnlCardAdditions.Name = "pnlCardAdditions";
-            pnlCardAdditions.Size = new Size(331, 127);
+            pnlCardAdditions.Size = new Size(260, 127);
             pnlCardAdditions.TabIndex = 2;
             // 
             // lblAdditionsValue
@@ -454,10 +571,10 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             pnlCardContributors.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
             pnlCardContributors.Controls.Add(lblContributorsValue);
             pnlCardContributors.Controls.Add(lblContributorsLabel);
-            pnlCardContributors.Location = new Point(366, 13);
+            pnlCardContributors.Location = new Point(285, 13);
             pnlCardContributors.Margin = new Padding(3, 4, 3, 4);
             pnlCardContributors.Name = "pnlCardContributors";
-            pnlCardContributors.Size = new Size(331, 127);
+            pnlCardContributors.Size = new Size(260, 127);
             pnlCardContributors.TabIndex = 1;
             // 
             // lblContributorsValue
@@ -493,10 +610,10 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             pnlCardCommits.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
             pnlCardCommits.Controls.Add(lblCommitsValue);
             pnlCardCommits.Controls.Add(lblCommitsLabel);
-            pnlCardCommits.Location = new Point(17, 13);
+            pnlCardCommits.Location = new Point(12, 13);
             pnlCardCommits.Margin = new Padding(3, 4, 3, 4);
             pnlCardCommits.Name = "pnlCardCommits";
-            pnlCardCommits.Size = new Size(331, 127);
+            pnlCardCommits.Size = new Size(260, 127);
             pnlCardCommits.TabIndex = 0;
             // 
             // lblCommitsValue
@@ -732,7 +849,7 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             Controls.Add(pnlHeader);
             Margin = new Padding(3, 4, 3, 4);
             Name = "GitHubContent";
-            Size = new Size(1437, 1179);
+            Size = new Size(1100, 1050);
             pnlMain.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)pnlCommits).EndInit();
             pnlCommits.ResumeLayout(false);

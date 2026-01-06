@@ -42,6 +42,22 @@ namespace ProjectTracker.UI.Forms.Login
         private void FrmLogin_Load(object sender, EventArgs e)
         {
             txtUsername.Focus();
+            
+            // Enter key support for login
+            txtUsername.KeyDown += TxtInput_KeyDown;
+            txtPassword.KeyDown += TxtInput_KeyDown;
+        }
+
+        /// <summary>
+        /// Handles Enter key press to trigger login
+        /// </summary>
+        private void TxtInput_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true;
+                btnLogin_Click(sender, e);
+            }
         }
 
 

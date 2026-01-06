@@ -32,6 +32,12 @@ namespace ProjectTracker.UI.Forms.Login
         {
             pnlLeft = new DevExpress.XtraEditors.PanelControl();
             pictureEdit1 = new DevExpress.XtraEditors.PictureEdit();
+            lblBrandName = new DevExpress.XtraEditors.LabelControl();
+            lblSlogan = new DevExpress.XtraEditors.LabelControl();
+            lblVersion = new DevExpress.XtraEditors.LabelControl();
+            lblDesigner = new DevExpress.XtraEditors.LabelControl();
+            lblStats = new DevExpress.XtraEditors.LabelControl();
+            lblAcademic = new DevExpress.XtraEditors.LabelControl();
             lblTitle = new DevExpress.XtraEditors.LabelControl();
             lblUsername = new DevExpress.XtraEditors.LabelControl();
             txtUsername = new DevExpress.XtraEditors.TextEdit();
@@ -75,6 +81,124 @@ namespace ProjectTracker.UI.Forms.Login
             pictureEdit1.Properties.SizeMode = DevExpress.XtraEditors.Controls.PictureSizeMode.Stretch;
             pictureEdit1.Size = new Size(400, 500);
             pictureEdit1.TabIndex = 0;
+            pictureEdit1.Controls.Add(lblBrandName);
+            pictureEdit1.Controls.Add(lblSlogan);
+            pictureEdit1.Controls.Add(lblVersion);
+            pictureEdit1.Controls.Add(lblDesigner);
+            pictureEdit1.Controls.Add(lblStats);
+            pictureEdit1.Controls.Add(lblAcademic);
+            // 
+            // lblBrandName
+            // 
+            lblBrandName.Appearance.BackColor = Color.Transparent;
+            lblBrandName.Appearance.Font = new Font("Segoe UI", 28F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblBrandName.Appearance.ForeColor = Color.FromArgb(248, 250, 252);
+            lblBrandName.Appearance.Options.UseBackColor = true;
+            lblBrandName.Appearance.Options.UseFont = true;
+            lblBrandName.Appearance.Options.UseForeColor = true;
+            lblBrandName.Appearance.Options.UseTextOptions = true;
+            lblBrandName.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Near;
+            lblBrandName.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
+            lblBrandName.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
+            lblBrandName.Location = new Point(25, 180);
+            lblBrandName.Name = "lblBrandName";
+            lblBrandName.Size = new Size(350, 50);
+            lblBrandName.TabIndex = 1;
+            lblBrandName.Text = "PROJECT TRACKER";
+            // 
+            // lblSlogan
+            // 
+            lblSlogan.Appearance.BackColor = Color.Transparent;
+            lblSlogan.Appearance.Font = new Font("Segoe UI", 10F, FontStyle.Italic, GraphicsUnit.Point, 0);
+            lblSlogan.Appearance.ForeColor = Color.FromArgb(226, 232, 240);
+            lblSlogan.Appearance.Options.UseBackColor = true;
+            lblSlogan.Appearance.Options.UseFont = true;
+            lblSlogan.Appearance.Options.UseForeColor = true;
+            lblSlogan.Appearance.Options.UseTextOptions = true;
+            lblSlogan.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Near;
+            lblSlogan.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
+            lblSlogan.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
+            lblSlogan.Location = new Point(25, 230);
+            lblSlogan.Name = "lblSlogan";
+            lblSlogan.Size = new Size(350, 25);
+            lblSlogan.TabIndex = 2;
+            lblSlogan.Text = "Manage & Analyze Your Projects Easily";
+            // 
+            // lblVersion
+            // 
+            lblVersion.Appearance.BackColor = Color.Transparent;
+            lblVersion.Appearance.Font = new Font("Segoe UI", 8F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblVersion.Appearance.ForeColor = Color.FromArgb(203, 213, 225);
+            lblVersion.Appearance.Options.UseBackColor = true;
+            lblVersion.Appearance.Options.UseFont = true;
+            lblVersion.Appearance.Options.UseForeColor = true;
+            lblVersion.Appearance.Options.UseTextOptions = true;
+            lblVersion.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Near;
+            lblVersion.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
+            lblVersion.BackColor = Color.Transparent;
+            lblVersion.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
+            lblVersion.Location = new Point(25, 470);
+            lblVersion.Name = "lblVersion";
+            lblVersion.Size = new Size(60, 20);
+            lblVersion.TabIndex = 3;
+            lblVersion.Text = "v1.1.0";
+            // 
+            // lblDesigner
+            // 
+            lblDesigner.Appearance.BackColor = Color.Transparent;
+            lblDesigner.Appearance.Font = new Font("Segoe UI", 8F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblDesigner.Appearance.ForeColor = Color.FromArgb(203, 213, 225);
+            lblDesigner.Appearance.Options.UseBackColor = true;
+            lblDesigner.Appearance.Options.UseFont = true;
+            lblDesigner.Appearance.Options.UseForeColor = true;
+            lblDesigner.Appearance.Options.UseTextOptions = true;
+            lblDesigner.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Far;
+            lblDesigner.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
+            lblDesigner.BackColor = Color.Transparent;
+            lblDesigner.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
+            lblDesigner.Location = new Point(250, 470);
+            lblDesigner.Name = "lblDesigner";
+            lblDesigner.Size = new Size(125, 20);
+            lblDesigner.TabIndex = 4;
+            lblDesigner.Text = "by @bilalabic";
+            // 
+            // lblStats
+            // 
+            lblStats.Appearance.BackColor = Color.Transparent;
+            lblStats.Appearance.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblStats.Appearance.ForeColor = Color.FromArgb(226, 232, 240);
+            lblStats.Appearance.Options.UseBackColor = true;
+            lblStats.Appearance.Options.UseFont = true;
+            lblStats.Appearance.Options.UseForeColor = true;
+            lblStats.Appearance.Options.UseTextOptions = true;
+            lblStats.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Near;
+            lblStats.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
+            lblStats.BackColor = Color.Transparent;
+            lblStats.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
+            lblStats.Location = new Point(25, 270);
+            lblStats.Name = "lblStats";
+            lblStats.Size = new Size(350, 20);
+            lblStats.TabIndex = 5;
+            lblStats.Text = "📊 500+ Projects Managed";
+            // 
+            // lblAcademic
+            // 
+            lblAcademic.Appearance.BackColor = Color.Transparent;
+            lblAcademic.Appearance.Font = new Font("Segoe UI", 7.5F, FontStyle.Italic, GraphicsUnit.Point, 0);
+            lblAcademic.Appearance.ForeColor = Color.FromArgb(203, 213, 225);
+            lblAcademic.Appearance.Options.UseBackColor = true;
+            lblAcademic.Appearance.Options.UseFont = true;
+            lblAcademic.Appearance.Options.UseForeColor = true;
+            lblAcademic.Appearance.Options.UseTextOptions = true;
+            lblAcademic.Appearance.TextOptions.HAlignment = DevExpress.Utils.HorzAlignment.Near;
+            lblAcademic.AutoSizeMode = DevExpress.XtraEditors.LabelAutoSizeMode.None;
+            lblAcademic.BackColor = Color.Transparent;
+            lblAcademic.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
+            lblAcademic.Location = new Point(25, 450);
+            lblAcademic.Name = "lblAcademic";
+            lblAcademic.Size = new Size(350, 15);
+            lblAcademic.TabIndex = 6;
+            lblAcademic.Text = "YMH 219 - Object Oriented Programming Project";
             // 
             // lblTitle
             // 
@@ -368,6 +492,12 @@ namespace ProjectTracker.UI.Forms.Login
 
         private DevExpress.XtraEditors.PanelControl pnlLeft;
         private DevExpress.XtraEditors.PictureEdit pictureEdit1;
+        private DevExpress.XtraEditors.LabelControl lblBrandName;
+        private DevExpress.XtraEditors.LabelControl lblSlogan;
+        private DevExpress.XtraEditors.LabelControl lblVersion;
+        private DevExpress.XtraEditors.LabelControl lblDesigner;
+        private DevExpress.XtraEditors.LabelControl lblStats;
+        private DevExpress.XtraEditors.LabelControl lblAcademic;
         private DevExpress.XtraEditors.LabelControl lblTitle;
         private DevExpress.XtraEditors.LabelControl lblUsername;
         private DevExpress.XtraEditors.TextEdit txtUsername;

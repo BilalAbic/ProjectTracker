@@ -127,12 +127,19 @@ namespace ProjectTracker.UI.Forms.Dashboard
         {
             // Close button
             btnClose.Click += (s, e) => Application.Exit();
+            
+            // Minimize button
+            btnMinimize.Click += (s, e) => this.WindowState = FormWindowState.Minimized;
 
             // Top bar hover effects
             SetupTopBarHoverEffects();
 
             // Notification button - opens My Invitations
             btnNotification.Click += btnNotification_Click;
+            
+            // User button - dropdown menu
+            btnUser.Click += btnUser_Click;
+            lblUserArrow.Click += btnUser_Click;
 
             // Sidebar navigation
             btnDashboard.Click += btnDashboard_Click;
@@ -160,6 +167,35 @@ namespace ProjectTracker.UI.Forms.Dashboard
 
             // Rounded search container
             pnlSearchContainer.Paint += PnlSearchContainer_Paint;
+        }
+        
+        /// <summary>
+        /// User button click - show dropdown menu
+        /// </summary>
+        private void btnUser_Click(object? sender, EventArgs e)
+        {
+            var menu = new ContextMenuStrip();
+            menu.BackColor = ColorPalette.BackgroundSlateDark;
+            menu.ForeColor = ColorPalette.TextPrimary;
+            menu.Font = new Font("Segoe UI", 9F);
+            menu.ShowImageMargin = false;
+            
+            var logoutItem = new ToolStripMenuItem("🚪 Logout");
+            logoutItem.BackColor = ColorPalette.BackgroundSlateDark;
+            logoutItem.ForeColor = ColorPalette.TextPrimary;
+            logoutItem.Click += (s, args) =>
+            {
+                SessionManager.Logout();
+                var loginForm = Program.ServiceProvider.GetRequiredService<Forms.Login.FrmLogin>();
+                loginForm.Show();
+                this.Hide();
+            };
+            
+            menu.Items.Add(logoutItem);
+            
+            // Show menu below user button
+            var location = btnUser.PointToScreen(new Point(0, btnUser.Height));
+            menu.Show(location);
         }
 
         /// <summary>
@@ -195,11 +231,17 @@ namespace ProjectTracker.UI.Forms.Dashboard
         /// </summary>
         private void SetupTopBarHoverEffects()
         {
-            // Close button hover (Orange)
+            // Close button hover (Red)
             btnClose.MouseEnter += (s, e) =>
                 btnClose.Appearance.ForeColor = ColorPalette.DangerRed;
             btnClose.MouseLeave += (s, e) =>
                 btnClose.Appearance.ForeColor = ColorPalette.TextSecondary;
+                
+            // Minimize button hover (Blue)
+            btnMinimize.MouseEnter += (s, e) =>
+                btnMinimize.Appearance.ForeColor = ColorPalette.AccentRoyalBlue;
+            btnMinimize.MouseLeave += (s, e) =>
+                btnMinimize.Appearance.ForeColor = ColorPalette.TextSecondary;
 
             // Notification button hover (White)
             btnNotification.MouseEnter += (s, e) =>
@@ -395,27 +437,52 @@ namespace ProjectTracker.UI.Forms.Dashboard
         /// </summary>
         private void AnimateIndicator(int targetY)
         {
-            // Simple animation (можно улучшить с Timer)
-            var timer = new System.Windows.Forms.Timer { Interval = 10 };
+            // Stop any existing animation
+            _animationTimer?.Stop();
+            _animationTimer?.Dispose();
+            
             var currentY = pnlActiveIndicator.Top;
-            var step = (targetY - currentY) / 10;
-
-            timer.Tick += (s, e) =>
+            
+            // If already at target, no animation needed
+            if (currentY == targetY)
+                return;
+            
+            var distance = targetY - currentY;
+            var steps = 10;
+            var stepSize = distance / steps;
+            
+            // If step is 0, just set directly
+            if (stepSize == 0)
             {
-                if (Math.Abs(pnlActiveIndicator.Top - targetY) < Math.Abs(step))
+                pnlActiveIndicator.Top = targetY;
+                return;
+            }
+            
+            _animationTimer = new System.Windows.Forms.Timer { Interval = 15 };
+            var currentStep = 0;
+            
+            _animationTimer.Tick += (s, e) =>
+            {
+                currentStep++;
+                
+                if (currentStep >= steps || Math.Abs(pnlActiveIndicator.Top - targetY) <= Math.Abs(stepSize))
                 {
                     pnlActiveIndicator.Top = targetY;
-                    timer.Stop();
-                    timer.Dispose();
+                    _animationTimer.Stop();
+                    _animationTimer.Dispose();
+                    _animationTimer = null;
                 }
                 else
                 {
-                    pnlActiveIndicator.Top += step;
+                    pnlActiveIndicator.Top += stepSize;
                 }
             };
 
-            timer.Start();
+            _animationTimer.Start();
         }
+        
+        // Animation timer field
+        private System.Windows.Forms.Timer? _animationTimer;
 
         /// <summary>
         /// Mouse down - Start dragging

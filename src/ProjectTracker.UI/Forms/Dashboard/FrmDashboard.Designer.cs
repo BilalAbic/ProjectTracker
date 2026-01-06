@@ -32,6 +32,7 @@ namespace ProjectTracker.UI.Forms.Dashboard
         {
             pnlTopBar = new DevExpress.XtraEditors.PanelControl();
             btnClose = new DevExpress.XtraEditors.SimpleButton();
+            btnMinimize = new DevExpress.XtraEditors.SimpleButton();
             lblUserArrow = new DevExpress.XtraEditors.LabelControl();
             btnUser = new DevExpress.XtraEditors.SimpleButton();
             lblNotificationBadge = new DevExpress.XtraEditors.LabelControl();
@@ -43,6 +44,7 @@ namespace ProjectTracker.UI.Forms.Dashboard
             lblLogo = new DevExpress.XtraEditors.LabelControl();
             pnlTopBarSeparator = new DevExpress.XtraEditors.PanelControl();
             pnlSidebar = new DevExpress.XtraEditors.PanelControl();
+            btnAnalytics = new DevExpress.XtraEditors.SimpleButton();
             btnSettings = new DevExpress.XtraEditors.SimpleButton();
             btnReports = new DevExpress.XtraEditors.SimpleButton();
             btnTeam = new DevExpress.XtraEditors.SimpleButton();
@@ -52,7 +54,6 @@ namespace ProjectTracker.UI.Forms.Dashboard
             pnlActiveIndicator = new DevExpress.XtraEditors.PanelControl();
             pnlSidebarSeparator = new DevExpress.XtraEditors.PanelControl();
             pnlContent = new DevExpress.XtraEditors.PanelControl();
-            btnAnalytics = new DevExpress.XtraEditors.SimpleButton();
             ((System.ComponentModel.ISupportInitialize)pnlTopBar).BeginInit();
             pnlTopBar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pnlSearchContainer).BeginInit();
@@ -72,6 +73,7 @@ namespace ProjectTracker.UI.Forms.Dashboard
             pnlTopBar.Appearance.Options.UseBackColor = true;
             pnlTopBar.BorderStyle = DevExpress.XtraEditors.Controls.BorderStyles.NoBorder;
             pnlTopBar.Controls.Add(btnClose);
+            pnlTopBar.Controls.Add(btnMinimize);
             pnlTopBar.Controls.Add(lblUserArrow);
             pnlTopBar.Controls.Add(btnUser);
             pnlTopBar.Controls.Add(lblNotificationBadge);
@@ -90,17 +92,33 @@ namespace ProjectTracker.UI.Forms.Dashboard
             // 
             btnClose.Appearance.BackColor = Color.Transparent;
             btnClose.Appearance.BorderColor = Color.Transparent;
-            btnClose.Appearance.Font = new Font("Segoe UI", 11.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            btnClose.Appearance.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnClose.Appearance.ForeColor = Color.FromArgb(203, 213, 225);
             btnClose.Appearance.Options.UseBackColor = true;
             btnClose.Appearance.Options.UseBorderColor = true;
             btnClose.Appearance.Options.UseFont = true;
             btnClose.Appearance.Options.UseForeColor = true;
-            btnClose.Location = new Point(1240, 13);
+            btnClose.Location = new Point(1240, 12);
             btnClose.Name = "btnClose";
             btnClose.Size = new Size(32, 32);
             btnClose.TabIndex = 8;
             btnClose.Text = "✕";
+            // 
+            // btnMinimize
+            // 
+            btnMinimize.Appearance.BackColor = Color.Transparent;
+            btnMinimize.Appearance.BorderColor = Color.Transparent;
+            btnMinimize.Appearance.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnMinimize.Appearance.ForeColor = Color.FromArgb(203, 213, 225);
+            btnMinimize.Appearance.Options.UseBackColor = true;
+            btnMinimize.Appearance.Options.UseBorderColor = true;
+            btnMinimize.Appearance.Options.UseFont = true;
+            btnMinimize.Appearance.Options.UseForeColor = true;
+            btnMinimize.Location = new Point(1202, 12);
+            btnMinimize.Name = "btnMinimize";
+            btnMinimize.Size = new Size(32, 32);
+            btnMinimize.TabIndex = 9;
+            btnMinimize.Text = "─";
             // 
             // lblUserArrow
             // 
@@ -264,6 +282,22 @@ namespace ProjectTracker.UI.Forms.Dashboard
             pnlSidebar.Size = new Size(56, 744);
             pnlSidebar.TabIndex = 1;
             // 
+            // btnAnalytics
+            // 
+            btnAnalytics.Appearance.BackColor = Color.Transparent;
+            btnAnalytics.Appearance.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            btnAnalytics.Appearance.ForeColor = Color.FromArgb(203, 213, 225);
+            btnAnalytics.Appearance.Options.UseBackColor = true;
+            btnAnalytics.Appearance.Options.UseFont = true;
+            btnAnalytics.Appearance.Options.UseForeColor = true;
+            btnAnalytics.ImageOptions.ImageToTextAlignment = DevExpress.XtraEditors.ImageAlignToText.LeftCenter;
+            btnAnalytics.Location = new Point(8, 330);
+            btnAnalytics.Name = "btnAnalytics";
+            btnAnalytics.Size = new Size(40, 40);
+            btnAnalytics.TabIndex = 8;
+            btnAnalytics.Text = "🔀";
+            btnAnalytics.Click += btnAnalytics_Click;
+            // 
             // btnSettings
             // 
             btnSettings.Appearance.BackColor = Color.Transparent;
@@ -292,7 +326,7 @@ namespace ProjectTracker.UI.Forms.Dashboard
             btnReports.Name = "btnReports";
             btnReports.Size = new Size(40, 40);
             btnReports.TabIndex = 6;
-            btnReports.Text = "📈";
+            btnReports.Text = "📊";
             // 
             // btnTeam
             // 
@@ -388,22 +422,6 @@ namespace ProjectTracker.UI.Forms.Dashboard
             pnlContent.Size = new Size(1224, 744);
             pnlContent.TabIndex = 2;
             // 
-            // btnAnalytics
-            // 
-            btnAnalytics.Appearance.BackColor = Color.Transparent;
-            btnAnalytics.Appearance.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            btnAnalytics.Appearance.ForeColor = Color.FromArgb(203, 213, 225);
-            btnAnalytics.Appearance.Options.UseBackColor = true;
-            btnAnalytics.Appearance.Options.UseFont = true;
-            btnAnalytics.Appearance.Options.UseForeColor = true;
-            btnAnalytics.ImageOptions.ImageToTextAlignment = DevExpress.XtraEditors.ImageAlignToText.LeftCenter;
-            btnAnalytics.Location = new Point(8, 330);
-            btnAnalytics.Name = "btnAnalytics";
-            btnAnalytics.Size = new Size(40, 40);
-            btnAnalytics.TabIndex = 8;
-            btnAnalytics.Text = "📈";
-            btnAnalytics.Click += new EventHandler(this.btnAnalytics_Click);
-            // 
             // FrmDashboard
             // 
             Appearance.BackColor = Color.FromArgb(26, 31, 38);
@@ -456,6 +474,7 @@ namespace ProjectTracker.UI.Forms.Dashboard
         private DevExpress.XtraEditors.SimpleButton btnUser;
         private DevExpress.XtraEditors.LabelControl lblUserArrow;
         private DevExpress.XtraEditors.SimpleButton btnClose;
+        private DevExpress.XtraEditors.SimpleButton btnMinimize;
         private DevExpress.XtraEditors.PanelControl pnlActiveIndicator;
         private DevExpress.XtraEditors.SimpleButton btnDashboard;
         private DevExpress.XtraEditors.SimpleButton btnSettings;

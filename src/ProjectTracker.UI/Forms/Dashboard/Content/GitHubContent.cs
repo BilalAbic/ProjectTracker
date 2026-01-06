@@ -6,6 +6,7 @@ using DevExpress.XtraCharts;
 using ProjectTracker.Business.DTOs;
 using ProjectTracker.Business.Interfaces;
 using ProjectTracker.UI.Helpers;
+using System.IO;
 
 namespace ProjectTracker.UI.Forms.Dashboard.Content
 {
@@ -51,48 +52,345 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
 
         private void SetupGridColumns()
         {
-            // Commits columns
+            // Commits columns with icons in headers
             gridViewCommits.Columns.Clear();
-            AddColumn(gridViewCommits, "ShortSha", "SHA", 80, 0);
-            AddColumn(gridViewCommits, "Message", "Message", 350, 1);
-            AddColumn(gridViewCommits, "AuthorName", "Author", 120, 2);
-            AddColumn(gridViewCommits, "CommitDate", "Date", 120, 3);
-            AddColumn(gridViewCommits, "LinkedTaskName", "Linked Task", 150, 4);
+            AddColumn(gridViewCommits, "ShortSha", "🔗 SHA", 90, 0);
+            AddColumn(gridViewCommits, "Message", "💬 Message", 350, 1);
+            AddColumn(gridViewCommits, "AuthorName", "👤 Author", 130, 2);
+            AddColumn(gridViewCommits, "CommitDate", "📅 Date", 130, 3);
+            AddColumn(gridViewCommits, "LinkedTaskName", "✓ Linked Task", 150, 4);
+            
+            // Custom draw for special columns
+            gridViewCommits.CustomDrawCell += GridViewCommits_CustomDrawCell;
 
-            // Hotspots columns
+            // Hotspots columns with icons
             gridViewHotspots.Columns.Clear();
-            AddColumn(gridViewHotspots, "FileName", "File", 280, 0);
-            AddColumn(gridViewHotspots, "ChangeCount", "Changes", 70, 1);
-            AddColumn(gridViewHotspots, "TotalAdditions", "+Lines", 70, 2);
-            AddColumn(gridViewHotspots, "TotalDeletions", "-Lines", 70, 3);
+            AddColumn(gridViewHotspots, "FileName", "📁 File", 280, 0);
+            AddColumn(gridViewHotspots, "ChangeCount", "🔄 Changes", 80, 1);
+            AddColumn(gridViewHotspots, "TotalAdditions", "➕ Lines", 80, 2);
+            AddColumn(gridViewHotspots, "TotalDeletions", "➖ Lines", 80, 3);
+            
+            // Custom draw for special columns
+            gridViewHotspots.CustomDrawCell += GridViewHotspots_CustomDrawCell;
+        }
+
+        private void GridViewCommits_CustomDrawCell(object sender, DevExpress.XtraGrid.Views.Base.RowCellCustomDrawEventArgs e)
+        {
+            var cellValue = e.CellValue?.ToString() ?? "";
+
+            switch (e.Column.FieldName)
+            {
+                case "ShortSha":
+                    // SHA as code style
+                    e.Appearance.Font = new Font("Consolas", 9F);
+                    e.Appearance.ForeColor = Color.FromArgb(91, 141, 239);
+                    break;
+                    
+                case "Message":
+                    // Commit message - truncate if too long
+                    e.Appearance.ForeColor = Color.FromArgb(226, 232, 240);
+                    if (cellValue.Length > 60)
+                    {
+                        e.DisplayText = cellValue.Substring(0, 57) + "...";
+                    }
+                    break;
+                    
+                case "AuthorName":
+                    // Author name with accent color
+                    e.Appearance.ForeColor = Color.FromArgb(16, 185, 129); // Emerald
+                    e.Appearance.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+                    break;
+                    
+                case "CommitDate":
+                    // Format date nicely
+                    if (DateTime.TryParse(cellValue, out var date))
+                    {
+                        e.DisplayText = date.ToString("dd MMM, HH:mm");
+                    }
+                    e.Appearance.ForeColor = Color.FromArgb(148, 163, 184);
+                    break;
+                    
+                case "LinkedTaskName":
+                    if (!string.IsNullOrEmpty(cellValue))
+                    {
+                        e.Appearance.ForeColor = Color.FromArgb(168, 85, 247); // Purple
+                        e.DisplayText = $"✓ {cellValue}";
+                    }
+                    else
+                    {
+                        e.Appearance.ForeColor = Color.FromArgb(100, 116, 139);
+                        e.DisplayText = "—";
+                    }
+                    break;
+            }
+        }
+
+        private void GridViewHotspots_CustomDrawCell(object sender, DevExpress.XtraGrid.Views.Base.RowCellCustomDrawEventArgs e)
+        {
+            var cellValue = e.CellValue?.ToString() ?? "";
+
+            switch (e.Column.FieldName)
+            {
+                case "FileName":
+                    // File name with monospace font
+                    e.Appearance.Font = new Font("Consolas", 9F);
+                    e.Appearance.ForeColor = Color.FromArgb(203, 213, 225);
+                    // Truncate long paths
+                    if (cellValue.Length > 40)
+                    {
+                        e.DisplayText = "..." + cellValue.Substring(cellValue.Length - 37);
+                    }
+                    break;
+                    
+                case "ChangeCount":
+                    e.Appearance.ForeColor = Color.FromArgb(249, 115, 22); // Orange
+                    e.Appearance.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
+                    break;
+                    
+                case "TotalAdditions":
+                    e.Appearance.ForeColor = Color.FromArgb(34, 197, 94); // Green
+                    e.Appearance.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
+                    e.DisplayText = $"+{cellValue}";
+                    break;
+                    
+                case "TotalDeletions":
+                    e.Appearance.ForeColor = Color.FromArgb(239, 68, 68); // Red
+                    e.Appearance.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
+                    e.DisplayText = $"-{cellValue}";
+                    break;
+            }
         }
 
         private void SetupLeaderboardLayout()
         {
-            // Setup LayoutView columns for card display
-            layoutViewLeaderboard.Columns.Clear();
+            // We'll use custom panels instead of LayoutView for better styling
+            // The grdLeaderboard will be hidden and we'll create custom cards
+            grdLeaderboard.Visible = false;
+        }
+
+        private void CreateLeaderboardCards(IEnumerable<LeaderboardEntryDto> leaderboard)
+        {
+            // Clear existing cards (except title)
+            var controlsToRemove = pnlLeaderboard.Controls.Cast<Control>()
+                .Where(c => c.Name.StartsWith("card_"))
+                .ToList();
             
-            var colRank = layoutViewLeaderboard.Columns.AddVisible("Rank");
-            colRank.Caption = "Rank";
-            
-            var colAuthor = layoutViewLeaderboard.Columns.AddVisible("Author");
-            colAuthor.Caption = "Developer";
-            
-            var colCommits = layoutViewLeaderboard.Columns.AddVisible("CommitCount");
-            colCommits.Caption = "Commits";
-            
-            var colAdditions = layoutViewLeaderboard.Columns.AddVisible("Additions");
-            colAdditions.Caption = "+Lines";
-            
-            var colDeletions = layoutViewLeaderboard.Columns.AddVisible("Deletions");
-            colDeletions.Caption = "-Lines";
-            
-            // Card appearance
-            layoutViewLeaderboard.CardMinSize = new Size(180, 90);
-            layoutViewLeaderboard.OptionsView.ViewMode = LayoutViewMode.Row;
-            
-            // Custom draw for card styling
-            layoutViewLeaderboard.CustomDrawCardFieldValue += LayoutViewLeaderboard_CustomDrawCardFieldValue;
+            foreach (var ctrl in controlsToRemove)
+            {
+                pnlLeaderboard.Controls.Remove(ctrl);
+                ctrl.Dispose();
+            }
+
+            if (leaderboard == null) return;
+
+            var contributors = leaderboard.ToList();
+            int cardWidth = 250;
+            int cardHeight = 200;
+            int spacing = 15;
+            int startX = 17;
+            int startY = 55;
+
+            for (int i = 0; i < Math.Min(contributors.Count, 4); i++)
+            {
+                var contributor = contributors[i];
+                var card = CreateContributorCard(contributor, i + 1, cardWidth, cardHeight);
+                card.Name = $"card_{i}";
+                card.Location = new Point(startX + (i * (cardWidth + spacing)), startY);
+                pnlLeaderboard.Controls.Add(card);
+            }
+        }
+
+        private Panel CreateContributorCard(LeaderboardEntryDto contributor, int rank, int width, int height)
+        {
+            var card = new Panel
+            {
+                Size = new Size(width, height),
+                BackColor = Color.FromArgb(30, 42, 58),
+                Padding = new Padding(15)
+            };
+
+            // Top border color based on rank
+            var topBorder = new Panel
+            {
+                Size = new Size(width, 3),
+                Location = new Point(0, 0),
+                BackColor = rank switch
+                {
+                    1 => Color.FromArgb(255, 193, 7),   // Gold
+                    2 => Color.FromArgb(108, 117, 125), // Silver
+                    3 => Color.FromArgb(205, 127, 50),  // Bronze
+                    _ => Color.FromArgb(71, 85, 105)    // Gray
+                }
+            };
+            card.Controls.Add(topBorder);
+
+            // Rank badge
+            var rankBadge = new Label
+            {
+                Text = rank.ToString(),
+                Size = new Size(28, 28),
+                Location = new Point(15, 15),
+                BackColor = rank switch
+                {
+                    1 => Color.FromArgb(255, 193, 7),
+                    2 => Color.FromArgb(108, 117, 125),
+                    3 => Color.FromArgb(205, 127, 50),
+                    _ => Color.FromArgb(71, 85, 105)
+                },
+                ForeColor = rank <= 3 ? Color.FromArgb(26, 31, 38) : Color.White,
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                TextAlign = ContentAlignment.MiddleCenter
+            };
+            // Make it circular-ish
+            rankBadge.Paint += (s, e) =>
+            {
+                e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+                using var path = new System.Drawing.Drawing2D.GraphicsPath();
+                path.AddEllipse(0, 0, rankBadge.Width - 1, rankBadge.Height - 1);
+                rankBadge.Region = new Region(path);
+            };
+            card.Controls.Add(rankBadge);
+
+            // Username
+            var lblUsername = new Label
+            {
+                Text = contributor.Author ?? "Unknown",
+                Location = new Point(50, 15),
+                Size = new Size(width - 100, 22),
+                ForeColor = Color.FromArgb(248, 250, 252),
+                Font = new Font("Segoe UI", 11F, FontStyle.Bold),
+                AutoEllipsis = true
+            };
+            card.Controls.Add(lblUsername);
+
+            // Role label
+            var roleText = rank switch
+            {
+                1 => "TOP CONTRIBUTOR",
+                2 => "MAINTAINER",
+                3 => "DEVELOPER",
+                _ => "CONTRIBUTOR"
+            };
+            var roleColor = rank switch
+            {
+                1 => Color.FromArgb(34, 197, 94),  // Green
+                2 => Color.FromArgb(59, 130, 246), // Blue
+                3 => Color.FromArgb(249, 115, 22), // Orange
+                _ => Color.FromArgb(148, 163, 184) // Gray
+            };
+            var lblRole = new Label
+            {
+                Text = roleText,
+                Location = new Point(50, 38),
+                Size = new Size(width - 100, 16),
+                ForeColor = roleColor,
+                Font = new Font("Segoe UI", 7.5F, FontStyle.Bold)
+            };
+            card.Controls.Add(lblRole);
+
+            // Trophy icon for top 3
+            if (rank <= 3)
+            {
+                var lblTrophy = new Label
+                {
+                    Text = "🏆",
+                    Location = new Point(width - 40, 15),
+                    Size = new Size(25, 25),
+                    Font = new Font("Segoe UI", 14F),
+                    ForeColor = rank switch
+                    {
+                        1 => Color.FromArgb(255, 193, 7),
+                        2 => Color.FromArgb(192, 192, 192),
+                        _ => Color.FromArgb(205, 127, 50)
+                    }
+                };
+                card.Controls.Add(lblTrophy);
+            }
+
+            // Commit count (big number)
+            var lblCommitCount = new Label
+            {
+                Text = contributor.CommitCount.ToString("N0"),
+                Location = new Point(15, 70),
+                Size = new Size(100, 40),
+                ForeColor = Color.FromArgb(248, 250, 252),
+                Font = new Font("Segoe UI", 24F, FontStyle.Bold)
+            };
+            card.Controls.Add(lblCommitCount);
+
+            var lblCommitLabel = new Label
+            {
+                Text = "Total Commits",
+                Location = new Point(115, 85),
+                Size = new Size(100, 20),
+                ForeColor = Color.FromArgb(148, 163, 184),
+                Font = new Font("Segoe UI", 9F)
+            };
+            card.Controls.Add(lblCommitLabel);
+
+            // Lines section with separator
+            var separator = new Panel
+            {
+                Size = new Size(width - 30, 1),
+                Location = new Point(15, 120),
+                BackColor = Color.FromArgb(51, 65, 85)
+            };
+            card.Controls.Add(separator);
+
+            // + Lines
+            var lblPlusLabel = new Label
+            {
+                Text = "+ LINES",
+                Location = new Point(15, 130),
+                Size = new Size(80, 15),
+                ForeColor = Color.FromArgb(34, 197, 94),
+                Font = new Font("Segoe UI", 7F, FontStyle.Bold)
+            };
+            card.Controls.Add(lblPlusLabel);
+
+            var lblPlusValue = new Label
+            {
+                Text = $"+{contributor.Additions:N0}",
+                Location = new Point(15, 145),
+                Size = new Size(100, 25),
+                ForeColor = Color.FromArgb(248, 250, 252),
+                Font = new Font("Segoe UI", 12F, FontStyle.Bold)
+            };
+            card.Controls.Add(lblPlusValue);
+
+            // - Lines
+            var lblMinusLabel = new Label
+            {
+                Text = "- LINES",
+                Location = new Point(width / 2, 130),
+                Size = new Size(80, 15),
+                ForeColor = Color.FromArgb(239, 68, 68),
+                Font = new Font("Segoe UI", 7F, FontStyle.Bold)
+            };
+            card.Controls.Add(lblMinusLabel);
+
+            var lblMinusValue = new Label
+            {
+                Text = $"-{contributor.Deletions:N0}",
+                Location = new Point(width / 2, 145),
+                Size = new Size(100, 25),
+                ForeColor = Color.FromArgb(248, 250, 252),
+                Font = new Font("Segoe UI", 12F, FontStyle.Bold)
+            };
+            card.Controls.Add(lblMinusValue);
+
+            // Record info at bottom
+            var lblRecord = new Label
+            {
+                Text = $"RECORD {rank} OF {Math.Min(4, rank + 3)}",
+                Location = new Point(15, height - 25),
+                Size = new Size(120, 15),
+                ForeColor = Color.FromArgb(100, 116, 139),
+                Font = new Font("Segoe UI", 7F)
+            };
+            card.Controls.Add(lblRecord);
+
+            return card;
         }
 
         private void SetupChart()
@@ -164,45 +462,6 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
             cmbProject.EditValueChanged += async (s, e) => await OnProjectChangedAsync();
             btnSync.Click += async (s, e) => await SyncRepositoryAsync();
             btnLinkRepo.Click += async (s, e) => await LinkRepositoryAsync();
-        }
-
-        private void LayoutViewLeaderboard_CustomDrawCardFieldValue(object sender, DevExpress.XtraGrid.Views.Base.RowCellCustomDrawEventArgs e)
-        {
-            if (e.Column.FieldName == "Rank")
-            {
-                var rank = Convert.ToInt32(e.CellValue);
-                e.Appearance.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-                
-                switch (rank)
-                {
-                    case 1:
-                        e.Appearance.ForeColor = Color.FromArgb(255, 215, 0); // Gold
-                        e.DisplayText = "1st";
-                        break;
-                    case 2:
-                        e.Appearance.ForeColor = Color.FromArgb(192, 192, 192); // Silver
-                        e.DisplayText = "2nd";
-                        break;
-                    case 3:
-                        e.Appearance.ForeColor = Color.FromArgb(205, 127, 50); // Bronze
-                        e.DisplayText = "3rd";
-                        break;
-                    default:
-                        e.Appearance.ForeColor = ColorPalette.TextMuted;
-                        e.DisplayText = $"{rank}th";
-                        break;
-                }
-            }
-            else if (e.Column.FieldName == "Additions")
-            {
-                e.Appearance.ForeColor = Color.FromArgb(34, 197, 94); // Green
-                e.DisplayText = $"+{e.CellValue:N0}";
-            }
-            else if (e.Column.FieldName == "Deletions")
-            {
-                e.Appearance.ForeColor = Color.FromArgb(239, 68, 68); // Red
-                e.DisplayText = $"-{e.CellValue:N0}";
-            }
         }
 
         private async Task LoadProjectsAsync()
@@ -295,7 +554,9 @@ namespace ProjectTracker.UI.Forms.Dashboard.Content
                     lblContributorsValue.Text = summary.TotalContributors.ToString("N0");
                     lblAdditionsValue.Text = $"+{summary.TotalAdditions:N0}";
                     lblMatchedValue.Text = summary.MatchedTasksCount.ToString("N0");
-                    grdLeaderboard.DataSource = summary.Leaderboard;
+                    
+                    // Create custom leaderboard cards
+                    CreateLeaderboardCards(summary.Leaderboard);
                 }
 
                 // Load commits

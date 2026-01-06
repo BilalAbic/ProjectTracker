@@ -50,6 +50,13 @@ namespace ProjectTracker.Business.Services
                     return result;
                 }
 
+                // Validate repo info
+                if (string.IsNullOrWhiteSpace(repo.RepoOwner) || string.IsNullOrWhiteSpace(repo.RepoName))
+                {
+                    result.Message = $"Invalid repository info. Owner: '{repo.RepoOwner}', Name: '{repo.RepoName}'";
+                    return result;
+                }
+
                 // Update sync status
                 await _unitOfWork.GitRepositories.UpdateSyncStatusAsync(repo.GitRepositoryId, "Syncing");
                 await _unitOfWork.SaveChangesAsync();
@@ -94,16 +101,23 @@ namespace ProjectTracker.Business.Services
         {
             // Parse repo URL
             var (owner, name) = ParseRepoUrl(repoUrl);
+            
+            // Debug: Log parsed values
+            System.Diagnostics.Debug.WriteLine($"[GitHubSync] Input URL: {repoUrl}");
+            System.Diagnostics.Debug.WriteLine($"[GitHubSync] Parsed Owner: '{owner}', Name: '{name}'");
+            
             if (string.IsNullOrEmpty(owner) || string.IsNullOrEmpty(name))
             {
-                throw new ArgumentException("Invalid GitHub repository URL.");
+                throw new ArgumentException($"Invalid GitHub repository URL. Could not parse owner/name from: {repoUrl}");
             }
 
-            // Check if already linked
+            // Check if already linked - DELETE and recreate to avoid update issues
             var existing = await _unitOfWork.GitRepositories.GetByProjectIdAsync(projectId);
             if (existing != null)
             {
-                throw new InvalidOperationException("Project already has a linked repository. Unlink first.");
+                System.Diagnostics.Debug.WriteLine($"[GitHubSync] Removing existing repo: {existing.RepoOwner}/{existing.RepoName}");
+                _unitOfWork.GitRepositories.Remove(existing);
+                await _unitOfWork.SaveChangesAsync();
             }
 
             // Create repository record
@@ -119,6 +133,8 @@ namespace ProjectTracker.Business.Services
 
             await _unitOfWork.GitRepositories.AddAsync(repo);
             await _unitOfWork.SaveChangesAsync();
+            
+            System.Diagnostics.Debug.WriteLine($"[GitHubSync] Created new repo: {owner}/{name}");
 
             return MapToDto(repo);
         }
@@ -158,8 +174,23 @@ namespace ProjectTracker.Business.Services
 
             try
             {
+                // First, get repo info to ensure we have the default branch
+                if (string.IsNullOrEmpty(repo.DefaultBranch))
+                {
+                    var ghRepo = await client.Repository.Get(repo.RepoOwner, repo.RepoName);
+                    repo.DefaultBranch = ghRepo.DefaultBranch;
+                    _unitOfWork.GitRepositories.Update(repo);
+                    await _unitOfWork.SaveChangesAsync();
+                }
+
+                var commitRequest = new CommitRequest();
+                if (!string.IsNullOrEmpty(repo.DefaultBranch))
+                {
+                    commitRequest.Sha = repo.DefaultBranch;
+                }
+
                 var commits = await client.Repository.Commit.GetAll(repo.RepoOwner, repo.RepoName,
-                    new CommitRequest { Sha = repo.DefaultBranch },
+                    commitRequest,
                     new ApiOptions { PageCount = 5, PageSize = 100 }); // Last 500 commits max
 
                 foreach (var ghCommit in commits)
@@ -229,6 +260,14 @@ namespace ProjectTracker.Business.Services
             {
                 throw new Exception("GitHub API rate limit exceeded. Please try again later.");
             }
+            catch (NotFoundException ex)
+            {
+                throw new Exception($"Repository not found: {repo.RepoOwner}/{repo.RepoName}. Please check the repository URL. Details: {ex.Message}");
+            }
+            catch (AuthorizationException ex)
+            {
+                throw new Exception($"GitHub authorization failed. Token may be invalid or expired. Details: {ex.Message}");
+            }
 
             return (newCount, updatedCount, matchedCount);
         }
@@ -273,12 +312,26 @@ namespace ProjectTracker.Business.Services
             // Handle various GitHub URL formats
             // https://github.com/owner/repo
             // https://github.com/owner/repo.git
+            // https://github.com/owner/repo/
             // git@github.com:owner/repo.git
+
+            if (string.IsNullOrWhiteSpace(url))
+                return (string.Empty, string.Empty);
+
+            // Clean the URL
+            url = url.Trim();
+            
+            // Remove trailing slash
+            url = url.TrimEnd('/');
+            
+            // Remove .git suffix
+            if (url.EndsWith(".git", StringComparison.OrdinalIgnoreCase))
+                url = url[..^4];
 
             var patterns = new[]
             {
-                @"github\.com[/:](?<owner>[^/]+)/(?<name>[^/.]+)",
-                @"github\.com[/:](?<owner>[^/]+)/(?<name>[^/]+)\.git"
+                @"github\.com[/:](?<owner>[^/]+)/(?<name>[^/]+)$",
+                @"github\.com[/:](?<owner>[^/]+)/(?<name>.+)$"
             };
 
             foreach (var pattern in patterns)
@@ -286,7 +339,16 @@ namespace ProjectTracker.Business.Services
                 var match = Regex.Match(url, pattern, RegexOptions.IgnoreCase);
                 if (match.Success)
                 {
-                    return (match.Groups["owner"].Value, match.Groups["name"].Value.Replace(".git", ""));
+                    var owner = match.Groups["owner"].Value.Trim();
+                    var name = match.Groups["name"].Value.Trim();
+                    
+                    // Remove any query string or fragment
+                    if (name.Contains('?'))
+                        name = name.Split('?')[0];
+                    if (name.Contains('#'))
+                        name = name.Split('#')[0];
+                    
+                    return (owner, name);
                 }
             }
 

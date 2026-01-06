@@ -63,6 +63,25 @@ namespace ProjectTracker.UI.Forms.Login
         private void FrmRegister_Load(object sender, EventArgs e)
         {
             txtUsername.Focus();
+            
+            // Enter key support for all text fields
+            txtUsername.KeyDown += TxtInput_KeyDown;
+            txtFullName.KeyDown += TxtInput_KeyDown;
+            txtEmail.KeyDown += TxtInput_KeyDown;
+            txtPassword.KeyDown += TxtInput_KeyDown;
+            txtConfirmPassword.KeyDown += TxtInput_KeyDown;
+        }
+
+        /// <summary>
+        /// Handles Enter key press to trigger registration
+        /// </summary>
+        private void TxtInput_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true;
+                btnRegister_Click(sender, e);
+            }
         }
 
         /// <summary>
