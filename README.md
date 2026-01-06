@@ -1,4 +1,4 @@
-# 📊 PROJECT TRACKER
+﻿# 📊 PROJECT TRACKER
 
 ### Kurumsal Proje Yönetim Sistemi
 *C# Windows Forms + DevExpress + Entity Framework Core 8.0 + ASP.NET Core Web API*
@@ -21,10 +21,11 @@
 - [Veritabanı Tasarımı](#-veritabanı-tasarımı)
 - [Proje Yapısı](#-proje-yapısı)
 - [Kurulum](#-kurulum)
-- [Yapılandırma](#-yapılandırma)
 - [API Dokümantasyonu](#-api-dokümantasyonu)
 - [Kullanıcı Rolleri](#-kullanıcı-rolleri)
 - [Tasarım Kalıpları](#-tasarım-kalıpları)
+- [UI Tema Sistemi](#-ui-tema-sistemi)
+- [Sürüm Notları](#-sürüm-notları)
 - [Geliştirici](#-geliştirici)
 
 ---
@@ -34,7 +35,7 @@
 **Project Tracker**, projelerin planlama, yürütme ve izleme süreçlerini tek bir merkezi yapı altında toplayan, akademik gereksinimleri karşılayan bütünleşik bir yazılım çözümüdür.
 
 ### Temel Hedefler
-- �  Projelerin merkezi yönetimi ve takibi
+- 📁 Projelerin merkezi yönetimi ve takibi
 - ✅ Görevlerin hiyerarşik organizasyonu (ana görev - alt görev)
 - 👥 Takım işbirliği ve üye yönetimi
 - 📊 Veri odaklı karar destek mekanizmaları
@@ -133,6 +134,15 @@ Bu proje **YMH 219 Nesne Tabanlı Programlama** dersi kapsamında geliştirilmi�
 | Responsive Tasarım | Farklı ekran boyutlarına uyum | ✅ |
 | Özel Mesaj Kutusu | Dark-themed, hata kodlu mesajlar | ✅ |
 | WCAG 2.1 Uyumlu | Erişilebilirlik standartları | ✅ |
+
+---
+
+## 📸 Ekran Görüntüleri
+
+### Giriş Ekranı
+![Login Form](docs/Screenshots/LoginFormLeft.png)
+
+> 📌 **Not:** Daha fazla ekran görüntüsü yakında eklenecektir.
 
 ---
 
