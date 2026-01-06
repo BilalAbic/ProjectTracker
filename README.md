@@ -152,7 +152,7 @@ Bu proje **YMH 219 Nesne Tabanlı Programlama** dersi kapsamında geliştirilmi�
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                            KULLANICI ARAYÜZÜ                                │
+│                         1. KULLANICI ARAYÜZÜ (UI)                           │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │  Windows Forms (WinForms)              │  Web Sitesi (GitHub Pages)         │
 │  ├── FrmLogin                          │  ├── index.html (Tanıtım)          │
@@ -170,7 +170,7 @@ Bu proje **YMH 219 Nesne Tabanlı Programlama** dersi kapsamında geliştirilmi�
                          │                                    │
                          ▼                                    ▼
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                           BACKEND SERVİSLERİ                                │
+│                      2. İŞ MANTIĞI KATMANI (BUSINESS)                       │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │  Business Layer (14 Service)           │  Web API (ASP.NET Core 8.0)        │
 │  ├── ProjectService                    │  ├── InvitationsController         │
@@ -188,10 +188,48 @@ Bu proje **YMH 219 Nesne Tabanlı Programlama** dersi kapsamında geliştirilmi�
 │  ├── AuditLogService                   │                                    │
 │  └── AdvancedReportService             │                                    │
 └─────────────────────────────────────────────────────────────────────────────┘
-                         │                                    │
-                         ▼                                    ▼
+                         │                                    
+                         ▼                                    
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                          VERİTABANI KATMANI                                 │
+│                      3. VERİ ERİŞİM KATMANI (DATA)                          │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  Repository Implementations            │  Database Context                  │
+│  ├── Repository<T> (Generic)           │  ├── AppDbContext (18 DbSet)       │
+│  ├── ProjectRepository                 │  ├── InvitationDbContext (API)     │
+│  ├── TaskRepository                    │  └── AppDbContextFactory           │
+│  ├── GitHubTokenRepository             │                                    │
+│  ├── GitRepositoryRepository           │  Migrations                        │
+│  ├── GitCommitRepository               │  ├── AddTeamManagementSystem       │
+│  └── GitFileChangeRepository           │  ├── AddAdvancedAnalyticsTables    │
+│                                        │  ├── AddRoleEdit                   │
+│  UnitOfWork                            │  └── GitHubIntegration             │
+│  └── Transaction yönetimi              │                                    │
+└─────────────────────────────────────────────────────────────────────────────┘
+                         │                                    
+                         ▼                                    
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                       4. ÇEKİRDEK KATMAN (CORE)                             │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  Entities (18 Entity)                  │  Interfaces                        │
+│  ├── User, Role                        │  ├── IRepository<T>                │
+│  ├── Team, TeamMember, TeamInvitation  │  ├── IUnitOfWork                   │
+│  ├── Project, ProjectRisk, Snapshot    │  ├── IProjectRepository            │
+│  ├── Task, TaskComment                 │  ├── ITaskRepository               │
+│  ├── AuditLog, Notification            │  ├── IGitHubTokenRepository        │
+│  ├── TimeEntry                         │  ├── IGitRepositoryRepository      │
+│  └── GitHubToken, GitRepository,       │  ├── IGitCommitRepository          │
+│      GitCommit, GitFileChange          │  └── IGitFileChangeRepository      │
+│                                        │                                    │
+│  Enums (7 Enum)                        │  Hiçbir katmana bağımlı değil!     │
+│  ├── ProjectStatus, TaskStatus         │  (Zero Dependencies)               │
+│  ├── Priority, TeamRole                │                                    │
+│  ├── InvitationStatus                  │                                    │
+│  ├── ActivityType, NotificationType    │                                    │
+└─────────────────────────────────────────────────────────────────────────────┘
+                         │                                    
+                         ▼                                    
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                          VERİTABANI (DATABASE)                              │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │  Yerel SQL Server                      │  Uzak SQL Server (Plesk)           │
 │  ├── 18 Tablo                          │  └── Invitations (tek tablo)       │
