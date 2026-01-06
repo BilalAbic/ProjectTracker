@@ -13,9 +13,11 @@
 
 | Platform | URL | Açıklama |
 |----------|-----|----------|
-| 🌍 **Web Sitesi** | [bilalabic.github.io/projecttracker](https://bilalabic.github.io/projecttracker) | GitHub Pages'te barındırılan tanıtım sitesi |
+| 🌍 **Web Sitesi** | [pt.bilalabic.com](https://pt.bilalabic.com) | Custom domain ile barındırılan tanıtım sitesi |
 | 🔌 **API** | [bilalabic.com/api](https://bilalabic.com/api) | Plesk'te barındırılan ASP.NET Core Web API |
-| 📦 **İndirme** | [GitHub Releases](https://github.com/BilalAbic/projecttracker/releases/latest) | Windows masaüstü uygulaması |
+| 📦 **İndirme** | [GitHub Releases](https://github.com/BilalAbic/ProjectTracker/releases/latest) | Windows masaüstü uygulaması |
+| 📂 **Kaynak Kod** | [github.com/BilalAbic/ProjectTracker](https://github.com/BilalAbic/ProjectTracker) | Ana repository |
+| 🌐 **Web Branch** | [web-github-pages](https://github.com/BilalAbic/ProjectTracker/tree/web-github-pages) | Web sitesi kaynak kodları |
 
 ### ✨ Temel Özellikler
 
@@ -198,58 +200,6 @@
 }
 ```
 
-### API Yapılandırması
-
-```json
-// appsettings.Production.json
-{
-  "ConnectionStrings": {
-    "DefaultConnection": "Server=...;Database=DboProjectTracker;..."
-  },
-  "Logging": {
-    "LogLevel": {
-      "Default": "Warning"
-    }
-  }
-}
-```
-
----
-
-## 📧 E-posta Sistemi
-
-### Gmail SMTP Yapılandırması
-
-```json
-// appsettings.json
-{
-  "Email": {
-    "Enabled": true,
-    "SmtpHost": "smtp.gmail.com",
-    "SmtpPort": 587,
-    "Username": "your-email@gmail.com",
-    "Password": "xxxx xxxx xxxx xxxx",  // Gmail App Password
-    "FromEmail": "your-email@gmail.com",
-    "FromName": "ProjectTracker",
-    "EnableSsl": true
-  }
-}
-```
-
-### Gmail App Password Oluşturma
-
-1. Google Hesabı → Güvenlik → 2 Adımlı Doğrulama (aktif olmalı)
-2. Uygulama Şifreleri → Yeni şifre oluştur
-3. 16 karakterlik şifreyi `appsettings.json`'a yapıştır
-
-### E-posta Şablonu
-
-Davet e-postası HTML formatında gönderilir:
-- Takım adı ve davet eden kişi bilgisi
-- Atanan rol
-- Kabul linki (GitHub Pages'e yönlendirir)
-- Son geçerlilik tarihi
-
 ---
 
 ## 🌍 Web Sitesi (GitHub Pages)
@@ -259,16 +209,19 @@ Davet e-postası HTML formatında gönderilir:
 | Özellik | Değer |
 |---------|-------|
 | **Platform** | GitHub Pages |
-| **URL** | https://bilalabic.github.io/projecttracker |
-| **Kaynak** | `/web` klasörü |
+| **Custom Domain** | https://pt.bilalabic.com |
+| **Alternatif URL** | https://bilalabic.github.io/ProjectTracker |
+| **Branch** | `web-github-pages` |
+| **Kaynak** | `/docs` klasörü |
 | **Teknoloji** | HTML, CSS, JavaScript (Vanilla) |
 
 ### Sayfa Yapısı
 
 ```
-web/
+docs/
 ├── index.html          # Ana sayfa (tanıtım, özellikler, indirme)
 ├── accept-invite.html  # Davet kabul sayfası
+├── CNAME               # Custom domain yapılandırması (pt.bilalabic.com)
 ├── css/
 │   ├── style.css       # Ana stil dosyası
 │   └── invite.css      # Davet sayfası stilleri
@@ -284,7 +237,7 @@ web/
 // config.js
 const CONFIG = {
     API_BASE_URL: 'https://bilalabic.com',  // Plesk API
-    DOWNLOAD_URL: 'https://github.com/BilalAbic/projecttracker/releases/latest',
+    DOWNLOAD_URL: 'https://github.com/BilalAbic/ProjectTracker/releases/latest',
     DEMO_MODE: false  // true yapılırsa API çağrısı yapmaz
 };
 ```
@@ -330,7 +283,7 @@ ProjectTracker/
 │   │   ├── appsettings.json
 │   │   └── Program.cs
 │   │
-│   └── ProjectTracker.API/               [Web API Layer] ⭐ YENİ
+│   └── ProjectTracker.API/               [Web API Layer]
 │       ├── Controllers/
 │       │   └── InvitationsController.cs
 │       ├── Data/
@@ -342,23 +295,24 @@ ProjectTracker/
 │       ├── Program.cs
 │       └── web.config
 │
-├── web/                                  [Web Sitesi - GitHub Pages] ⭐ YENİ
+├── web/                                  [Web Sitesi - Geliştirme]
 │   ├── index.html
 │   ├── accept-invite.html
 │   ├── css/
 │   └── js/
 │
-├── publish/
-│   └── api/                              [API publish çıktısı]
-│
-├── docs/
+├── docs/                                 [Web Sitesi - GitHub Pages + Dokümantasyon]
+│   ├── index.html                        (GitHub Pages bu klasörden serve eder)
+│   ├── accept-invite.html
+│   ├── CNAME                             (pt.bilalabic.com)
+│   ├── css/
+│   ├── js/
 │   ├── UML/
 │   ├── Screenshots/
 │   └── Reports/
 │
-├── SeedDataScript/
-│   ├── seed.sql
-│   └── plesk_invitations_table.sql       [Plesk DB scripti]
+├── publish/
+│   └── api/                              [API publish çıktısı]
 │
 └── bank/                                 [Geliştirme notları]
 ```
@@ -437,7 +391,7 @@ ProjectTracker/
 
 3. **Test et:**
    ```
-   https://your-domain.com/api/invitations/health
+   https://bilalabic.com/api/invitations/health
    ```
 
 ---
@@ -482,8 +436,14 @@ ProjectTracker/
 
 ## 📚 Dokümantasyon
 
-- **[CODING_STANDARDS.md](CODING_STANDARDS.md)** - Kod standartları
-- **[TEKNOLOJI_KARARLARI.md](TEKNOLOJI_KARARLARI.md)** - Teknoloji kararları
+Detaylı teknik dokümanlar `bank/` klasöründe bulunmaktadır:
+
+| Dosya | Açıklama |
+|-------|----------|
+| [GITHUB_INTEGRATION_README.md](bank/GITHUB_INTEGRATION_README.md) | GitHub entegrasyonu teknik tasarım |
+| [GITHUB_INTEGRATION_ROADMAP.md](bank/GITHUB_INTEGRATION_ROADMAP.md) | GitHub entegrasyonu yol haritası |
+| [UI_DASHBOARD_PHASE6_README.md](bank/UI_DASHBOARD_PHASE6_README.md) | Dashboard Phase 6 özellikleri |
+| [ROLE_SYSTEM_ROADMAP.md](bank/ROLE_SYSTEM_ROADMAP.md) | Rol sistemi yol haritası |
 
 ---
 
@@ -498,6 +458,6 @@ ProjectTracker/
 
 **📌 Güncel Durum:** Phase 8 (Web API & Davet Sistemi) tamamlandı  
 **📈 İlerleme:** ~85%  
-**📅 Son Güncelleme:** 5 Ocak 2026
+**📅 Son Güncelleme:** 6 Ocak 2026
 
 🚀 **Happy Coding!**

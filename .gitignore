@@ -260,10 +260,7 @@ MigrationBackup/
 appsettings.Development.json
 appsettings.Production.json
 **/appsettings.*.json
-\src\ProjectTracker.UI\appsettings.json
-!**/appsettings.example.json
-
-
+!**/appsettings.json
 
 ## Veritabanı yedekleri
 *.bak
@@ -315,5 +312,6 @@ ehthumbs_vista.db
 [Dd]esktop.ini
 $RECYCLE.BIN/
 *.lnk
+
 
 bank
