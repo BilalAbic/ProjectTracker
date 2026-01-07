@@ -8,7 +8,7 @@ const CONFIG = {
     API_BASE_URL: 'https://bilalabic.com',
     
     // Uygulama indirme linki
-    DOWNLOAD_URL: 'https://github.com/BilalAbic/projecttracker/releases/latest',
+    DOWNLOAD_URL: 'https://github.com/BilalAbic/ProjectTracker/releases/tag/v1.0.0',
     
     // Demo modu - false yaparak production'da kullanın
     DEMO_MODE: false
