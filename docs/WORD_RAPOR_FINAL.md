@@ -511,6 +511,47 @@ Artırım 5 (Hafta 13-14): Test ve Dokümantasyon
 └── Proje raporu
 ```
 
+### 3.3.3 GANTT İş Akış Diyagramı
+
+Projenin geliştirme sürecini haftalık bazda gösteren GANTT diyagramı:
+
+#### Proje Geliştirme Takvimi
+
+| Faz | Görev | Başlangıç | Bitiş | Süre | Durum |
+|-----|-------|-----------|-------|------|-------|
+| **Faz 1** | Login & Auth | Hafta 1 | Hafta 1 | 2 gün | ✅ Tamamlandı |
+| **Faz 2** | Dashboard Layout | Hafta 1 | Hafta 1 | 4 gün | ✅ Tamamlandı |
+| **Faz 3** | Projects Content | Hafta 2 | Hafta 2 | 5 gün | ✅ Tamamlandı |
+| **Faz 4** | Tasks Content | Hafta 2-3 | Hafta 3 | 6 gün | ✅ Tamamlandı |
+| **Faz 5** | Team Management | Hafta 3-4 | Hafta 4 | 5 gün | ✅ Tamamlandı |
+| **Faz 6** | Reports & Analytics | Hafta 4-5 | Hafta 5 | 5 gün | ✅ Tamamlandı |
+| **Faz 7** | GitHub Integration | Hafta 5-6 | Hafta 6 | 6 gün | ✅ Tamamlandı |
+| **Faz 8** | Web API & Invitations | Hafta 6-7 | Hafta 7 | 4 gün | ✅ Tamamlandı |
+| **Faz 9** | Testing & Refinement | Hafta 7 | Hafta 7 | 4 gün | ✅ Tamamlandı |
+| **Faz 10** | Documentation | Hafta 8 | Hafta 8 | 5 gün | ✅ Tamamlandı |
+
+#### Görsel GANTT Diyagramı
+
+```
+Hafta:        1    2    3    4    5    6    7    8
+              |----|----|----|----|----|----|----|----|
+Faz 1 Login   ████
+Faz 2 Dash    ████████
+Faz 3 Proje        ██████████
+Faz 4 Görev             ████████████
+Faz 5 Takım                  ██████████
+Faz 6 Rapor                       ██████████
+Faz 7 GitHub                           ████████████
+Faz 8 WebAPI                                ████████
+Faz 9 Test                                       ████
+Faz 10 Dok                                       ██████
+
+████ = Tamamlandı
+```
+
+**Toplam Geliştirme Süresi:** ~46 gün (8 hafta)  
+**Mevcut İlerleme:** %100 (10/10 faz tamamlandı)
+
 ## 3.4 UML Diyagramları
 
 ### 3.4.1 Use Case Diyagramı
