@@ -139,7 +139,7 @@
                         <span class="version-badge">v1.0.0</span>
                     </div>
                 </div>
-                <a href="https://github.com/BilalAbic/projecttracker/releases/latest" class="btn btn-download">
+                <a href="https://github.com/BilalAbic/ProjectTracker/releases/tag/v1.0.0" class="btn btn-download"></a>
                     <span>⬇️</span> İndir (Setup.exe)
                 </a>
             </div>
@@ -167,14 +167,11 @@
                 <div class="step">
                     <div class="step-number">1</div>
                     <div class="step-content">
-                        <h3>Gerekli Yazılımları Yükleyin</h3>
-                        <p>Öncelikle aşağıdaki yazılımların yüklü olduğundan emin olun:</p>
+                        <h3>Setup Dosyasını İndirin</h3>
+                        <p>GitHub Releases sayfasından <strong>ProjectTrackerSetup.exe</strong> dosyasını indirin.</p>
                         <div class="step-links">
-                            <a href="https://dotnet.microsoft.com/download/dotnet/8.0" target="_blank" class="step-link">
-                                📦 .NET 8.0 Runtime İndir
-                            </a>
-                            <a href="https://www.microsoft.com/sql-server/sql-server-downloads" target="_blank" class="step-link">
-                                🗄️ SQL Server Express İndir
+                            <a href="https://github.com/BilalAbic/ProjectTracker/releases/tag/v1.0.0" target="_blank" class="step-link">
+                                ⬇️ v1.0.0 İndir
                             </a>
                         </div>
                     </div>
@@ -183,46 +180,51 @@
                 <div class="step">
                     <div class="step-number">2</div>
                     <div class="step-content">
-                        <h3>Uygulamayı İndirin ve Kurun</h3>
-                        <p>Setup dosyasını indirin ve çalıştırın. Kurulum sihirbazını takip edin.</p>
-                        <div class="code-block">
-                            <code>ProjectTracker-Setup.exe</code>
-                        </div>
+                        <h3>Kurulum Sihirbazını Çalıştırın</h3>
+                        <p>İndirilen <code>ProjectTrackerSetup.exe</code> dosyasını çalıştırın ve <strong>Next → Next → Install</strong> diyerek kurulumu tamamlayın.</p>
+                        <p class="step-note">💡 Kurulum otomatik olarak gerekli dosyaları yükler.</p>
                     </div>
                 </div>
 
                 <div class="step">
                     <div class="step-number">3</div>
                     <div class="step-content">
-                        <h3>Veritabanını Oluşturun</h3>
-                        <p>SQL Server Management Studio'da yeni bir veritabanı oluşturun:</p>
-                        <div class="code-block">
-                            <code>CREATE DATABASE DboProjectTracker;</code>
+                        <h3>SQL Server Kurulumu</h3>
+                        <p>Eğer SQL Server yüklü değilse, aşağıdaki seçeneklerden birini kurun:</p>
+                        <div class="step-links">
+                            <a href="https://www.microsoft.com/sql-server/sql-server-downloads" target="_blank" class="step-link">
+                                🗄️ SQL Server Express (Ücretsiz)
+                            </a>
                         </div>
-                        <p class="step-note">💡 Uygulama ilk çalıştırmada tabloları otomatik oluşturur.</p>
+                        <p class="step-note">💡 LocalDB veya SQL Server Express yeterlidir.</p>
                     </div>
                 </div>
 
                 <div class="step">
                     <div class="step-number">4</div>
                     <div class="step-content">
-                        <h3>Bağlantı Ayarlarını Yapın</h3>
-                        <p><code>appsettings.json</code> dosyasında veritabanı bağlantısını düzenleyin:</p>
+                        <h3>Veritabanı Bağlantısını Ayarlayın</h3>
+                        <p>Uygulama klasöründeki <code>appsettings.json</code> dosyasını açın ve SQL Server adresinizi girin:</p>
                         <div class="code-block">
 <pre>{
   "ConnectionStrings": {
-    "DefaultConnection": "Server=localhost;Database=DboProjectTracker;Trusted_Connection=True;TrustServerCertificate=True;"
+    "DefaultConnection": "Server=.;Database=ProjectTrackerDb;Trusted_Connection=True;TrustServerCertificate=True;"
   }
 }</pre>
                         </div>
+                        <p class="step-note">💡 <code>Server=.</code> yerel sunucu, <code>Server=.\SQLEXPRESS</code> SQL Express için kullanılır.</p>
                     </div>
                 </div>
 
                 <div class="step">
                     <div class="step-number">5</div>
                     <div class="step-content">
-                        <h3>Uygulamayı Başlatın</h3>
-                        <p>Masaüstündeki kısayoldan veya Başlat menüsünden uygulamayı açın.</p>
+                        <h3>Uygulamayı Başlatın ve Giriş Yapın</h3>
+                        <p>Masaüstündeki kısayoldan uygulamayı açın. Veritabanı ve tablolar <strong>otomatik oluşturulur</strong>.</p>
+                        <div class="code-block">
+                            <code>Kullanıcı Adı: admin</code><br>
+                            <code>Şifre: admin123</code>
+                        </div>
                         <div class="step-success">
                             🎉 Tebrikler! ProjectTracker kullanıma hazır.
                         </div>

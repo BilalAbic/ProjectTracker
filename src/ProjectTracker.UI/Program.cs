@@ -35,6 +35,13 @@ namespace ProjectTracker.UI
             ConfigureServices(services);
             ServiceProvider = services.BuildServiceProvider();
 
+            // Veritabanını otomatik oluştur (yoksa)
+            using (var scope = ServiceProvider.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                dbContext.Database.EnsureCreated();
+            }
+
             // Run Login Form
             var loginForm = ServiceProvider.GetRequiredService<Forms.Login.FrmLogin>();
             Application.Run(loginForm);

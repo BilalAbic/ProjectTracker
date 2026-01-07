@@ -615,32 +615,31 @@ Sistem EPPlus kütüphanesi ile Excel export yapmaktadır:
 
 ### 5.2 Kurulum Adımları
 
-**Adım 1: .NET 8.0 Runtime Kurulumu**
-- https://dotnet.microsoft.com/download/dotnet/8.0 adresinden indirin
-- .NET Desktop Runtime 8.0.x kurulumunu yapın
+**Adım 1: Setup Dosyasını İndirin**
+- [GitHub Releases](https://github.com/BilalAbic/ProjectTracker/releases/tag/v1.0.0) sayfasından `ProjectTrackerSetup.exe` indirin
 
-**Adım 2: SQL Server Kurulumu**
+**Adım 2: Kurulum Sihirbazını Çalıştırın**
+- İndirilen dosyayı çalıştırın → **Next → Next → Install → Finish**
+
+**Adım 3: SQL Server Kurulumu (Yoksa)**
 - SQL Server 2019+ Express Edition kurulumu
-- SQL Server Management Studio (SSMS) kurulumu
-
-**Adım 3: Veritabanı Oluşturma**
-```sql
-CREATE DATABASE ProjectTrackerDB;
-```
+- https://www.microsoft.com/sql-server/sql-server-downloads
 
 **Adım 4: Connection String Ayarı**
-- `appsettings.json` dosyasını düzenleyin:
+- Uygulama klasöründeki `appsettings.json` dosyasını düzenleyin:
 ```json
 {
   "ConnectionStrings": {
-    "DefaultConnection": "Server=localhost;Database=ProjectTrackerDB;Trusted_Connection=True;TrustServerCertificate=True;"
+    "DefaultConnection": "Server=.;Database=ProjectTrackerDb;Trusted_Connection=True;TrustServerCertificate=True;"
   }
 }
 ```
+- Yerel sunucu: `Server=.`
+- SQL Express: `Server=.\SQLEXPRESS`
 
 **Adım 5: Uygulamayı Çalıştırma**
-- `ProjectTracker.UI.exe` dosyasını çalıştırın
-- İlk çalıştırmada veritabanı tabloları otomatik oluşturulur
+- Masaüstündeki kısayoldan uygulamayı açın
+- **Veritabanı ve tablolar otomatik oluşturulur** (`EnsureCreated`)
 - Seed data ile varsayılan admin kullanıcısı oluşturulur
 
 ### 5.3 Varsayılan Kullanıcı Bilgileri

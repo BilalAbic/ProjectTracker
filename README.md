@@ -44,11 +44,14 @@
 
 ### Akademik Gereksinimler
 Bu proje **YMH 219 Nesne Tabanlı Programlama** dersi kapsamında geliştirilmiştir:
-- ✅ 4 Katmanlı Mimari (N-Tier Architecture)
+- ✅ 5 Katmanlı Mimari (N-Tier Architecture)
 - ✅ SOLID Prensipleri
 - ✅ Repository & Unit of Work Pattern
 - ✅ Dependency Injection
 - ✅ Akıllı Algoritmalar (Risk Skoru, Task-Commit Eşleştirme)
+- ✅ 177 Unit Test (14 servis için)
+- ✅ UML Diyagramları (UseCase, Class, Sequence, Activity, ER)
+- ✅ Kapsamlı Dokümantasyon
 
 ---
 
@@ -58,7 +61,7 @@ Bu proje **YMH 219 Nesne Tabanlı Programlama** dersi kapsamında geliştirilmi�
 |----------|-----|----------|
 | 🌍 **Web Sitesi** | [pt.bilalabic.com](https://pt.bilalabic.com) | Custom domain ile barındırılan tanıtım sitesi |
 | 🔌 **API** | [bilalabic.com/api](https://bilalabic.com/api) | Plesk'te barındırılan ASP.NET Core Web API |
-| 📦 **İndirme** | [GitHub Releases](https://github.com/BilalAbic/ProjectTracker/releases/latest) | Windows masaüstü uygulaması |
+| 📦 **İndirme** | [GitHub Releases](https://github.com/BilalAbic/ProjectTracker/releases/tag/v1.0.0) | Windows masaüstü uygulaması |
 | 📂 **Kaynak Kod** | [github.com/BilalAbic/ProjectTracker](https://github.com/BilalAbic/ProjectTracker) | Ana repository |
 | 🌐 **Web Branch** | [web-github-pages](https://github.com/BilalAbic/ProjectTracker/tree/web-github-pages) | Web sitesi kaynak kodları |
 
@@ -139,10 +142,57 @@ Bu proje **YMH 219 Nesne Tabanlı Programlama** dersi kapsamında geliştirilmi�
 
 ## 📸 Ekran Görüntüleri
 
-### Giriş Ekranı
-![Login Form](docs/Screenshots/LoginFormLeft.png)
+### 🔐 Giriş Modülü
 
-> 📌 **Not:** Daha fazla ekran görüntüsü yakında eklenecektir.
+| Giriş Ekranı | Kayıt Ekranı | Onay Bekleme |
+|:---:|:---:|:---:|
+| ![Login](docs/Screenshots/ProjectTracker.UI_Login.png) | ![Register](docs/Screenshots/ProjectTracker.UI_Register.png) | ![Pending](docs/Screenshots/ProjectTracker.UI_UserPending.png) |
+
+### 📊 Dashboard
+
+| Ana Panel |
+|:---:|
+| ![Dashboard](docs/Screenshots/ProjectTracker.UI_Dashboard.png) |
+
+### 📁 Proje Yönetimi
+
+| Proje Listesi | Proje Oluşturma | Proje Düzenleme |
+|:---:|:---:|:---:|
+| ![Projects](docs/Screenshots/ProjectTracker.UI_ProjectsList.png) | ![Create](docs/Screenshots/ProjectTracker.UI_ProjectCreate.png) | ![Edit](docs/Screenshots/ProjectTracker.UI_ProjectEdit.png) |
+
+### ✅ Görev Yönetimi
+
+| Görev Listesi | Kanban Board | Görev Düzenleme |
+|:---:|:---:|:---:|
+| ![Tasks](docs/Screenshots/ProjectTracker.UI_TasksList.png) | ![Kanban](docs/Screenshots/ProjectTracker.UI_TasksCanban.png) | ![Edit](docs/Screenshots/ProjectTracker.UI_TaskEdit.png) |
+
+### 👥 Takım Yönetimi
+
+| Takım Listesi | Takım Oluşturma | Takım Düzenleme |
+|:---:|:---:|:---:|
+| ![Teams](docs/Screenshots/ProjectTracker.UI_Team.png) | ![Create](docs/Screenshots/ProjectTracker.UI_TeamCreate.png) | ![Edit](docs/Screenshots/ProjectTracker.UI_TeamEdit.png) |
+
+| Takım Üyeleri | Davetler | Gelen Davetler |
+|:---:|:---:|:---:|
+| ![Members](docs/Screenshots/ProjectTracker.UI_TeamMember.png) | ![Invitations](docs/Screenshots/ProjectTracker.UI_TeamInvitations.png) | ![My](docs/Screenshots/ProjectTracker.UI_MyInvitations.png) |
+
+### 🐙 GitHub Analytics
+
+| Commit Listesi | Contributor İstatistikleri | File Hotspots |
+|:---:|:---:|:---:|
+| ![GitHub1](docs/Screenshots/ProjectTracker.UI_GithubAnalytics1.png) | ![GitHub2](docs/Screenshots/ProjectTracker.UI_GithubAnalytics2.png) | ![GitHub3](docs/Screenshots/ProjectTracker.UI_GithubAnalytics3.png) |
+
+### 📈 Raporlama
+
+| Proje Raporu | Kullanıcı Raporu | Takım Raporu |
+|:---:|:---:|:---:|
+| ![Report1](docs/Screenshots/ProjectTracker.UI_Reports1.png) | ![Report2](docs/Screenshots/ProjectTracker.UI_Reports2.png) | ![Report3](docs/Screenshots/ProjectTracker.UI_Reports3.png) |
+
+### ⚙️ Ayarlar & Hata Yönetimi
+
+| Kullanıcı Ayarları | Hata Mesajı |
+|:---:|:---:|
+| ![Settings](docs/Screenshots/ProjectTracker.UI_Settings.png) | ![Error](docs/Screenshots/ProjectTracker.UI_Error.png) |
 
 ---
 
@@ -582,7 +632,22 @@ ProjectTracker/
 │       └── appsettings.Production.json
 │
 ├── 📂 tests/
-│   └── 📂 ProjectTracker.Tests/               [Unit Test Projesi]
+│   └── 📂 ProjectTracker.Tests/               [Unit Test Projesi - 177 Test]
+│       └── 📂 Services/                       [14 Service Test Sınıfı]
+│           ├── UserServiceTests.cs
+│           ├── ProjectServiceTests.cs
+│           ├── TaskServiceTests.cs
+│           ├── TeamServiceTests.cs
+│           ├── InvitationServiceTests.cs
+│           ├── EmailServiceTests.cs
+│           ├── AuditLogServiceTests.cs
+│           ├── ReportServiceTests.cs
+│           ├── AdvancedReportServiceTests.cs
+│           ├── GitHubSyncServiceTests.cs
+│           ├── GitHubAnalyticsServiceTests.cs
+│           ├── TokenPoolServiceTests.cs
+│           ├── TaskMatchingServiceTests.cs
+│           └── RemoteInvitationServiceTests.cs
 │
 ├── 📂 docs/                                   [GitHub Pages + Dokümantasyon]
 │   ├── index.html                             # Tanıtım sayfası
@@ -626,7 +691,49 @@ ProjectTracker/
 
 ## 🛠️ Kurulum
 
-### Gereksinimler
+### 📦 Son Kullanıcı Kurulumu (Setup.exe)
+
+Uygulamayı kullanmak için kaynak koda ihtiyacınız yok. Aşağıdaki adımları takip edin:
+
+#### 1. Setup Dosyasını İndirin
+[📥 ProjectTracker v1.0.0 İndir](https://github.com/BilalAbic/ProjectTracker/releases/tag/v1.0.0)
+
+#### 2. Kurulum Sihirbazını Çalıştırın
+`ProjectTrackerSetup.exe` dosyasını çalıştırın → **Next → Next → Install → Finish**
+
+#### 3. SQL Server Gereksinimi
+Eğer SQL Server yüklü değilse [SQL Server Express](https://www.microsoft.com/sql-server/sql-server-downloads) (ücretsiz) indirin.
+
+#### 4. Veritabanı Bağlantısını Ayarlayın
+Uygulama klasöründeki `appsettings.json` dosyasını açın:
+```json
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=.;Database=ProjectTrackerDb;Trusted_Connection=True;TrustServerCertificate=True;"
+  }
+}
+```
+* Yerel: `Server=.` veya `Server=(localdb)\MSSQLLocalDB`
+* SQL Express: `Server=.\SQLEXPRESS`
+
+#### 5. Uygulamayı Başlatın
+Masaüstündeki kısayoldan uygulamayı açın. **Veritabanı ve tablolar otomatik oluşturulur.**
+
+#### 🔐 Varsayılan Giriş Bilgileri
+| Alan | Değer |
+|------|-------|
+| Kullanıcı Adı | `admin` |
+| Şifre | `admin123` |
+
+⚠️ İlk girişten sonra şifrenizi değiştirmeniz önerilir.
+
+---
+
+### 👨‍💻 Geliştirici Kurulumu (Kaynak Koddan)
+
+Projeyi geliştirmek veya katkıda bulunmak istiyorsanız:
+
+#### Gereksinimler
 
 | Gereksinim | Minimum Versiyon | Açıklama |
 |------------|------------------|----------|
@@ -636,26 +743,20 @@ ProjectTracker/
 | SQL Server | 2019+ | Veritabanı (Express yeterli) |
 | DevExpress | 25.1.7 | UI kontrolleri (Trial veya Full) |
 
-### Adım Adım Kurulum
+#### Adım Adım Kurulum
 
-#### 1. Repository'yi Klonla
+##### 1. Repository'yi Klonla
 ```bash
 git clone https://github.com/BilalAbic/ProjectTracker.git
 cd ProjectTracker
 ```
 
-#### 2. NuGet Paketlerini Geri Yükle
+##### 2. NuGet Paketlerini Geri Yükle
 ```bash
 dotnet restore
 ```
 
-#### 3. Veritabanını Oluştur
-```sql
--- SQL Server Management Studio'da çalıştır
-CREATE DATABASE DboProjectTracker;
-```
-
-#### 4. appsettings.json Yapılandır
+##### 3. appsettings.json Yapılandır
 ```bash
 # Örnek dosyayı kopyala
 copy src\ProjectTracker.UI\appsettings.example.json src\ProjectTracker.UI\appsettings.json
@@ -665,7 +766,7 @@ Dosyayı düzenle:
 ```json
 {
   "ConnectionStrings": {
-    "DefaultConnection": "Server=localhost;Database=DboProjectTracker;Trusted_Connection=True;TrustServerCertificate=True;"
+    "DefaultConnection": "Server=.;Database=ProjectTrackerDb;Trusted_Connection=True;TrustServerCertificate=True;"
   },
   "Email": {
     "Enabled": true,
@@ -687,20 +788,12 @@ Dosyayı düzenle:
 }
 ```
 
-#### 5. Migration'ları Uygula
-```bash
-dotnet ef database update --project src/ProjectTracker.Data --startup-project src/ProjectTracker.UI
-```
-
-#### 6. Seed Data Ekle (Opsiyonel)
-```bash
-# SQL Server Management Studio'da SeedDataScript/seed.sql dosyasını çalıştır
-```
-
-#### 7. Projeyi Çalıştır
+##### 4. Projeyi Çalıştır
 ```bash
 dotnet run --project src/ProjectTracker.UI
 ```
+
+> 💡 **Not:** Uygulama ilk çalıştırıldığında veritabanı ve tablolar `EnsureCreated()` ile otomatik oluşturulur. Manuel migration gerekmez.
 
 ### Gmail App Password Oluşturma
 
@@ -959,6 +1052,21 @@ var statusColor = ColorPalette.GetProjectStatusColor(project.Status);
 
 ## 🚀 Sürüm Notları
 
+### v1.2.0 (8 Ocak 2026) - Final Release 🎉
+
+#### Yeni Özellikler
+- ✅ 14 servis için kapsamlı unit test coverage (177 test)
+- ✅ UML diyagramları (UseCase, Class, Sequence, Activity, ER)
+- ✅ GANTT iş akış diyagramı
+- ✅ Maliyet kestirim raporu
+- ✅ Test dokümantasyonu
+- ✅ Akademik proje raporu (PDF)
+
+#### Dokümantasyon
+- Tüm UML diyagramları tamamlandı
+- Ekran görüntüleri güncellendi (24 adet)
+- README kapsamlı şekilde güncellendi
+
 ### v1.1.0 (5 Ocak 2026) - Web API & Davet Sistemi
 
 #### Yeni Özellikler
@@ -990,13 +1098,31 @@ var statusColor = ColorPalette.GetProjectStatusColor(project.Status);
 
 ## 📚 Ek Dokümantasyon
 
+### 📄 Proje Raporu
+| Dosya | Açıklama |
+|-------|----------|
+| [Nesne Tabanlı Programlama - Project Tracker Raporu.pdf](docs/Reports/Nesne%20Tabanlı%20Programlama%20-%20Project%20Tracker%20Raporu.pdf) | Akademik proje raporu (PDF) |
+
+### 📋 Teknik Dokümantasyon
 | Dosya | Açıklama |
 |-------|----------|
 | [CODING_STANDARDS.md](CODING_STANDARDS.md) | Kod standartları ve best practices |
 | [TEKNOLOJI_KARARLARI.md](TEKNOLOJI_KARARLARI.md) | Teknoloji seçim kararları |
-| [bank/GITHUB_INTEGRATION_README.md](bank/GITHUB_INTEGRATION_README.md) | GitHub entegrasyonu teknik tasarım |
-| [bank/GITHUB_INTEGRATION_ROADMAP.md](bank/GITHUB_INTEGRATION_ROADMAP.md) | GitHub entegrasyonu yol haritası |
-| [bank/PROJE_TANITIM_RAPORU.md](bank/PROJE_TANITIM_RAPORU.md) | Akademik proje tanıtım raporu |
+
+### 📊 UML Diyagramları
+| Dosya | Açıklama |
+|-------|----------|
+| [docs/UML/UseCase_Diagram.md](docs/UML/UseCase_Diagram.md) | Kullanım senaryoları diyagramı |
+| [docs/UML/Class_Diagram.md](docs/UML/Class_Diagram.md) | Sınıf diyagramı |
+| [docs/UML/Sequence_Diagram.md](docs/UML/Sequence_Diagram.md) | Sıralama diyagramı |
+| [docs/UML/Activity_Diagram.md](docs/UML/Activity_Diagram.md) | Aktivite diyagramı |
+| [docs/UML/ER_Diagram.md](docs/UML/ER_Diagram.md) | Entity-Relationship diyagramı |
+
+### 🧪 Test Dokümantasyonu
+| Dosya | Açıklama |
+|-------|----------|
+| [docs/Reports/TEST_DOKUMANI.md](docs/Reports/TEST_DOKUMANI.md) | Unit test dokümantasyonu |
+| [docs/Reports/MALIYET_KESTIRIM.md](docs/Reports/MALIYET_KESTIRIM.md) | Maliyet kestirim raporu |
 
 ---
 
@@ -1019,9 +1145,9 @@ Bu proje [Apache License 2.0](LICENSE.txt) altında lisanslanmıştır.
 
 ---
 
-**📌 Güncel Durum:** Phase 8 (Web API & Davet Sistemi) tamamlandı  
-**📈 İlerleme:** ~85%  
-**📅 Son Güncelleme:** 6 Ocak 2026
+**📌 Güncel Durum:** Proje tamamlandı ✅  
+**📈 İlerleme:** 100%  
+**📅 Son Güncelleme:** 8 Ocak 2026
 
 ---
 

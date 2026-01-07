@@ -770,24 +770,30 @@ Sistem iki veritabanı kullanmaktadır:
 
 ## 6. EKLER
 
-### Ek-1: UML Diyagramları
+### Ek-1: Proje Raporu (PDF)
+- `docs/Reports/Nesne Tabanlı Programlama - Project Tracker Raporu.pdf`
+
+### Ek-2: UML Diyagramları
 - `docs/UML/UseCase_Diagram.md`
 - `docs/UML/Class_Diagram.md`
 - `docs/UML/Activity_Diagram.md`
 - `docs/UML/Sequence_Diagram.md`
 - `docs/UML/ER_Diagram.md`
 
-### Ek-2: Maliyet Analizi
+### Ek-3: Maliyet Analizi
 - `docs/Reports/MALIYET_KESTIRIM.md`
 
-### Ek-3: Ekran Görüntüleri
+### Ek-4: Test Dokümantasyonu
+- `docs/Reports/TEST_DOKUMANI.md`
+
+### Ek-5: Ekran Görüntüleri
 - `docs/Screenshots/` (24 adet)
 
-### Ek-4: Kaynak Kod
-- GitHub Repository: [Repository URL]
+### Ek-6: Kaynak Kod
+- GitHub Repository: https://github.com/BilalAbic/ProjectTracker
 
 ---
 
-**Rapor Tarihi:** 6 Ocak 2026  
+**Rapor Tarihi:** 8 Ocak 2026  
 **Versiyon:** 1.0  
 **Proje:** Project Tracker - Akıllı Proje Yönetim Sistemi

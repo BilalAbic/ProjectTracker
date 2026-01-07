@@ -317,7 +317,7 @@ web/
 ```javascript
 const CONFIG = {
     API_BASE_URL: 'https://bilalabic.com',  // Plesk API
-    DOWNLOAD_URL: 'https://github.com/BilalAbic/projecttracker/releases/latest',
+    DOWNLOAD_URL: 'https://github.com/BilalAbic/ProjectTracker/releases/tag/v1.0.0',
     DEMO_MODE: false  // true yapılırsa API çağrısı yapmaz
 };
 ```
