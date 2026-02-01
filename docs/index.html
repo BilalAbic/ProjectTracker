@@ -3,17 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="ProjectTracker - Modern proje yönetim sistemi. Takımınızla birlikte projeleri planlayın, görevleri takip edin ve GitHub entegrasyonu ile geliştirme sürecinizi optimize edin.">
+    <meta name="keywords" content="proje yönetimi, görev takibi, takım işbirliği, github entegrasyonu, kanban, project management">
+    <meta name="author" content="ProjectTracker">
+    <meta name="theme-color" content="#5b8def">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="ProjectTracker - Proje Yönetim Sistemi">
+    <meta property="og:description" content="Modern proje yönetim sistemi ile projelerinizi akıllıca yönetin.">
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="ProjectTracker - Proje Yönetim Sistemi">
+    <meta name="twitter:description" content="Modern proje yönetim sistemi ile projelerinizi akıllıca yönetin.">
+    
     <title>ProjectTracker - Proje Yönetim Sistemi</title>
     <link rel="stylesheet" href="./css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
+    <!-- Mobile Menu Toggle -->
+    <button class="mobile-menu-toggle" aria-label="Menu">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
     <!-- Navigation -->
     <nav class="navbar">
         <div class="container">
             <div class="logo">
-                <span class="logo-icon">📊</span>
+                <i data-lucide="bar-chart-3" class="logo-icon"></i>
                 <span class="logo-text">ProjectTracker</span>
             </div>
             <div class="nav-links">
@@ -36,27 +60,27 @@
                 </p>
                 <div class="hero-buttons">
                     <a href="#download" class="btn btn-primary">
-                        <span>⬇️</span> Hemen İndir
+                        <i data-lucide="download"></i> Hemen İndir
                     </a>
                     <a href="#features" class="btn btn-secondary">
-                        <span>✨</span> Özellikleri Keşfet
+                        <i data-lucide="sparkles"></i> Özellikleri Keşfet
                     </a>
                 </div>
                 <div class="hero-stats">
                     <div class="stat">
-                        <span class="stat-number">📁</span>
+                        <i data-lucide="folder" class="stat-icon"></i>
                         <span class="stat-label">Proje Yönetimi</span>
                     </div>
                     <div class="stat">
-                        <span class="stat-number">✅</span>
+                        <i data-lucide="check-circle" class="stat-icon"></i>
                         <span class="stat-label">Görev Takibi</span>
                     </div>
                     <div class="stat">
-                        <span class="stat-number">👥</span>
+                        <i data-lucide="users" class="stat-icon"></i>
                         <span class="stat-label">Takım İşbirliği</span>
                     </div>
                     <div class="stat">
-                        <span class="stat-number">📈</span>
+                        <i data-lucide="trending-up" class="stat-icon"></i>
                         <span class="stat-label">GitHub Analytics</span>
                     </div>
                 </div>
@@ -90,32 +114,32 @@
             
             <div class="features-grid">
                 <div class="feature-card">
-                    <div class="feature-icon">📊</div>
+                    <i data-lucide="layout-dashboard" class="feature-icon"></i>
                     <h3>Dashboard</h3>
                     <p>Tüm projelerinizi ve görevlerinizi tek bir ekranda görüntüleyin. Anlık istatistikler ve grafiklerle durumu takip edin.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">📁</div>
+                    <i data-lucide="folder-kanban" class="feature-icon"></i>
                     <h3>Proje Yönetimi</h3>
                     <p>Projelerinizi oluşturun, düzenleyin ve takip edin. Durum, öncelik ve ilerleme bilgilerini kolayca yönetin.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">✅</div>
+                    <i data-lucide="list-checks" class="feature-icon"></i>
                     <h3>Görev Takibi</h3>
                     <p>Görevleri atayın, durumlarını güncelleyin. Kanban görünümü ile iş akışınızı görselleştirin.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">👥</div>
+                    <i data-lucide="users-round" class="feature-icon"></i>
                     <h3>Takım Yönetimi</h3>
                     <p>Takımlar oluşturun, üyeleri davet edin. Rol bazlı yetkilendirme ile güvenli işbirliği sağlayın.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">📈</div>
+                    <i data-lucide="github" class="feature-icon"></i>
                     <h3>GitHub Entegrasyonu</h3>
                     <p>Repository'lerinizi bağlayın, commit'leri takip edin. Contributor leaderboard ile performansı ölçün.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">📧</div>
+                    <i data-lucide="mail" class="feature-icon"></i>
                     <h3>E-posta Bildirimleri</h3>
                     <p>Görev atamaları ve davetler için otomatik e-posta bildirimleri alın.</p>
                 </div>
@@ -131,7 +155,7 @@
             
             <div class="download-card">
                 <div class="download-info">
-                    <div class="download-icon">🖥️</div>
+                    <i data-lucide="monitor" class="download-icon"></i>
                     <div class="download-details">
                         <h3>ProjectTracker for Windows</h3>
                         <p>Windows 10/11 (64-bit) • .NET 8.0 Runtime gerekli</p>
@@ -139,18 +163,18 @@
                     </div>
                 </div>
                 <a href="https://github.com/BilalAbic/projecttracker/releases/latest" class="btn btn-download">
-                    <span>⬇️</span> İndir (Setup.exe)
+                    <i data-lucide="download"></i> İndir (Setup.exe)
                 </a>
             </div>
 
             <div class="requirements">
                 <h4>Sistem Gereksinimleri</h4>
                 <ul>
-                    <li>✅ Windows 10 veya Windows 11 (64-bit)</li>
-                    <li>✅ .NET 8.0 Runtime</li>
-                    <li>✅ SQL Server (LocalDB veya Express)</li>
-                    <li>✅ 4 GB RAM (8 GB önerilen)</li>
-                    <li>✅ 500 MB disk alanı</li>
+                    <li><i data-lucide="check"></i> Windows 10 veya Windows 11 (64-bit)</li>
+                    <li><i data-lucide="check"></i> .NET 8.0 Runtime</li>
+                    <li><i data-lucide="check"></i> SQL Server (LocalDB veya Express)</li>
+                    <li><i data-lucide="check"></i> 4 GB RAM (8 GB önerilen)</li>
+                    <li><i data-lucide="check"></i> 500 MB disk alanı</li>
                 </ul>
             </div>
         </div>
@@ -170,10 +194,10 @@
                         <p>Öncelikle aşağıdaki yazılımların yüklü olduğundan emin olun:</p>
                         <div class="step-links">
                             <a href="https://dotnet.microsoft.com/download/dotnet/8.0" target="_blank" class="step-link">
-                                📦 .NET 8.0 Runtime İndir
+                                <i data-lucide="package"></i> .NET 8.0 Runtime İndir
                             </a>
                             <a href="https://www.microsoft.com/sql-server/sql-server-downloads" target="_blank" class="step-link">
-                                🗄️ SQL Server Express İndir
+                                <i data-lucide="database"></i> SQL Server Express İndir
                             </a>
                         </div>
                     </div>
@@ -198,7 +222,7 @@
                         <div class="code-block">
                             <code>CREATE DATABASE DboProjectTracker;</code>
                         </div>
-                        <p class="step-note">💡 Uygulama ilk çalıştırmada tabloları otomatik oluşturur.</p>
+                        <p class="step-note"><i data-lucide="lightbulb"></i> Uygulama ilk çalıştırmada tabloları otomatik oluşturur.</p>
                     </div>
                 </div>
 
@@ -210,7 +234,11 @@
                         <div class="code-block">
 <pre>{
   "ConnectionStrings": {
-    "DefaultConnection": "Server=localhost;Database=DboProjectTracker;Trusted_Connection=True;TrustServerCertificate=True;"
+    "DefaultConnection": 
+      "Server=localhost;
+       Database=DboProjectTracker;
+       Trusted_Connection=True;
+       TrustServerCertificate=True;"
   }
 }</pre>
                         </div>
@@ -223,7 +251,7 @@
                         <h3>Uygulamayı Başlatın</h3>
                         <p>Masaüstündeki kısayoldan veya Başlat menüsünden uygulamayı açın.</p>
                         <div class="step-success">
-                            🎉 Tebrikler! ProjectTracker kullanıma hazır.
+                            <i data-lucide="party-popper"></i> Tebrikler! ProjectTracker kullanıma hazır.
                         </div>
                     </div>
                 </div>
@@ -236,15 +264,19 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-brand">
-                    <span class="logo-icon">📊</span>
-                    <span class="logo-text">ProjectTracker</span>
+                    <div class="footer-logo">
+                        <i data-lucide="bar-chart-3" class="logo-icon"></i>
+                        <span class="logo-text">ProjectTracker</span>
+                    </div>
                     <p>Modern proje yönetim sistemi</p>
                 </div>
                 <div class="footer-links">
                     <a href="#features">Özellikler</a>
                     <a href="#download">İndir</a>
                     <a href="#setup">Kurulum</a>
-                    <a href="https://github.com/BilalAbic/projecttracker" target="_blank">GitHub</a>
+                    <a href="https://github.com/BilalAbic/projecttracker" target="_blank">
+                        <i data-lucide="github"></i> GitHub
+                    </a>
                 </div>
             </div>
             <div class="footer-bottom">
@@ -254,5 +286,9 @@
     </footer>
 
     <script src="./js/main.js"></script>
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+    </script>
 </body>
 </html>
